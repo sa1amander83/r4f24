@@ -15,6 +15,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
 
+from flower.api import tasks
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -50,12 +52,13 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'compressor',
-    'csscompressor'
+    'csscompressor',
+    'tasks',
+
 
 ]
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+
 CORS_ORIGIN_ALLOW_ALL = True
 TAILWIND_APP_NAME = 'theme'
 MIDDLEWARE = [
@@ -182,7 +185,7 @@ LOGGING = {
 }
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_RESULT_EXTENDED = True
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
@@ -193,16 +196,19 @@ MEDIA_URL = '/media/'
 # django_redis
 # https://github.com/jazzband/django-redis
 
+
+
+AUTH_USER_MODEL = 'core.customuser'
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        'BACKEND': 'django_redis.cache.RedisCache',
+        "LOCATION": "redis://127.0.0.1:6379/",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+
 
         }
     }
 }
-
-AUTH_USER_MODEL = 'core.customuser'
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
