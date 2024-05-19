@@ -13,5 +13,5 @@ app.autodiscover_tasks()
 # celery -A r4f24  flower
 #celery -A r4f24  worker  --loglevel=info
 
-#docker pull redis:latest и docker run NAME redis-server -p 6379:6379 -d redis:latest
+#docker pull redis:latest и docker run --name redis-server -p 6379:6379 -d redis:latest
 #

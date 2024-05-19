@@ -3,3 +3,5 @@ migrations
 __pycache__
 theme/static_src/node_modules*
 .idea
+node_modules
+static

@@ -1,15 +1,16 @@
 {% load static tailwind_tags %}
-{% load compress %}
+{#{% load compress %}#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+      <script src="https://cdn.tailwindcss.com"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-      {% compress css %}
+{#      {% compress css %}#}
     <link rel="stylesheet" href="{% static '/output.css' %}">
 
-    {% endcompress %}
+{#    {% endcompress %}#}
 
 </head>
 <body class="bg-gray-50 ">
@@ -26,7 +27,7 @@
 
         </div>
         <div>
-            <a class="rounded-md bg-blue-600 py-2 px-4 text-white font-semibold shadow-lg hover:shadow-xl focus:shadow-xl hover:bg-blue-700 focus:outline-none focus: right-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out" href="#">Sign In</a>
+            <a class="rounded-md bg-blue-600 py-2 px-4 text-white font-semibold shadow-lg hover:shadow-xl focus:shadow-xl hover:bg-blue-700 focus:outline-none focus: right-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out" href="{% url 'login' %}">Вход</a>
         </div>
     </header>
     <div class="flex">

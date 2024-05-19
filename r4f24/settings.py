@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
 
+from corsheaders.defaults import default_headers
 from flower.api import tasks
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,47 +30,62 @@ SECRET_KEY = 'django-insecure-f=p0evvriyhde@nmw9ltz13-*@tr@j9cqs!f9cqduyq$odg@l1
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:9000",
+    "http://127.0.0.1:8000",
+]
 
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
 # Application definition
 
 INSTALLED_APPS = [
+    # 'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'core',
     'profiles',
     'authorize',
-    'tailwind',
-    'theme',
-    'django_browser_reload',
+    # 'tailwind',
+    # 'theme',
+    # 'django_browser_reload',
     'celery',
     'django_celery_results',
     'django_celery_beat',
-    'compressor',
-    'csscompressor',
-    'tasks',
 
+    # 'csscompressor',
 
 ]
-
 
 CORS_ORIGIN_ALLOW_ALL = True
 TAILWIND_APP_NAME = 'theme'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
+
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 STATIC_URL = 'static/'
@@ -88,14 +104,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 
-COMPRESS_ROOT = BASE_DIR / 'static'
-
-COMPRESS_ENABLED = True
-
+# COMPRESS_ROOT = BASE_DIR / 'static'
+#
+# COMPRESS_ENABLED = True
+# STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 ROOT_URLCONF = 'r4f24.urls'
 
 NPM_BIN_PATH = which('npm')
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'xsrfheadername',
+    'xsrfcookiename',
+    'content-type',
+    'x-csrftoken',
+    'X-CSRFTOKEN',
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 TEMPLATES = [
     {
@@ -136,7 +169,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # other finders..
-    'compressor.finders.CompressorFinder',
+    # 'compressor.finders.CompressorFinder',
 )
 AUTH_PASSWORD_VALIDATORS = [
     # {
@@ -168,7 +201,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 LOGGING = {
@@ -197,7 +229,6 @@ MEDIA_URL = '/media/'
 # https://github.com/jazzband/django-redis
 
 
-
 AUTH_USER_MODEL = 'core.customuser'
 CACHES = {
     "default": {
@@ -205,7 +236,6 @@ CACHES = {
         "LOCATION": "redis://127.0.0.1:6379/",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-
 
         }
     }

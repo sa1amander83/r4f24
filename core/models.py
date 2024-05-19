@@ -21,6 +21,18 @@ class Teams(models.Model):
         return str(self.team)
 
 
+class KeyWordClass(models.Model):
+    kwteam=models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
+    keyword= models.CharField(verbose_name='кодовое слово')
+
+    def __str__(self):
+        return str(self.keyword)
+
+    class Meta:
+        verbose_name = "Ключевые слова"
+        verbose_name_plural= "Ключевые слова"
+
+
 class CustomUserManager(BaseUserManager):
     def _create_user(self, username=None, password=None, **extra_fields):
         user = self.model(username=username, **extra_fields)
@@ -97,3 +109,4 @@ class CustomUser(AbstractUser):
             return u'%s' % self.CATEGORY_WOMEN
 
     value = property(_value)
+
