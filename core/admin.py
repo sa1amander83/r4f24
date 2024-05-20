@@ -8,7 +8,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.admin import display
 
-from core.models import CustomUser, Teams, Family, KeyWordClass
+from core.models import User, Teams, Family, KeyWordClass
 
 
 class TeamsAdmin(admin.ModelAdmin):
@@ -84,5 +84,5 @@ class KeyWordAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Teams, TeamsAdmin)
-admin.site.register(CustomUser, RunnerAdmin)
+admin.site.register(User, RunnerAdmin)
 admin.site.register(KeyWordClass, KeyWordAdmin)

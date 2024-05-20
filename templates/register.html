@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-  {% csrf_token %}
+
     <body class="bg-gradient-primary">
 
 
@@ -15,7 +15,7 @@
 
                 <div class="user-creation-form  flex justify-center">
 {#                    <form method="post" action="{% url 'register' %}" enctype="text/plain">#}
-                    <form method="post" action="{% url 'register' %}">
+                    <form method="post">
                            {% csrf_token %}
                     {{ form.name.errors }}
                         {% if messages %}

@@ -225,11 +225,19 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Here
 MEDIA_URL = '/media/'
 
+
+# LOGIN_URL = "/login/"
+#
+# LOGIN_REDIRECT_URL = "/profile/"
+
+# The number of seconds a password reset link is valid for (default: 3 days).
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 60*60
+
 # django_redis
 # https://github.com/jazzband/django-redis
 
 
-AUTH_USER_MODEL = 'core.customuser'
+AUTH_USER_MODEL = 'core.user'
 CACHES = {
     "default": {
         'BACKEND': 'django_redis.cache.RedisCache',

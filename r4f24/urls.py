@@ -24,6 +24,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authorize.urls')),
+    path('', include('profiles.urls')),
+    path("accounts/", include("django.contrib.auth.urls")),
     # path("__reload__/", include("django_browser_reload.urls")),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

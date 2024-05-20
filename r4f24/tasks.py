@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from core.models import CustomUser
+from core.models import User
 
 
 @shared_task
@@ -20,11 +20,11 @@ def xsum(numbers):
 
 @shared_task
 def count_widgets():
-    return CustomUser.objects.count()
+    return User.objects.count()
 
 
 @shared_task
 def rename_widget(widget_id, name):
-    w = CustomUser.objects.get(id=widget_id)
+    w = User.objects.get(id=widget_id)
     w.name = name
     w.save()

@@ -22,15 +22,15 @@ class Teams(models.Model):
 
 
 class KeyWordClass(models.Model):
-    kwteam=models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
-    keyword= models.CharField(verbose_name='кодовое слово')
+    kwteam = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
+    keyword = models.CharField(verbose_name='кодовое слово')
 
     def __str__(self):
         return str(self.keyword)
 
     class Meta:
         verbose_name = "Ключевые слова"
-        verbose_name_plural= "Ключевые слова"
+        verbose_name_plural = "Ключевые слова"
 
 
 class CustomUserManager(BaseUserManager):
@@ -54,8 +54,8 @@ class CustomUserManager(BaseUserManager):
 
 
 class Family(models.Model):
-    runner = models.ForeignKey('CustomUser', on_delete=models.DO_NOTHING, verbose_name='Участник')
-    runner_family = models.ManyToManyField(to='CustomUser',blank=True, related_name='runners_family')
+    runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
+    runner_family = models.ManyToManyField(to='User', blank=True, related_name='runners_family')
 
     class Meta:
         verbose_name = 'Семейное участие'
@@ -64,7 +64,8 @@ class Family(models.Model):
     def __str__(self):
         return str(self.runner)
 
-class CustomUser(AbstractUser):
+
+class User(AbstractUser):
     GENDER = [
         ('м', "м"), ("ж", "ж")
     ]
@@ -109,4 +110,3 @@ class CustomUser(AbstractUser):
             return u'%s' % self.CATEGORY_WOMEN
 
     value = property(_value)
-
