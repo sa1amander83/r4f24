@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{#{% static 'js/table.js' %}#}
+{% load time_tag %}
+{% load divide_tag %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+{% include 'components/sidebar.html' %}
+{% block content %}
+
+    <div class="container-fluid">
+        {% csrf_token %}
+
+
+
+
+
+        {% if cat_selected == 'woman' %}
+            <h2> Результаты участников женщин </h2>
+        {% elif cat_selected %}
+            <h2> Результаты участников в {{ cat_selected }} категории </h2>
+        {% else %}
+            <h3> Общие результаты участников</h3>
+
+
+        {% endif %}
+
+        <div class="topbar-divider"></div>
+        <div class="header-stat-comanda">
+
+                <h2>выбор категории:</h2>
+                   <a class="text-center text-warning" href="{% url 'index' %}">Общий</a>
+
+
+{#        <a class=" text-center text-warning"#}
+{#                           href="{% url 'runnercat_selected' 1 %}">Новичок</a>#}
+{##}
+{#        <a class=" text-center text-warning"#}
+{#                           href="{% url 'runnercat_selected' 2 %}">Легкий</a>#}
+{##}
+{#        <a class=" text-center text-warning"#}
+{#                           href="{% url 'runnercat_selected' 3 %}">Средний</a>#}
+{##}
+{#        <a class=" text-center text-warning"#}
+{#                           href="{% url 'runnercat_selected' 4 %}">Тяжелый</a>#}
+{##}
+{#        <a class=" text-center text-warning"#}
+{#                           href="{% url 'runnercat_selected' 5 %}">Ультра</a>#}
+{##}
+{#        <a  class="text-center text-warning"#}
+{#                            href="{% url 'runnercat_selected' woman='woman' %}">Женщины</a>#}
+
+    </div>
+    <div class="container-fluid">
+        <table id="myTable" class="table  table-striped text-center">
+
+            <thead class="table-dark text-center">
+
+            <td>Место</td>
+
+            <td>Номер участника</td>
+
+            <td> пробег км</td>
+            <td> общее время пробега</td>
+            <td> средний темп мин/км</td>
+            <td> Дней забега</td>
+            </thead>
+            <tbody class="table text-center">
+
+
+            {% for s in tot_dist %}
+
+                {% if s.avg_time > "00:08:00" %}
+                    <tr class="row-cols-md-4  mytable-tr table-danger">
+                       {% else %}
+                    <tr class="row-cols-md-4 c">
+                            {% endif %}
+
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="/profile/{{ s.runner__user__username }}">{{ s.runner__user__username }} </a></td>
+
+                    <td> {{ s.total_dist|floatformat:3 }}
+                        <div class="progress" style='height:3px;'>
+
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{ s.total_dist|percent:s.runner__runner_category }}%"
+                                 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                    <td> {{ s.total_time }}</td>
+                    <td> {{ s.avg_time|smooth_filter }}</td>
+                    <td> {{ s.day_count}}</td>
+
+
+            </tr>
+
+
+            {% endfor %}
+
+            </tbody>
+            <tr></tr>
+
+        </table>
+    </div>
+
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    </div>
+{% endblock %}
