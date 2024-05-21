@@ -52,6 +52,7 @@ INTERNAL_IPS = [
 
 INSTALLED_APPS = [
     # 'compressor',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+
     'core',
     'profiles',
     'authorize',
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
     'celery',
     'django_celery_results',
     'django_celery_beat',
+
 
     # 'csscompressor',
 
@@ -88,7 +91,7 @@ MIDDLEWARE = [
     # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_DIRS = []
 

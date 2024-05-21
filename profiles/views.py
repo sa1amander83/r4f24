@@ -20,10 +20,8 @@ class ProfileUser( ListView, DataMixin):
     slug_url_kwarg = "runner"
     slug_field = "runner"
 
-    def user(self):
-        return RunnerDay.objects.get(pk=self.pk)
 
-    context_object_name = 'profile'
+    # context_object_name = 'profile'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,9 +31,9 @@ class ProfileUser( ListView, DataMixin):
 
         context['runner'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
-        # print(context['runner'])
+        print(context['runner'])
 
-        result = RunnerDay.objects.filter(runner__username=self.kwargs['username']). \
+        result = RunnerDay.objects.filter(runner=self.kwargs['username']). \
             filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
                    (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
             'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
@@ -57,7 +55,9 @@ class ProfileUser( ListView, DataMixin):
             context['haverun'] = 0
 
         context['data'] = User.objects.filter(username=self.kwargs['username'])
+        print(self.kwargs['username'])
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
+
         if len(obj) > 0:
             tottime = User.objects.filter(username=self.kwargs['username']). \
                 filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |

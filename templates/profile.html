@@ -5,9 +5,8 @@
 {% block content %}
     {% csrf_token %}
 
-
     <div class=" container-fluid ">
-
+            {{ tot_dist }}
             {% for d in data %}
                 <h1> Статистика по участнику № {{ d.username }}  </h1>
 
@@ -22,6 +21,7 @@
             {% endif %}
         {% endfor %}
         </div>
+
 
 
         {% if haverun == '1' %}
@@ -40,6 +40,7 @@
                         <p class="col-form-label"> Категория - {{ d.runner_category }}</p>
 
                     {% endfor %}
+
                 </div>
                 <div>
                  {% if messages %}
@@ -126,10 +127,12 @@
                     <tr class="row-cols-md-4 text-center">
                 {%  endif %}
                     {% for d in data %}
-                        {% if request.user.is_authenticated and request.user == d.user or request.user.username == 'admin' %}
-                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}"> <i
-                                    class="fa-sharp fa-regular fa-user-pen"
-                                    style="padding-right: 20px"> </i></a> {{ p.day_select }}</td>
+                        {% if request.user.is_authenticated and request.user.username == d.username or request.user.username == 'admin' %}
+{#                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}">#}
+                            <td>
+                            <i class="far fa-pen"
+                                    style="padding-right: 20px"> </i></a> {{ p.day_select }}
+                            </td>
                         {% else %}
                             <td> {{ p.day_select }} сентября</td>
                         {% endif %}
@@ -149,9 +152,10 @@
                     {% for d in data %}
                         {% if request.user.is_authenticated and request.user == d.user or request.user.username == 'admin'%}
 
-                            <td><a href="{% url 'deleterunday' runner=p.runner pk=p.pk %}">
+{#                            <td><a href="{% url 'deleterunday' runner=p.runner pk=p.pk %}">#}
                                 <i class="fa-solid fa-trash-can"
-                                   style="padding-right: 20px"> </i></a></td>
+                                   style="padding-right: 20px"> </i></a>
+{#                            </td>#}
                         {% else %}
                             <td></td>
                         {% endif %}

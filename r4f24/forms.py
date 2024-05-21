@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
+from django.forms import ModelForm
 
 from core.models import User
+from profiles.models import UserImport
 
 
 class RegisterUserForm(UserCreationForm):
@@ -36,3 +38,10 @@ class LoginUserForm(AuthenticationForm):
     class Meta:
         model = get_user_model()
         fields = ['username', 'password']
+
+
+
+class UserImportForm(ModelForm):
+    class Meta:
+        model = UserImport
+        fields = ('csv_file',)

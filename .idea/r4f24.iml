@@ -19,6 +19,22 @@
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (r4f24)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="flowbite" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="jquery.dataTables" level="application" />
+    <orderEntry type="library" name="jquery-3.6.0" level="application" />
+    <orderEntry type="library" name="Chart.js" level="application" />
+    <orderEntry type="library" name="moment" level="application" />
+    <orderEntry type="library" name="any-number" level="application" />
+    <orderEntry type="library" name="anti-the" level="application" />
+    <orderEntry type="library" name="numeric-comma" level="application" />
+    <orderEntry type="library" name="formatted-numbers" level="application" />
+    <orderEntry type="library" name="sum()" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="all" level="application" />
+    <orderEntry type="library" name="jquery-3.7.1.slim" level="application" />
+    <orderEntry type="library" name="jquery-3.7.1" level="application" />
+    <orderEntry type="library" name="popper.js" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
