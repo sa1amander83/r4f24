@@ -1,30 +1,33 @@
-from celery import shared_task
+from celery import shared_task, Celery
 
 from core.models import User
+from profiles.models import RunnerDay
 
 
+app = Celery('tasks', broker='pyamqp://guest@localhost//')
 @shared_task
-def add(x, y):
-    return x + y
+def total_dist(username):
+    from django.db.models import Sum
+    total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_distance'))
+    # self.get_ordering(result['day_distance__sum'])
+    result = total_distance['day_distance__sum']
+    return result
 
 
-@shared_task
-def mul(x, y):
-    return x * y
+@app.tasks
+def total_time(username):
+    from django.db.models import Sum
+    total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
+    return total_time['day_time__sum']
 
 
-@shared_task
-def xsum(numbers):
-    return sum(numbers)
+@app.tasks
+def avg_temp(username):
+    from django.db.models import Avg
+    result = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
+    return result['day_average_temp__avg']
 
-
-@shared_task
-def count_widgets():
-    return User.objects.count()
-
-
-@shared_task
-def rename_widget(widget_id, name):
-    w = User.objects.get(id=widget_id)
-    w.name = name
-    w.save()
+@app.tasks
+def calc():
+    for user in User.objects.all():
+        print(user)

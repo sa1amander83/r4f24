@@ -9,7 +9,7 @@ from django.urls import reverse, path
 from django.utils.safestring import mark_safe
 
 from core.models import User
-from profiles.models import RunnerDay
+from profiles.models import RunnerDay, Statistic
 from r4f24.forms import UserImportForm
 
 
@@ -188,6 +188,36 @@ class RunnerDayAdmin(admin.ModelAdmin):
 
     get_photo_url.short_description = 'Миниатюра'
 
+class StatisticAdmin(admin.ModelAdmin):
+    search_fields = ('runner__username', 'total_distance', 'total_time', 'total_average_temp',)
+
+    list_display = ('runner','team', 'total_run', 'total_time', 'avg_temp',)
+    # list_display_links = ('user',)
+    list_per_page = 100
+    list_max_show_all = 100
+
+    # ordering = ('общий_пробег', )
+    #
+    def total_run(self, username):
+        from django.db.models import Sum
+        total_distance = RunnerDay.objects.filter(runner__user__username=username).aggregate(Sum('day_distance'))
+        # total_distance = Statistic.objects.filter(runner__u=username).aggregate(Sum('day_distance'))
+        return total_distance['day_distance__sum']
+
+    def total_time(self, username):
+        from django.db.models import Sum
+        total_time = RunnerDay.objects.filter(runner__user__username=username).aggregate(Sum('day_time'))
+        return total_time['day_time__sum']
+
+    def avg_temp(self, username):
+        from django.db.models import Avg
+        total_average_temp = RunnerDay.objects.filter(runner__user__username=username).aggregate(Avg('day_average_temp'))
+        return total_average_temp['day_average_temp__avg']
+
+    total_run.admin_order_field = 'total_distance'
+    ordering = ('total_distance',)
+    # всего_времени.admin_order_field = '-total_time'
 
 admin.site.register(RunnerDay, RunnerDayAdmin)
 admin.site.register(User, RunnerAdmin)
+admin.site.register(Statistic, StatisticAdmin)
