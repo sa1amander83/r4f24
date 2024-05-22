@@ -1,0 +1,44 @@
+{% extends 'profile.html' %}
+{% load static %}
+{% block content %}
+    <body class="bg-gradient-primary">
+
+    <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+
+        <div class="row">
+
+
+            <div class="user-creation-form">
+                <form method="post" enctype="multipart/form-data">
+
+                    {% csrf_token %}
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% for f in form %}
+                        <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
+                        <div class="form-error">{{ f.errors }}</div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{#{% block calend %}#}
+{#    {% for value in calend %}#}
+{##}
+{#        <a href="/day_selected/{{ value }}" class="day-selected">{{ value }}</a>#}
+{##}
+{#    {% endfor %}#}
+{#{% endblock %}#}

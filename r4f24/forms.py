@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm
 
 from core.models import User
-from profiles.models import UserImport
+from profiles.models import UserImport, RunnerDay
 
 
 class RegisterUserForm(UserCreationForm):
@@ -45,3 +45,39 @@ class UserImportForm(ModelForm):
     class Meta:
         model = UserImport
         fields = ('csv_file',)
+
+class MyAverage(forms.TimeInput):
+    input_type = 'time'
+    format = '%M:%S'
+
+
+class MyTotalTimeInput(forms.TimeInput):
+    input_type = 'time'
+    format = '%H:%M:%S'
+
+class RunnerDayForm(ModelForm):
+    class Meta:
+        day_time = forms.TimeField(help_text='00:00:00')
+        day_average_temp = forms.TimeField(help_text="00:00:00")
+        model = RunnerDay
+
+        # current_date = date.today()
+        # date16 = datetime.date(2023, 7, 10)
+        # date17 = datetime.date(2023, 9, 17)
+
+        # if date
+
+        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'calory', 'photo']
+
+        widgets = {
+            'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
+            'day_distance': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'value': '00.000'}),
+            # 'day_time': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00'}),
+            'day_time': MyTotalTimeInput(attrs={'class': 'form-control form-control-user', 'step': '1', 'value':'00:00:00'}),
+            # 'day_average_temp': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00','format':'%H:%i:%s'}),
+            'day_average_temp': MyAverage(
+                attrs={'class': 'form-control form-control-user', 'format': '%m:%s','value':'00:00:00', 'step': '1'}),
+            'calory': forms.NumberInput(
+                attrs={'class': 'form-control form-control-user', 'value': '00.000', 'id': 'calory_id'}),
+            'photo': forms.FileInput(attrs={'class': 'form-control form-control-user'}),
+        }

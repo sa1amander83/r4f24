@@ -200,18 +200,18 @@ class StatisticAdmin(admin.ModelAdmin):
     #
     def total_run(self, username):
         from django.db.models import Sum
-        total_distance = RunnerDay.objects.filter(runner__user__username=username).aggregate(Sum('day_distance'))
+        total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_distance'))
         # total_distance = Statistic.objects.filter(runner__u=username).aggregate(Sum('day_distance'))
         return total_distance['day_distance__sum']
 
     def total_time(self, username):
         from django.db.models import Sum
-        total_time = RunnerDay.objects.filter(runner__user__username=username).aggregate(Sum('day_time'))
+        total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
         return total_time['day_time__sum']
 
     def avg_temp(self, username):
         from django.db.models import Avg
-        total_average_temp = RunnerDay.objects.filter(runner__user__username=username).aggregate(Avg('day_average_temp'))
+        total_average_temp = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
         return total_average_temp['day_average_temp__avg']
 
     total_run.admin_order_field = 'total_distance'

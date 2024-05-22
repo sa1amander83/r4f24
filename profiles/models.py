@@ -42,7 +42,7 @@ class RunnerDay(models.Model):
 
 
 class Statistic(models.Model):
-    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False)
+    runner = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='участник', null=False,unique=True)
     team = models.ForeignKey(Teams, on_delete=models.PROTECT, verbose_name='команда')
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
     total_time = models.TimeField(verbose_name='общее время пробега',blank=True)

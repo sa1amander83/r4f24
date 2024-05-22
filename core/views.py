@@ -1,15 +1,9 @@
-from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
-
-from core.models import Teams, KeyWordClass, User
+from django.views.generic import ListView
+from core.models import User
 from profiles.models import RunnerDay
 from profiles.utils import DataMixin
-from r4f24.forms import RegisterUserForm, LoginUserForm
+
 
 class IndexView(DataMixin, ListView):
     model = RunnerDay
