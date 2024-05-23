@@ -122,7 +122,7 @@ class LoginUser(LoginView):
 
 def logout_user(request):
     logout(request)
-    return redirect('login')
+    return redirect('authorize:login')
 
 
 def page_not_found_view(request, exception=None):

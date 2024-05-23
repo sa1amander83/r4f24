@@ -41,17 +41,19 @@ class RunnerDay(models.Model):
         return reverse('profile', kwargs={'username': self.runner})
 
 
+
+
+
 class Statistic(models.Model):
-    runner = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='участник', null=False,unique=True)
-    team = models.ForeignKey(Teams, on_delete=models.PROTECT, verbose_name='команда')
+    runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False)
+    # runner_stat = models.CharField(verbose_name='участник')
+    # team = models.IntegerField(verbose_name='команда')
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
-    total_time = models.TimeField(verbose_name='общее время пробега',blank=True)
+    total_time = models.TimeField(verbose_name='общее время пробега', blank=True,)
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
 
-
-
     def __str__(self):
-        return str(self.runner)
+        return str(self.runner_stat)
 
     def get_absolute_url(self):
         return reverse('day', kwargs={'day_id': self.pk})
@@ -65,7 +67,7 @@ class Statistic(models.Model):
 
         total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_distance'))
         # self.get_ordering(result['day_distance__sum'])
-        result= total_distance['day_distance__sum']
+        result = total_distance['day_distance__sum']
 
         return result
 

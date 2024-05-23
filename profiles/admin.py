@@ -189,9 +189,9 @@ class RunnerDayAdmin(admin.ModelAdmin):
     get_photo_url.short_description = 'Миниатюра'
 
 class StatisticAdmin(admin.ModelAdmin):
-    search_fields = ('runner__username', 'total_distance', 'total_time', 'total_average_temp',)
+    search_fields = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
 
-    list_display = ('runner','team', 'total_run', 'total_time', 'avg_temp',)
+    list_display = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
     # list_display_links = ('user',)
     list_per_page = 100
     list_max_show_all = 100
@@ -215,6 +215,7 @@ class StatisticAdmin(admin.ModelAdmin):
         return total_average_temp['day_average_temp__avg']
 
     total_run.admin_order_field = 'total_distance'
+
     ordering = ('total_distance',)
     # всего_времени.admin_order_field = '-total_time'
 

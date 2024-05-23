@@ -1,8 +1,7 @@
 from django.urls import path
 
 from authorize.views import RegisterUser, LoginUser, logout_user
-from profiles.views import ProfileUser
-
+app_name='authorize'
 urlpatterns=[
 path('register/', RegisterUser.as_view(), name='register'),
 path('login/', LoginUser.as_view(),name='login'),

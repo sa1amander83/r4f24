@@ -25,7 +25,7 @@ from core.views import IndexView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authorize.urls')),
-    path('', include('profiles.urls')),
+    path('profile/', include('profiles.urls')),
     path('index/', IndexView.as_view(), name='index')
 
 

@@ -6,25 +6,28 @@
     {% csrf_token %}
 
     <div class=" container-fluid ">
-        {{ user.user }}
+
+{#   шапка личного кабинета с описанием участника#}
+
         {% for d in data %}
-            <h1> Статистика по участнику № {{ d.username }}  </h1>
+            <h1> Статистика по участнику № {{ d.runner_stat }}  </h1>
+           <p> дистанция за все время пробега  -{{ d.total_distance }}</p>
+            <p> все время пробега  - {{ d.total_time }}</p>
+         <p> средний темп  - {{ d.total_average_temp }}</p>
 
-
-
-            {% if request.user.is_authenticated and d.username == request.user %}
+                      {% if request.user.is_authenticated and d.runner_stat == request.user %}
 
                 <div class="button">
-                    <a href='{% url 'addrunday' d.username %}'>
+
+                    <a href='{% url 'profile:addrunday' d.runner_stat %}'>
                         <li class="btn btn-facebook btn-user btn-block" style="text-align: center; width: 150px ">Внести
                             сведения
                         </li>
-                    </a>
+{#                    </a>#}
                 </div>
             {% endif %}
-        {% endfor %}
     </div>
-
+   {% endfor %}
 
 
     {% if haverun == '1' %}
@@ -118,7 +121,7 @@
         </thead>
 
 
-        <tbody class="table ">
+        <tbody >
 
         {% for p in runner %}
 
