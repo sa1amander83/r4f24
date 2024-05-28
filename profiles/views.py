@@ -104,18 +104,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             return dict(list(context.items()) + list(c_def.items()))
 
 
-def start_calculate(user, dist, tot_time, average_time):
-    Statistic.objects.update_or_create(
-        runner_stat=user,
-        total_distance=dist,
-        total_time=str(tot_time),
-        total_average_temp=str(average_time),
-        defaults={
-            'runner_stat_id': user.id
-        }
-
-    )
-
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     form_class = RunnerDayForm
