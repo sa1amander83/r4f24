@@ -68,10 +68,10 @@ class RegisterUser(CreateView):
             user = form.save()
             login(self.request, user)
 
-            return redirect('login')
+            return redirect('authorize:login')
         else:
             messages.error(self.request, 'Неверно указано кодовое слово')
-        return redirect('register')
+        return redirect('authorize:register')
     #
     # def get_user_context(self, title):
     #     pass
@@ -83,7 +83,7 @@ class LoginUser(LoginView):
     template_name = 'login.html'
 
     def get_success_url(self):
-        return reverse_lazy("profile", kwargs={'username': self.request.user})
+        return reverse_lazy("profile:profile", kwargs={'username': self.request.user})
 
     class Meta:
         model = get_user_model()

@@ -49,7 +49,7 @@ class Statistic(models.Model):
     # runner_stat = models.CharField(verbose_name='участник')
     # team = models.IntegerField(verbose_name='команда')
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
-    total_time = models.TimeField(verbose_name='общее время пробега', blank=True,)
+    total_time = models.TimeField(verbose_name='общее время пробега', blank=True)
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
 
     def __str__(self):

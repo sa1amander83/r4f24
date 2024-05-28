@@ -71,13 +71,13 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
-            'day_distance': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'value': '00.000'}),
+            'day_distance': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'value': '10'}),
             # 'day_time': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00'}),
-            'day_time': MyTotalTimeInput(attrs={'class': 'form-control form-control-user', 'step': '1', 'value':'00:00:00'}),
+            'day_time': MyTotalTimeInput(attrs={'class': 'form-control form-control-user', 'step': '1', 'value':'01:00:00'}),
             # 'day_average_temp': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00','format':'%H:%i:%s'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'format': '%m:%s','value':'00:00:00', 'step': '1'}),
-            'calory': forms.NumberInput(
-                attrs={'class': 'form-control form-control-user', 'value': '00.000', 'id': 'calory_id'}),
+                attrs={'class': 'form-control form-control-user', 'format': '%m:%s','value':'00:05:00', 'step': '1'}),
+            # 'calory': forms.NumberInput(
+            #     attrs={'class': 'form-control form-control-user', 'value': '00.000', 'id': 'calory_id'}),
             'photo': forms.FileInput(attrs={'class': 'form-control form-control-user'}),
         }
