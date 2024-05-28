@@ -13,6 +13,7 @@ from django.views.generic import DetailView, ListView, CreateView
 
 from core.models import User
 from profiles.models import RunnerDay, Statistic
+from profiles.tasks import calc_stat
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm
 
@@ -39,24 +40,24 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         context['runner'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
 
-        context['data'] = Statistic.objects.filter(runner_stat=self.kwargs['username'])
+        context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         # print(self.kwargs['username'])
 
-        result = RunnerDay.objects.filter(runner__username=self.kwargs['username']). \
-            filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-                   (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-            'runner', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-                                                          total_time=Sum('day_time'),
-                                                          total_average_temp=Sum('day_average_temp'),
-                                                          day_count=Count(
-                                                              (Q(day_average_temp__lte="00:08:00") & Q(
-                                                                  day_distance__gt=0)) |
-                                                              (Q(day_average_temp__gte='00:08:00') & Q(
-                                                                  runner__runner_age__gte=60))),
-                                                          avg_time=ExpressionWrapper(
-                                                              F('total_average_temp') / F('day_count'),
-                                                              output_field=TimeField())). \
-            order_by('-total_dist')
+        # result = RunnerDay.objects.filter(runner__username=self.kwargs['username']). \
+        #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
+        #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
+        #     'runner', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
+        #                                                   total_time=Sum('day_time'),
+        #                                                   total_average_temp=Sum('day_average_temp'),
+        #                                                   day_count=Count(
+        #                                                       (Q(day_average_temp__lte="00:08:00") & Q(
+        #                                                           day_distance__gt=0)) |
+        #                                                       (Q(day_average_temp__gte='00:08:00') & Q(
+        #                                                           runner__runner_age__gte=60))),
+        #                                                   avg_time=ExpressionWrapper(
+        #                                                       F('total_average_temp') / F('day_count'),
+        #                                                       output_field=TimeField())). \
+        #     order_by('-total_dist')
 
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
             context['haverun'] = 1
@@ -88,11 +89,11 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
                 seconds = seconds % 60
                 return f"{minutes}:{seconds}"
 
-            avg_temp = timedelta_tohms(obr)
-            # print(avg_temp)
-            context['avg_temp'] = avg_temp
-
-            context['tot_dist'] = result
+            # avg_temp = timedelta_tohms(obr)
+            # # print(avg_temp)
+            # context['avg_temp'] = avg_temp
+            #
+            # context['tot_dist'] = result
 
             return dict(list(context.items()) + list(c_def.items()))
 
@@ -172,47 +173,23 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             tot_time = total_time['day_time__sum']
             avg_time = self.avg_temp_function(self.kwargs['username'])
 
-            try:
-                run_stat=Statistic.objects.get(runner_stat_id=userid.pk)
-                print(run_stat.pk)
-                run_stat_new = Statistic.objects.filter(runner_stat_id=userid.pk).update(
-                    total_distance=dist,
-                    total_time=':'.join(str(tot_time).split(':')),
-                    total_average_temp=':'.join(str(avg_time).split(':'))
-                )
 
+            calc_stat(runner_id=userid.pk,dist=dist,tot_time=tot_time,avg_time=avg_time)
 
-
-
-                # run_stat = Statistic.objects.get(runner_stat_id=new_item.runner_id)
-                # run_stat.update(runner_stat_id=run_stat.runner_stat_id,
-                #                                               total_distance=dist,
-                #                                               total_time=':'.join(str(tot_time).split(':')),
-                #                                               total_average_temp=':'.join(str(avg_time).split(':')), )
-
-            except:
-                run_stat = Statistic.objects.create(runner_stat_id=userid.id,
-                                                    total_distance=dist,
-                                                    total_time=':'.join(str(tot_time).split(':')),
-                                                    total_average_temp=':'.join(str(avg_time).split(':')))
-
-                # run_stat = Statistic.objects.get(runner_stat_id=new_item.runner_id)
-
-                # if run_stat:
-                #     obj, created = Statistic.objects.update(id=run_stat.id,
-                #                                                    runner_stat_id=new_item.runner_id,
-                #                                                    total_distance=dist,
-                #                                                    total_time=':'.join(str(tot_time).split(':')),
-                #                                                    total_average_temp=':'.join(str(avg_time).split(':')),
-                #                                                    )
-                # else:
-                #     obj, created = Statistic.objects.create(id=run_stat.id,
-                #                                             runner_stat_id=new_item.runner_id,
-                #                                             total_distance=dist,
-                #                                             total_time=':'.join(str(tot_time).split(':')),
-                #                                             total_average_temp=':'.join(str(avg_time).split(':')),
-                #                                             )
-                #
+            # try:
+            #     run_stat=Statistic.objects.get(runner_stat_id=userid.pk)
+            #     run_stat_new = Statistic.objects.filter(runner_stat_id=userid.pk).update(
+            #         total_distance=dist,
+            #         total_time=':'.join(str(tot_time).split(':')),
+            #         total_average_temp=':'.join(str(avg_time).split(':'))
+            #     )
+            #
+            # except:
+            #     run_stat = Statistic.objects.create(runner_stat_id=userid.id,
+            #                                         total_distance=dist,
+            #                                         total_time=':'.join(str(tot_time).split(':')),
+            #                                         total_average_temp=':'.join(str(avg_time).split(':')))
+            #
 
                 # TODO Запуск таски перерасчета суммарных значений пробега, среднего темпа и времени в модель статистика
 

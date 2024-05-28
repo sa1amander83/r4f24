@@ -1,9 +1,8 @@
 import os
 from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'r4f24.settings')
-app = Celery("r4f24",
-             broker=os.environ.get('CELERY_BROKER_URL', 'redis://'),
-             backend=os.environ.get('CELERY_RESULT_BACKEND', 'redis'))
+app = Celery("r4f24")
+
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
