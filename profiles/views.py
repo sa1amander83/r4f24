@@ -153,7 +153,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             new_item.runner_id = userid.id
 
             new_item.save()
-
+            #TODO Учесть пробеги меньше 8 если профи и остальные из положения
             total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
                 Sum('day_distance'))
             dist = total_distance['day_distance__sum']
