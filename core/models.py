@@ -16,21 +16,21 @@ class Teams(models.Model):
     TEAM = [(i, i) for i in rangeteam]
 
     team = models.PositiveIntegerField(verbose_name='команда', unique=True, choices=TEAM, default=100)
-
+    keyword=models.CharField(max_length=20,verbose_name='кодовое слово')
     def __str__(self):
         return str(self.team)
 
 
-class KeyWordClass(models.Model):
-    kwteam = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
-    keyword = models.CharField(verbose_name='кодовое слово')
-
-    def __str__(self):
-        return str(self.keyword)
-
-    class Meta:
-        verbose_name = "Ключевые слова"
-        verbose_name_plural = "Ключевые слова"
+# class KeyWordClass(models.Model):
+#     kwteam = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
+#     keyword = models.CharField(verbose_name='кодовое слово')
+#
+#     def __str__(self):
+#         return str(self.keyword)
+#
+#     class Meta:
+#         verbose_name = "Ключевые слова"
+#         verbose_name_plural = "Ключевые слова"
 
 
 class CustomUserManager(BaseUserManager):
@@ -91,7 +91,8 @@ class User(AbstractUser):
     # category_updated = models.PositiveIntegerField(verbose_name='Начальная группа', choices=CATEGORY, blank=True,
     #                                                null=True)
     # completed = models.BooleanField(default=False, verbose_name="Выполнена квал-я", )
-
+    is_staff = models.BooleanField(verbose_name='ответственный', default=False)
+    not_running= models.BooleanField(verbose_name='не бегает', default=False)
     REQUIRED_FIELDS = ['runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
     objects = CustomUserManager()
 

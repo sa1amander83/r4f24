@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+
+
+<p CLASS="text-danger col-lg-auto text-900">Вы действительно хотите удалить запись за  {{ runday.day_select }} день ?</p>
+<a href="{% url 'profile:profile' username=user %}" class="btn btn-outline">Отмена</a>
+
+    <input type="submit" value="Удалить">
+</form>
+{% endblock %}

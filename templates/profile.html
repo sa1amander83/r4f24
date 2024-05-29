@@ -14,16 +14,18 @@
             <p> дистанция за все время пробега -{{ d.total_distance }}</p>
             <p> все время пробега - {{ d.total_time }}</p>
             <p> средний темп - {{ d.total_average_temp }}</p>
+            <p> дней пробега - {{ d.total_days }}</p>
+            <p> количество пробежек - {{ d.total_runs }}</p>
 
             {% if request.user.is_authenticated and d.runner_stat == request.user %}
 
                 <div class="button">
 
                     <a href='{% url 'profile:addrunday' d.runner_stat %}'>
-                        <li class="btn btn-facebook btn-user btn-block" style="text-align: center; width: 150px ">Внести
+                        <div class="btn btn-facebook btn-user btn-block" style="text-align: center; width: 150px ">Внести
                             сведения
-                        </li>
-                        {#                    </a>#}
+                        </div>
+                                            </a>
                 </div>
             {% endif %}
             </div>
@@ -90,13 +92,13 @@
                 {% endfor %}
             </div>
             {% if  not data %}
-                <a href='{% url 'registerstep2' user %}'> Внести сведения участника </a>
 
-                <div>
-                    <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>
-                    <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>
-                    <p class="col-form-label"> Средний темп - {{ avg_temp }} мин/км</p>
-                </div>
+
+{#                <div>#}
+{#                    <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>#}
+{#                    <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>#}
+{#                    <p class="col-form-label"> Средний темп - {{ avg_temp }} мин/км</p>#}
+{#                </div>#}
             {% endif %}
 
         </div>
@@ -123,22 +125,23 @@
 
         <tbody>
 
-        {% for p in runner %}
+        {% for p in runner_day %}
 
-            {% if p.day_average_temp|time:'i:s' > '08:00' %}
-                <tr class="row-cols-md-4 text-center bg-warning" onload="">
-
-                    {% else %}
+{#            {% if p.day_average_temp|time:'i:s' > '08:00' %}#}
+{#                <tr class="row-cols-md-4 text-center bg-warning" onload="">#}
+{##}
+{#                    {% else %}#}
                 <tr class="row-cols-md-4 text-center">
-            {% endif %}
+{#            {% endif %}#}
+
         {% for d in data %}
 
 
-            {% if request.user.is_authenticated and request.user == d.username or request.user == 'admin' %}
+            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
                 {#                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}">#}
                 <td>
-                    <i class="far fa-pen fa-flip-horizontal fa-lg"
-                       style="color: #45433a; padding-right: 20px"> </i> {{ p.day_select }}
+                <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
+                    <i class="fas fa-pen fa-lg"></i> {{ p.day_select }}</a>
                 </td>
             {% else %}
                 <td> {{ p.day_select }} сентября</td>
@@ -158,12 +161,11 @@
         {% endif %}
 
         {% for d in data %}
-            {% if request.user.is_authenticated and request.user == d.user or request.user == 'admin' %}
+            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
 
-                {#                            <td><a href="{% url 'deleterunday' runner=p.runner pk=p.pk %}">#}
-                <i class="fa-solid fa-trash-can"
-                   style="padding-right: 20px"> </i>
-                {#                            </td>#}
+                <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
+                <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
+                                            </td>
             {% else %}
                 <td></td>
             {% endif %}

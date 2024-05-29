@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
 
+import dramatiq
 from corsheaders.defaults import default_headers
 from flower.api import tasks
 
@@ -60,16 +61,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-
+    'fontawesomefree',
+    'django_dramatiq',
+    'dramatiq',
     'core',
     'profiles',
     'authorize',
     # 'tailwind',
     # 'theme',
     # 'django_browser_reload',
-    'celery',
-    'django_celery_results',
-    'django_celery_beat',
+    # 'celery',
+    # 'django_celery_results',
+    # 'django_celery_beat',
 
 
     # 'csscompressor',
@@ -87,6 +90,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 
     # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
@@ -113,6 +117,42 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 ROOT_URLCONF = 'r4f24.urls'
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {
+        "url": "redis://localhost:6379",
+    },
+    "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
+        "dramatiq.middleware.AgeLimit",
+        "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
+        "dramatiq.middleware.Retries",
+        "django_dramatiq.middleware.DbConnectionsMiddleware",
+        "django_dramatiq.middleware.AdminMiddleware",
+    ]
+}
+
+# Defines which database should be used to persist Task objects when the
+# AdminMiddleware is enabled.  The default value is "default".
+DRAMATIQ_TASKS_DATABASE = "default"
+# from dramatiq.brokers.rabbitmq import RabbitmqBroker
+#
+#
+# rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
+# dramatiq.set_broker(rabbitmq_broker)
+
+
+DRAMATIQ_RESULT_BACKEND = {
+    "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
+    "BACKEND_OPTIONS": {
+        "url": "redis://localhost:6379",
+    },
+    "MIDDLEWARE_OPTIONS": {
+        "result_ttl": 1000 * 60 * 10
+    }
+}
+
 
 NPM_BIN_PATH = which('npm')
 CSRF_COOKIE_NAME = "csrftoken"
@@ -218,12 +258,12 @@ LOGGING = {
     #     }
     # }
 }
-
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-CELERY_RESULT_EXTENDED = True
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+#
+# CELERY_BROKER_URL = 'redis://redis:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+# CELERY_RESULT_EXTENDED = True
+# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Here
 MEDIA_URL = '/media/'

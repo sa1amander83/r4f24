@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
-from core.models import Teams, KeyWordClass
+from core.models import Teams
 from r4f24.forms import RegisterUserForm, LoginUserForm
 
 
@@ -62,7 +62,7 @@ class RegisterUser(CreateView):
 
     def form_valid(self, form, **kwargs):
         get_team = Teams.objects.filter(team=form.cleaned_data['username'][:3])
-        keyword_of_team = str(KeyWordClass.objects.get(kwteam_id__exact=get_team[0]))
+        keyword_of_team = str(Teams.objects.get(keyword=get_team[0]))
         print(form.cleaned_data)
         if form.cleaned_data['keyword'].lower() == keyword_of_team:
             user = form.save()

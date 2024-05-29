@@ -23,10 +23,12 @@ from django.urls import path, include
 from core.views import IndexView
 
 urlpatterns = [
+
+    path('', include('core.urls')),
     path('admin/', admin.site.urls),
     path('', include('authorize.urls')),
-    path('profile/', include('profiles.urls')),
-    path('index/', IndexView.as_view(), name='index')
+    path('', include('profiles.urls')),
+
 
 
 ]

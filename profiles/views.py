@@ -8,14 +8,52 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.template.context_processors import csrf, request
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, CreateView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 
 from core.models import User
 from profiles.models import RunnerDay, Statistic
-from profiles.tasks import calc_stat
+
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm
+from r4f24.tasks import calc_stat
+
+
+def avg_temp_function(user):
+    tottime = User.objects.filter(username=user). \
+        filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+               Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+
+    count = User.objects.filter(username=user). \
+        filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+               Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+
+    obr = (tottime['runner__day_average_temp__sum'] / count)
+
+    def timedelta_tohms(duration):
+        days, seconds = duration.days, duration.seconds
+        hours = days * 24 + seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        return f"{minutes}:{seconds}"
+
+    avg_temp = timedelta_tohms(obr)
+
+    # Statistic.objects.get_or_create(sername=user, total_average_temp=avg_temp)
+    return avg_temp
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -37,7 +75,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         # context['calend'] = {x: x for x in range(1, 31)}
         # print(self.kwargs['username'])
-        context['runner'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
+        context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
@@ -64,30 +102,30 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         else:
             context['haverun'] = 0
 
-        # context['user'] = User.objects.filter(username=self.kwargs['username'])
-        # print(context['user'])
+        # # context['user'] = User.objects.filter(username=self.kwargs['username'])
+        # # print(context['user'])
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
-
+        #
         if len(obj) > 0:
-            tottime = User.objects.filter(username=self.kwargs['username']). \
-                filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                       Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
-
-            count = User.objects.filter(username=self.kwargs['username']). \
-                filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                       Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
-
-            if tottime != 0 and count > 0:
-                obr = tottime['runner__day_average_temp__sum'] / count
-            else:
-                obr = datetime.timedelta(0)
-
-            def timedelta_tohms(duration):
-                days, seconds = duration.days, duration.seconds
-                hours = days * 24 + seconds // 3600
-                minutes = (seconds % 3600) // 60
-                seconds = seconds % 60
-                return f"{minutes}:{seconds}"
+            #     tottime = User.objects.filter(username=self.kwargs['username']). \
+            #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+            #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+            #
+            #     count = User.objects.filter(username=self.kwargs['username']). \
+            #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+            #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+            #
+            #     if tottime != 0 and count > 0:
+            #         obr = tottime['runner__day_average_temp__sum'] / count
+            #     else:
+            #         obr = datetime.timedelta(0)
+            #
+            #     def timedelta_tohms(duration):
+            #         days, seconds = duration.days, duration.seconds
+            #         hours = days * 24 + seconds // 3600
+            #         minutes = (seconds % 3600) // 60
+            #         seconds = seconds % 60
+            #         return f"{minutes}:{seconds}"
 
             # avg_temp = timedelta_tohms(obr)
             # # print(avg_temp)
@@ -102,7 +140,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             context['tot_dist'] = {}
 
             return dict(list(context.items()) + list(c_def.items()))
-
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
@@ -153,16 +190,21 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             new_item.runner_id = userid.id
 
             new_item.save()
-            #TODO Учесть пробеги меньше 8 если профи и остальные из положения
+
             total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
                 Sum('day_distance'))
             dist = total_distance['day_distance__sum']
             total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
             tot_time = total_time['day_time__sum']
-            avg_time = self.avg_temp_function(self.kwargs['username'])
+            avg_time = avg_temp_function(self.kwargs['username'])
 
+            tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+                day_distance__gt=0).count()
+            tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+                day_select__gt=0).count()
 
-            calc_stat(runner_id=userid.pk,dist=dist,tot_time=tot_time,avg_time=avg_time)
+            calc_stat(runner_id=userid.pk, dist=dist, tot_time=tot_time, avg_time=avg_time, tot_days=tot_days,
+                      tot_runs=tot_runs)
 
             # try:
             #     run_stat=Statistic.objects.get(runner_stat_id=userid.pk)
@@ -179,7 +221,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             #                                         total_average_temp=':'.join(str(avg_time).split(':')))
             #
 
-                # TODO Запуск таски перерасчета суммарных значений пробега, среднего темпа и времени в модель статистика
+            # TODO Запуск таски перерасчета суммарных значений пробега, среднего темпа и времени в модель статистика
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
@@ -201,26 +243,209 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     #     Statistic.objects.update_or_create(total_time=total_time['day_time__sum'])
     #     return total_time['day_time__sum']
 
-    def avg_temp_function(self, user):
-        tottime = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+    # def avg_temp_function(self, user):
+    #     tottime = User.objects.filter(username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+    #
+    #     count = User.objects.filter(username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+    #
+    #     obr = (tottime['runner__day_average_temp__sum'] / count)
+    #
+    #     def timedelta_tohms(duration):
+    #         days, seconds = duration.days, duration.seconds
+    #         hours = days * 24 + seconds // 3600
+    #         minutes = (seconds % 3600) // 60
+    #         seconds = seconds % 60
+    #         return f"{minutes}:{seconds}"
+    #
+    #     avg_temp = timedelta_tohms(obr)
+    #
+    #     # Statistic.objects.get_or_create(sername=user, total_average_temp=avg_temp)
+    #     # return avg_temp
+    #     return obr
 
-        count = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
 
-        obr = (tottime['runner__day_average_temp__sum'] / count)
+class EditRunnerDayData(LoginRequiredMixin, UpdateView):
+    form_class = RunnerDayForm
+    model = RunnerDay
+    template_name = 'day.html'
+    # id = self.request.user.profile.id
+    # success_url = reverse_lazy('profile', kwargs={'id':request.})
+    slug_url_kwarg = 'runner'
 
-        def timedelta_tohms(duration):
-            days, seconds = duration.days, duration.seconds
-            hours = days * 24 + seconds // 3600
-            minutes = (seconds % 3600) // 60
-            seconds = seconds % 60
-            return f"{minutes}:{seconds}"
+    login_url = reverse_lazy('index')
 
-        avg_temp = timedelta_tohms(obr)
+    #
+    # def get_object(self, queryset=None):
+    #     return RunnerDay.objects.get(runner_id=id)
 
-        # Statistic.objects.get_or_create(sername=user, total_average_temp=avg_temp)
-        # return avg_temp
-        return obr
+    def get_queryset(self):
+        return RunnerDay.objects.all()
+
+    def get_success_url(self):
+        return reverse_lazy('profile:profile', kwargs={'runner': self.object})
+
+    # def get_context_data(self, *args, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     kwargs['update'] = True
+    #     pk = self.kwargs.get(self.pk_url_kwarg)
+    #     slug = self.kwargs.get(self.slug_url_kwarg)
+    #     return super().get_context_data(**kwargs)
+    # get_day= RunnerDay.objects.get(Q(day_select=pk)&Q(runner_id=request.runner.id))
+    # print(get_day)
+
+    # context['run'] = RunnerDay.objects.filter(runner__user__username=self.kwargs['runner'])
+
+    # context['runner'] = Runner.objects.get(pk=object.id)
+    # context['run_id']=RunnerDay.objects.filter(runner_id=self.get_object())
+
+    # return context
+
+    def form_valid(self, form):
+        dayselected = form.cleaned_data['day_select']
+        print(dayselected)
+        count_run_in_day = RunnerDay.objects.filter(runner__username=self.request.user).filter(
+            day_select=dayselected).count()
+        args = {}
+        args.update(csrf(request))
+        print(count_run_in_day)
+        # if count_run_in_day == 2 or count_run_in_day>2:
+        #     messages.error(self.request, 'В день учитываются только две пробежки')
+        #     return redirect('profile:profile', username=self.request.user)
+
+        cd = form.cleaned_data
+        new_item = form.save(commit=False)
+
+        # print(self.request.user.id)
+        userid = User.objects.get(id=self.request.user.id)
+        # print(userid.id)
+        new_item.runner_id = userid.id
+
+        new_item.save()
+
+        total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
+            Sum('day_distance'))
+        dist = total_distance['day_distance__sum']
+        total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
+        tot_time = total_time['day_time__sum']
+        avg_time = avg_temp_function(self.kwargs['username'])
+
+        tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            day_distance__gt=0).count()
+        tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            day_select__gt=0).count()
+
+        calc_stat(runner_id=userid.pk, dist=dist, tot_time=tot_time, avg_time=avg_time, tot_days=tot_days,
+                  tot_runs=tot_runs)
+
+        return redirect('profile:profile', username=self.request.user)
+
+    # def avg_temp_function(self, user):
+    #     tottime = User.objects.filter(username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+    #
+    #     count = User.objects.filter(username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+    #
+    #     obr = (tottime['runner__day_average_temp__sum'] / count)
+    #
+    #     def timedelta_tohms(duration):
+    #         days, seconds = duration.days, duration.seconds
+    #         hours = days * 24 + seconds // 3600
+    #         minutes = (seconds % 3600) // 60
+    #         seconds = seconds % 60
+    #         return f"{minutes}:{seconds}"
+    #
+    #     avg_temp = timedelta_tohms(obr)
+    #
+    #     # Statistic.objects.get_or_create(sername=user, total_average_temp=avg_temp)
+    #     return avg_temp
+    #     # return obr
+    #
+    # def total_dist_function(self, user):
+    #     from django.db.models import Sum
+    #
+    #     total_distance = RunnerDay.objects.filter(runner__user__username=user).aggregate(Sum('day_distance'))
+    #     # self.get_ordering(result['day_distance__sum'])
+    #     result = total_distance['day_distance__sum']
+    #     Statistic.objects.update_or_create(total_distance=result)
+    #     return result
+    #
+    # def total_time_function(self, user):
+    #     from django.db.models import Sum
+    #     total_time = RunnerDay.objects.filter(runner__user__username=user).aggregate(Sum('day_time'))
+    #     Statistic.objects.update_or_create(total_time=total_time['day_time__sum'])
+    #     return total_time['day_time__sum']
+    #
+    # def avg_temp_function(self, user):
+    #     tottime = User.objects.filter(runner__user__username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+    #
+    #     count = User.objects.filter(runner__user__username=user). \
+    #         filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+    #                Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+    #
+    #     obr = (tottime['runner__day_average_temp__sum'] / count)
+    #
+    #     def timedelta_tohms(duration):
+    #         days, seconds = duration.days, duration.seconds
+    #         hours = days * 24 + seconds // 3600
+    #         minutes = (seconds % 3600) // 60
+    #         seconds = seconds % 60
+    #         return f"{minutes}:{seconds}"
+    #
+    #     avg_temp = timedelta_tohms(obr)
+    #
+    #     Statistic.objects.get_or_create(runner__user__username=user, total_average_temp=avg_temp)
+    #     return avg_temp
+
+
+class DeleteRunnerDayData(DeleteView):
+    model = RunnerDay
+    template_name = 'deleteday.html'
+
+    context_object_name = 'runday'
+
+
+    def form_valid(self, form):
+
+        self.object.delete()
+
+
+        success_url = reverse_lazy('profile:profile' , kwargs={'username':self.request.user})
+        success_msg = 'Запись удалена!'
+        total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
+            Sum('day_distance'))
+        dist = total_distance['day_distance__sum']
+        total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
+        tot_time = total_time['day_time__sum']
+        avg_time = avg_temp_function(self.kwargs['username'])
+
+        tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            day_distance__gt=0).count()
+        tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            day_select__gt=0).count()
+
+        calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time, tot_days=tot_days,
+                  tot_runs=tot_runs)
+
+
+        return redirect(success_url, success_msg)
+
+
+
+    # def form_valid(self, form):
+    #
+    #
+    #     messages.success(self.request, "Запись была успешно удалена.")
+    #     return super(DeleteRunnerDayData, self).form_valid(form)
+
+    # def get_success_url(self):
+    #
+    #     return reverse('profile:profile', kwargs={'username': user})

@@ -8,7 +8,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.admin import display
 
-from core.models import User, Teams, Family, KeyWordClass
+from core.models import User, Teams, Family
 
 
 class TeamsAdmin(admin.ModelAdmin):
@@ -45,11 +45,8 @@ class FamilyAdmin(admin.ModelAdmin):
     filter_horizontal = ('runner_family',)
 
 
-class KeyWordAdmin(admin.ModelAdmin):
-    list_display = ('kwteam', 'keyword',)
-    ordering = ('kwteam',)
 
 
 admin.site.register(Teams, TeamsAdmin)
 
-admin.site.register(KeyWordClass, KeyWordAdmin)
+

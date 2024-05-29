@@ -65,31 +65,23 @@
             <td> средний темп мин/км</td>
             <td> Дней забега</td>
             </thead>
-            <tbody class="table text-center">
+            <tbody class="text-center">
 
 
             {% for s in tot_dist %}
 
-                {% if s.avg_time > "00:08:00" %}
-                    <tr class="row-cols-md-4  mytable-tr table-danger">
-                       {% else %}
+
                     <tr class="row-cols-md-4 c">
-                            {% endif %}
+
 
                     <td>{{ forloop.counter }}</td>
-                    <td><a href="/profile/{{ s.runner__user__username }}">{{ s.runner__user__username }} </a></td>
+                    <td><a href="/profile/{{ s.runner_stat__username }}">{{ s.runner_stat__username }} </a></td>
 
-                    <td> {{ s.total_dist|floatformat:3 }}
-                        <div class="progress" style='height:3px;'>
-
-                            <div class="progress-bar" role="progressbar"
-                                 style="width: {{ s.total_dist|percent:s.runner__runner_category }}%"
-                                 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </td>
+                    <td> {{ s.total_distance|floatformat:3 }}</td>
                     <td> {{ s.total_time }}</td>
-                    <td> {{ s.avg_time|smooth_filter }}</td>
-                    <td> {{ s.day_count}}</td>
+{#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
+                    <td> {{ s.total_average_temp }}</td>
+                    <td>  считать дни{{ s.day_count}}</td>
 
 
             </tr>

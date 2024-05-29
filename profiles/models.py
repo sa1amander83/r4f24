@@ -4,7 +4,7 @@ from django.db import models
 
 # Create your models here.
 from django.urls import reverse
-
+import core
 from core.models import User, Teams
 
 
@@ -51,7 +51,8 @@ class Statistic(models.Model):
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
     total_time = models.TimeField(verbose_name='общее время пробега', blank=True)
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
-
+    total_days = models.IntegerField(verbose_name='дни пробега')
+    total_runs=models.IntegerField(verbose_name='количество пробежек')
     def __str__(self):
         return str(self.runner_stat)
 
