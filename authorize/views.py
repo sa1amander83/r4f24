@@ -61,12 +61,13 @@ class RegisterUser(CreateView):
     #     return redirect('register')
 
     def form_valid(self, form, **kwargs):
-        get_team = Teams.objects.filter(team=form.cleaned_data['username'][:3])
-        keyword_of_team = str(Teams.objects.get(keyword=get_team[0]))
-        print(form.cleaned_data)
+        get_team = Teams.objects.filter(team=form.cleaned_data['runner_team'])
+        print(get_team[0].keyword)
+        keyword_of_team = get_team[0].keyword
+        print(keyword_of_team)
         if form.cleaned_data['keyword'].lower() == keyword_of_team:
             user = form.save()
-            login(self.request, user)
+            # login(self.request, user)
 
             return redirect('authorize:login')
         else:

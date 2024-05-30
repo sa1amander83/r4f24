@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
 
-import dramatiq
+
 from corsheaders.defaults import default_headers
 from flower.api import tasks
 
@@ -62,8 +62,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'fontawesomefree',
-    'django_dramatiq',
-    'dramatiq',
     'core',
     'profiles',
     'authorize',
@@ -143,15 +141,15 @@ DRAMATIQ_TASKS_DATABASE = "default"
 # dramatiq.set_broker(rabbitmq_broker)
 
 
-DRAMATIQ_RESULT_BACKEND = {
-    "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
-    "BACKEND_OPTIONS": {
-        "url": "redis://localhost:6379",
-    },
-    "MIDDLEWARE_OPTIONS": {
-        "result_ttl": 1000 * 60 * 10
-    }
-}
+# DRAMATIQ_RESULT_BACKEND = {
+#     "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
+#     "BACKEND_OPTIONS": {
+#         "url": "redis://localhost:6379",
+#     },
+#     "MIDDLEWARE_OPTIONS": {
+#         "result_ttl": 1000 * 60 * 10
+#     }
+# }
 
 
 NPM_BIN_PATH = which('npm')

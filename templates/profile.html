@@ -8,37 +8,57 @@
     <div class=" container-fluid ">
 
         {#   шапка личного кабинета с описанием участника#}
+{#     {% if request.user.is_authenticated and runner_stat == request.user %}#}
+                <div class="flex justify-content-evenly">
+                    <div class="button">
 
+                        <a href='{% url 'profile:addrunday' runner_stat %}'>
+                            <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"
+                                 style="text-align: center; width: 150px "></i>Внести
+                                сведения
+                            </div>
+                        </a>
+                    </div>
+
+{#                    <div class="button">#}
+{##}
+{#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
+{#                            <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"#}
+{#                                 style="text-align: center; width: 150px "></i>Добавить семью#}
+{#                            </div>#}
+{#                        </a>#}
+{#                    </div>#}
+                </div>
+
+
+{#            {% endif %}#}
+    <h1> Статистика по участнику № {{ runner_stat }}  </h1>
+        {% if data %}
         {% for d in data %}
-            <h1> Статистика по участнику № {{ d.runner_stat }}  </h1>
             <p> дистанция за все время пробега -{{ d.total_distance }}</p>
             <p> все время пробега - {{ d.total_time }}</p>
             <p> средний темп - {{ d.total_average_temp }}</p>
             <p> дней пробега - {{ d.total_days }}</p>
             <p> количество пробежек - {{ d.total_runs }}</p>
-
-            {% if request.user.is_authenticated and d.runner_stat == request.user %}
-
-                <div class="button">
-
-                    <a href='{% url 'profile:addrunday' d.runner_stat %}'>
-                        <div class="btn btn-facebook btn-user btn-block" style="text-align: center; width: 150px ">Внести
-                            сведения
-                        </div>
-                                            </a>
-                </div>
-            {% endif %}
-            </div>
         {% endfor %}
+
+
+
+    {% else %}
+       <h2 class="bg-red-500"> Участник пока не внес никаких сведений о пробежках</h2>
+    {% endif %}
+
+            </div>
+
     {#6061535#}
 
-    {% if haverun == '1' %}
-        {% for u in tot_dist %}
+{#    {% if haverun == '1' %}#}
+
 
             <hr>
             <div class="statistic-user">
             <div>
-                {% for d in data %}
+                {% for d in user_data %}
                     <p class="col-form-label"> Команда - №{{ d.runner_team }}</p>
                     <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
                     <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
@@ -57,6 +77,7 @@
                     </ul>
                 {% endif %}
             </div>
+              {% for u in tot_dist %}
             <div>
 
             <p class="col-form-label">Место в общем рейтинге - {{ forloop.counter }} </p>
@@ -65,7 +86,7 @@
 
             <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>
             <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>
-            <p class="col-form-label"> Средний темп - {{ avg_temp }} мин/км</p>
+            <p class="col-form-label"> Средний темп - {{ u.avg_temp }} мин/км</p>
         {% endfor %}
     </div>
     </div>
@@ -75,7 +96,7 @@
 
 
 
-    {% elif haverun == '0' %}
+{#    {% elif haverun == '0' %}#}
 
         <p class="text-danger"> В профиле пока нет данных по пробегу</p>
         <hr>
@@ -83,7 +104,7 @@
 
             <div>
 
-                {% for d in data %}
+                {% for d in user_data %}
                     <p class="col-form-label"> Команда - №{{ d.runner_team }}</p>
                     <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
                     <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
@@ -94,16 +115,16 @@
             {% if  not data %}
 
 
-{#                <div>#}
-{#                    <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>#}
-{#                    <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>#}
-{#                    <p class="col-form-label"> Средний темп - {{ avg_temp }} мин/км</p>#}
-{#                </div>#}
+                {#                <div>#}
+                {#                    <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>#}
+                {#                    <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>#}
+                {#                    <p class="col-form-label"> Средний темп - {{ avg_temp }} мин/км</p>#}
+                {#                </div>#}
             {% endif %}
 
         </div>
 
-    {% endif %}
+{#    {% endif %}#}
 
 
 
@@ -127,50 +148,50 @@
 
         {% for p in runner_day %}
 
-{#            {% if p.day_average_temp|time:'i:s' > '08:00' %}#}
-{#                <tr class="row-cols-md-4 text-center bg-warning" onload="">#}
-{##}
-{#                    {% else %}#}
-                <tr class="row-cols-md-4 text-center">
-{#            {% endif %}#}
+            {#            {% if p.day_average_temp|time:'i:s' > '08:00' %}#}
+            {#                <tr class="row-cols-md-4 text-center bg-warning" onload="">#}
+            {##}
+            {#                    {% else %}#}
+            <tr class="row-cols-md-4 text-center">
+                {#            {% endif %}#}
 
-        {% for d in data %}
+                {% for d in data %}
 
 
-            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-                {#                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}">#}
-                <td>
-                <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
-                    <i class="fas fa-pen fa-lg"></i> {{ p.day_select }}</a>
-                </td>
-            {% else %}
-                <td> {{ p.day_select }} сентября</td>
-            {% endif %}
-        {% endfor %}
-        <td> {{ p.day_distance|floatformat:3 }}</td>
-        <td> {{ p.day_time|time:'H:i:s' }}</td>
-        <td> {{ p.day_average_temp|time:'i:s' }}</td>
-        {% if p.photo and request.user.is_authenticated %}
-            <td><img class="runday-img" src="{{ p.photo.url }}" alt="" style="width: 50px;"
-                     onClick='this.classList.toggle("show")'
-                    {#                        onclick="changeSizeOneImage(this)" class ="ot4et-photo"></td>#}
-                     class="ot4et-photo"></td>
+                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+                        {#                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}">#}
+                        <td>
+                            <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
+                                <i class="fas fa-pen fa-lg"></i> {{ p.day_select }}</a>
+                        </td>
+                    {% else %}
+                        <td> {{ p.day_select }} сентября</td>
+                    {% endif %}
+                {% endfor %}
+                <td> {{ p.day_distance|floatformat:3 }}</td>
+                <td> {{ p.day_time|time:'H:i:s' }}</td>
+                <td> {{ p.day_average_temp|time:'i:s' }}</td>
+                {% if p.photo and request.user.is_authenticated %}
+                    <td><img class="runday-img" src="{{ p.photo.url }}" alt="" style="width: 50px;"
+                             onClick='this.classList.toggle("show")'
+                            {#                        onclick="changeSizeOneImage(this)" class ="ot4et-photo"></td>#}
+                             class="ot4et-photo"></td>
 
-        {% else %}
-            <td>-</td>
-        {% endif %}
+                {% else %}
+                    <td>-</td>
+                {% endif %}
 
-        {% for d in data %}
-            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+                {% for d in data %}
+                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
 
-                <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
-                <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
-                                            </td>
-            {% else %}
-                <td></td>
-            {% endif %}
-        {% endfor %}
-        </tr>
+                        <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
+                            <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
+                        </td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
 
 
         {% endfor %}

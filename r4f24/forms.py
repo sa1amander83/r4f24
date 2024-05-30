@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from django.forms import ModelForm
 
-from core.models import User
+from core.models import User, Family
 from profiles.models import UserImport, RunnerDay
 
 
@@ -81,3 +81,9 @@ class RunnerDayForm(ModelForm):
             #     attrs={'class': 'form-control form-control-user', 'value': '00.000', 'id': 'calory_id'}),
             'photo': forms.FileInput(attrs={'class': 'form-control form-control-user'}),
         }
+
+class AddFamilyForm(ModelForm):
+
+    class Meta:
+        model = Family
+        fields=['runner_family']

@@ -55,7 +55,7 @@ class CustomUserManager(BaseUserManager):
 
 class Family(models.Model):
     runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
-    runner_family = models.ManyToManyField(to='User', blank=True, related_name='runners_family')
+    runner_family = models.ManyToManyField(to='User', blank=True,verbose_name='Семья', related_name='runners_family')
 
     class Meta:
         verbose_name = 'Семейное участие'

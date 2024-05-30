@@ -9,11 +9,11 @@ from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
-from core.models import User
+from core.models import User, Family
 from profiles.models import RunnerDay, Statistic
 
 from profiles.utils import DataMixin
-from r4f24.forms import RunnerDayForm
+from r4f24.forms import RunnerDayForm, AddFamilyForm
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -29,12 +29,12 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
-
+        context['user_data'] = User.objects.filter(username=self.kwargs['username'])
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
-
+        context['runner_stat']  = self.kwargs['username']
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
             context['haverun'] = 1
         else:
@@ -44,10 +44,12 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         if len(obj) > 0:
 
+
+
             return dict(list(context.items()) + list(c_def.items()))
 
         else:
-            context['data'] = User.objects.filter(username=self.kwargs['username'])
+            context['user_data'] = User.objects.filter(username=self.kwargs['username'])
             context['tot_dist'] = {}
 
             return dict(list(context.items()) + list(c_def.items()))
@@ -172,3 +174,20 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
                        tot_runs=tot_runs)
 
         return redirect(success_url, success_msg)
+
+
+
+
+
+
+class AddFamily(CreateView,LoginRequiredMixin):
+    model = Family
+    template_name = 'addfamily.html'
+    form_class = AddFamilyForm
+    success_url = reverse_lazy('profile:profile')
+
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        return context
