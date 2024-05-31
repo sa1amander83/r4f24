@@ -2,46 +2,31 @@
 
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<ul class="navbar-nav profile-user">
 
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
 
-    <ul class="navbar-nav ml-auto profile-user">
-
-        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-        <li class="nav-item dropdown no-arrow d-sm-none">
-            <!--   <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-            </a> -->
-            <!-- Dropdown - Messages -->
-            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                 aria-labelledby="searchDropdown">
-                <!--      <form class="form-inline mr-auto w-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small"
-                               placeholder="Search for..." aria-label="Search"
-                               aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form> -->
-            </div>
-        </li>
 
         {% if request.user.is_authenticated %}
             <div class="container-user-profile">
-                <div class="col-lg-auto user-profile">
+            <div class="col-lg-auto user-profile">
 
-                    <a href="{% url 'profile:profile' username=user.username %}">{{ user.username }} </a></div>
-                <div class="topbar-divider"></div>
-                <div class="col-lg-auto user-profile"><a href="{% url 'authorize:logout' %}"> Выход </a></div>
-                <div class="topbar-divider"></div>
+                           </div>
+            <div class=" dropdown">
+                <a class="btn btn-primary dropdown-toggle  " href="{% url 'profile:profile' username=user.username %}" role="button" id="dropdownMenuLink"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 {{ user.username }}
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Семья</a>
+                    <div class="dropdown-divider"></div>
+                     <a  class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i class="fa-brands fa-telegram "></i> Telegram </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
+                     <div class="dropdown-divider"></div>
+                </div>
+
 
             </div>
 
@@ -65,18 +50,17 @@
 
         {% if request.user.is_authenticated %}
 
-            {#            <li class= "header-telegram  nav-item">#}
-            {#                 <a href ="mailto:admin@мызабег.online"><i class="fa-regular fa-envelope"></i> Написать нам  </a>#}
-            {#            </li>#}
 
 
-            <div class="topbar-divider"></div>
-            <li class="header-telegram nav-item">
-                <a href="https://t.me/+75TfUU8Jc102YmNi"> <i class="fa-brands fa-telegram "></i> Telegram </a>
-            </li>
         {% endif %}
 
     </ul>
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
+
+
 
 
 </nav>

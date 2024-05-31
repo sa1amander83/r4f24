@@ -67,7 +67,7 @@ class RunnerDayForm(ModelForm):
 
         # if date
 
-        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'calory', 'photo']
+        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'photo']
 
         widgets = {
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
