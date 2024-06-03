@@ -18,6 +18,8 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                     <a class="dropdown-item text-center" href="{% url 'profile:profile' username=user.username %}">Моя страница</a>
+                     <div class="dropdown-divider"></div>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Семья</a>
                     <div class="dropdown-divider"></div>
@@ -25,6 +27,7 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
                      <div class="dropdown-divider"></div>
+
                 </div>
 
 
@@ -60,7 +63,7 @@
         <i class="fa fa-bars"></i>
     </button>
 
-
+    <a href="{% url 'index' %}"> Главная</a>
 
 
 </nav>

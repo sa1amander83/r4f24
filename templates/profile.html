@@ -30,7 +30,10 @@
             {#                    </div>#}
         </div>
 
-
+    {{ photo }}
+    {% for p in photo %}
+        {{ p.url }}
+    {% endfor %}
         {#            {% endif %}#}
         <h1> Статистика по участнику № {{ runner_stat }}  </h1>
        <div class="statistic-user flex justify-content-around">

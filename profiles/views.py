@@ -3,14 +3,16 @@ from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 
 from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from tornado.gen import Runner
 
 from core.models import User, Family
-from profiles.models import RunnerDay, Statistic
+from profiles.models import RunnerDay, Statistic, Photo
 
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm
@@ -30,9 +32,14 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
         context['user_data'] = User.objects.filter(username=self.kwargs['username'])
+
+        run_user=User.objects.get(username=self.kwargs['username'])
+
+        photo = run_user.photos.filter(day_select=)
+
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
-
+        context['images']=User.s
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat']  = self.kwargs['username']
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
@@ -66,6 +73,18 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
         return context
 
+    # def post(self, request, *args, **kwargs):
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     files = request.FILES.getlist('photo')
+    #     if form.is_valid():
+    #         for image in files:
+    #             Photo.objects.create(image=image)
+    #
+    #         return redirect('profile:profile')
+    #
+    #     else:
+    #         form = RunnerDayForm()
     def form_valid(self, form):
         dayselected = form.cleaned_data['day_select']
         count_run_in_day = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -79,7 +98,21 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             userid = User.objects.get(username=self.kwargs['username'])
             new_item.runner_id = userid.id
+
+
             new_item.save()
+
+            # files = self.request.FILES.getlist('photo')
+            # print(files)
+            # for image in files:
+            #     Photo.objects.create(image=image)
+
+            for each in form.cleaned_data['photo']:
+
+                Photo.objects.create(runner_id=userid.id,
+                                     day_select=dayselected,
+                                     photo=each)
+
 
             total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
                 Sum('day_distance'))
