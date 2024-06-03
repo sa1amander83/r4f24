@@ -1,4 +1,3 @@
-
 from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -33,15 +32,18 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         c_def = self.get_user_context(calend='calend')
         context['user_data'] = User.objects.filter(username=self.kwargs['username'])
 
-        run_user=User.objects.get(username=self.kwargs['username'])
+        run_user = User.objects.get(username=self.kwargs['username'])
 
-        photo = run_user.photos.filter(day_select=)
+        # photo = run_user.photos.filter(day_select=)
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
-        context['images']=User.s
+
+        photos = User.objects.get(username=self.kwargs['username'])
+        context['images'] = photos.photos.all()
+
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
-        context['runner_stat']  = self.kwargs['username']
+        context['runner_stat'] = self.kwargs['username']
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
             context['haverun'] = 1
         else:
@@ -50,8 +52,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
         if len(obj) > 0:
-
-
 
             return dict(list(context.items()) + list(c_def.items()))
 
@@ -99,7 +99,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             userid = User.objects.get(username=self.kwargs['username'])
             new_item.runner_id = userid.id
 
-
             new_item.save()
 
             # files = self.request.FILES.getlist('photo')
@@ -108,21 +107,26 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             #     Photo.objects.create(image=image)
 
             for each in form.cleaned_data['photo']:
-
                 Photo.objects.create(runner_id=userid.id,
                                      day_select=dayselected,
                                      photo=each)
 
-
             total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
                 Sum('day_distance'))
-            dist = total_distance['day_distance__sum']
+            if total_distance['day_distance__sum'] is None:
+                dist = 0
+            else:
+                dist = total_distance['day_distance__sum']
+
             total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-            tot_time = total_time['day_time__sum']
+            if total_time['day_time__sum'] is None:
+                tot_time = '00:00'
+            else:
+                tot_time = total_time['day_time__sum']
             avg_time = self.avg_temp_function(self.kwargs['username'])
 
             tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-                day_distance__gt=0).count()
+                day_distance__gte=0).count()
             tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
                 day_select__gte=0).distinct('day_select').count()
 
@@ -159,12 +163,19 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         new_item.runner_id = userid.id
 
         new_item.save()
-
+        # TODO сделать обновление фоток при обновлении пробега
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
             Sum('day_distance'))
-        dist = total_distance['day_distance__sum']
+        if total_distance['day_distance__sum'] is None:
+            dist = 0
+        else:
+            dist = total_distance['day_distance__sum']
+
         total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        tot_time = total_time['day_time__sum']
+        if total_time['day_time__sum'] is None:
+            tot_time = '00:00'
+        else:
+            tot_time = total_time['day_time__sum']
         avg_time = self.avg_temp_function(self.kwargs['username'])
 
         tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -186,15 +197,23 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
     context_object_name = 'runday'
 
     def form_valid(self, form):
-        self.object.delete()
 
+        self.object.delete()
+        #TODO сделать удаление фоток при удалении пробега
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
             Sum('day_distance'))
-        dist = total_distance['day_distance__sum']
+        if total_distance['day_distance__sum'] is None:
+            dist = 0
+        else:
+            dist = total_distance['day_distance__sum']
+
         total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        tot_time = total_time['day_time__sum']
+        if total_time['day_time__sum'] is None:
+            tot_time = '00:00'
+        else:
+            tot_time = total_time['day_time__sum']
         avg_time = self.avg_temp_function(self.kwargs['username'])
 
         tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -209,16 +228,11 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         return redirect(success_url, success_msg)
 
 
-
-
-
-
-class AddFamily(CreateView,LoginRequiredMixin):
+class AddFamily(CreateView, LoginRequiredMixin):
     model = Family
     template_name = 'addfamily.html'
     form_class = AddFamilyForm
     success_url = reverse_lazy('profile:profile')
-
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
