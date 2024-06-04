@@ -20,8 +20,38 @@ class DataMixin:
             context['cat_selected'] = 0
         return context
 
+    def avg_temp_function(self, user):
+        tottime = User.objects.filter(username=user). \
+            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
+
+        count = User.objects.filter(username=user). \
+            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
+                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
+
+        if tottime['runner__day_average_temp__sum'] is None:
+            obr = 0
+        else:
+
+            obr = (tottime['runner__day_average_temp__sum'] / count)
+
+        def timedelta_tohms(duration):
+            if duration != 0:
+                days, seconds = duration.days, duration.seconds
+                minutes = (seconds % 3600) // 60
+                seconds = seconds % 60
+                return f"{minutes}:{seconds}"
+            else:
+                return f"{00}:{00}"
+
+        avg_temp = timedelta_tohms(obr)
+
+        return avg_temp
+
     def calc_ball(self, dist, avg_time, ):
-        global avg_temp_koef
+
+        global need_list, ost_koef
+        avg_temp_koef = 0
         distance_koef = [
             [4.999, 1, 1], [9.999, 1.1, 2.1],
             [14.999, 1.2, 3.3], [19.999, 1.3, 4.6],
@@ -30,7 +60,6 @@ class DataMixin:
             [44.999, 1.8, 12.6], [49.999, 1.9, 14.5],
             [50, 2, 16.5]
         ]
-
 
         temp_koef = {
             "00:02:38": 2.71,
@@ -185,22 +214,20 @@ class DataMixin:
         }
 
         for key, val in temp_koef.items():
-
             if avg_time <= key:
                 avg_temp_koef = val
-                print(val)
                 break
 
         for d in distance_koef:
-            if self <= d[0]:
+            if dist <= d[0]:
                 need_list = distance_koef.index(d) - 1
                 ost_dist = dist - distance_koef[need_list][0]
                 ost_koef = distance_koef[need_list][1] * ost_dist
-                tot_koef = (5 * distance_koef[need_list][2] + ost_koef) * avg_temp_koef
+        tot_koef = (5 * distance_koef[need_list][2] + ost_koef) * avg_temp_koef
 
-                return round(tot_koef)
+        return round(tot_koef)
 
-    def calc_stat(self, runner_id, dist, tot_time, avg_time, tot_days, tot_runs):
+    def calc_stat(self, runner_id, dist, tot_time, avg_time, tot_days, tot_runs, tot_balls):
         try:
             run_stat = Statistic.objects.get(runner_stat_id=runner_id)
 
@@ -212,7 +239,7 @@ class DataMixin:
                 total_average_temp=':'.join(str(avg_time).split(':')),
                 total_days=tot_days,
                 total_runs=tot_runs,
-                ball=ball
+                total_balls=tot_balls
             )
 
         except:
@@ -223,27 +250,5 @@ class DataMixin:
                                                 total_average_temp=':'.join(str(avg_time).split(':')),
                                                 total_days=tot_days,
                                                 total_runs=tot_runs,
-                                                ball=ball
+                                                total_balls=ball
                                                 )
-
-    def avg_temp_function(self, user):
-        tottime = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
-
-        count = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
-
-        obr = (tottime['runner__day_average_temp__sum'] / count)
-
-        def timedelta_tohms(duration):
-            days, seconds = duration.days, duration.seconds
-
-            minutes = (seconds % 3600) // 60
-            seconds = seconds % 60
-            return f"{minutes}:{seconds}"
-
-        avg_temp = timedelta_tohms(obr)
-
-        return avg_temp

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from PIL import Image
@@ -19,7 +20,7 @@ class UserImport(models.Model):
 def user_directory_path(instance, filename):
     runner = instance.runner.username
     subdiv = runner[:3]
-    return 'day_of_month/{0}/{1}/{2}/{3}'.format(subdiv, runner,instance.day_select, filename)
+    return 'day_of_month/{0}/{1}/{2}/{3}/{4}'.format(subdiv, runner,instance.day_select,instance.number_of_run, filename)
 
 
 class Photo(models.Model):
@@ -27,19 +28,30 @@ class Photo(models.Model):
     day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=datetime.now().day)
     photo = models.FileField(verbose_name="фото", upload_to=user_directory_path, null=True,
                              blank=True, max_length=300)
-
+    number_of_run = models.IntegerField(verbose_name="номер пробежки" ,default=1)
     # def save(self, *args, **kwargs):
     #     super(Photo, self).save(*args, **kwargs)
     #     img = Image.open(self.photo.path)
     #     if img.height > 1125 or img.width > 1125:
     #         img.thumbnail((1125, 1125))
     #     img.save(self.photo.path, quality=70, optimize=True)
+    def delete(self, *args, **kwargs):
+        # До удаления записи получаем необходимую информацию
+        storage, path = self.photo.storage, self.photo.path
+        # Удаляем сначала модель ( объект )
+        super(Photo, self).delete(*args, **kwargs)
+        # Потом удаляем сам файл
+        storage.delete(path)
+
 
     def get_absolute_url(self):
         return reverse('profile:profile', kwargs={'photo': self.photo})
 
+
     def __str__(self):
         return str(self.photo)
+
+
 class RunnerDay(models.Model):
     class Meta:
         verbose_name = 'ежедневный забег'
@@ -51,7 +63,7 @@ class RunnerDay(models.Model):
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False)
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
     day_average_temp = models.TimeField(verbose_name='средний темп', help_text='введите в формате 00:00:00')
-
+    ball = models.IntegerField(verbose_name='баллы', blank=True, null=True)
     def __str__(self):
         return str(self.runner)
 
@@ -68,7 +80,7 @@ class Statistic(models.Model):
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
     total_days = models.IntegerField(verbose_name='дни пробега',null=True)
     total_runs = models.IntegerField(verbose_name='количество пробежек',null=True)
-    ball = models.IntegerField(verbose_name='баллы',blank=True,null=True)
+    total_balls=models.IntegerField(verbose_name='общая сумма баллов',null=True)
     def __str__(self):
         return str(self.runner_stat)
 

@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
 
-
 from corsheaders.defaults import default_headers
 from flower.api import tasks
 
@@ -65,13 +64,14 @@ INSTALLED_APPS = [
     'core',
     'profiles',
     'authorize',
+    'django_cleanup',
+
     # 'tailwind',
     # 'theme',
     # 'django_browser_reload',
     # 'celery',
     # 'django_celery_results',
     # 'django_celery_beat',
-
 
     # 'csscompressor',
 
@@ -88,7 +88,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 
     # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
@@ -266,13 +265,12 @@ LOGGING = {
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Here
 MEDIA_URL = '/media/'
 
-
 # LOGIN_URL = "/login/"
 #
 # LOGIN_REDIRECT_URL = "/profile/"
 
 # The number of seconds a password reset link is valid for (default: 3 days).
-PASSWORD_RESET_TIMEOUT = 60 * 60 * 60*60
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 60 * 60
 
 # django_redis
 # https://github.com/jazzband/django-redis

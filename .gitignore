@@ -145,10 +145,18 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+node_modules/
+node_modules
+node_modules/*
 
+theme/
+theme
+theme/*
 # pytype static type analyzer
 .pytype/
-
+static
+static/
+static/*
 # Cython debug symbols
 cython_debug/
 

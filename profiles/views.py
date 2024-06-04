@@ -1,13 +1,17 @@
+import os
+
 from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
+from django.db.models.deletion import Collector
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 
 from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+
 from tornado.gen import Runner
 
 from core.models import User, Family
@@ -124,15 +128,19 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             else:
                 tot_time = total_time['day_time__sum']
             avg_time = self.avg_temp_function(self.kwargs['username'])
-
+        #TODO добавлеение второй пробежки через number_of _run
             tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
                 day_distance__gte=0).count()
             tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
                 day_select__gte=0).distinct('day_select').count()
-
+            tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+            if tot_balls['ball__sum'] is None:
+                balls = 0
+            else:
+                balls = tot_balls['ball__sum']
             self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
                            tot_days=tot_days,
-                           tot_runs=tot_runs)
+                           tot_runs=tot_runs, tot_balls=balls)
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
@@ -187,10 +195,14 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
             day_distance__gt=0).count()
         tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
             day_select__gt=0).distinct('day_select').count()
-
+        tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+        if tot_balls['ball__sum'] is None:
+            balls = 0
+        else:
+            balls = tot_balls['ball__sum']
         self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
                        tot_days=tot_days,
-                       tot_runs=tot_runs)
+                       tot_runs=tot_runs, tot_balls=balls)
 
         return redirect('profile:profile', username=self.request.user)
 
@@ -203,8 +215,18 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
     def form_valid(self, form):
 
+
+        print(self.object)
+        print(self.kwargs)
+        print(form.cleaned_data)
+
         self.object.delete()
-        #TODO сделать удаление фоток при удалении пробега
+        photos = User.objects.get(username=self.kwargs['username'])
+
+        # list_photo=photos.photos.filter(day_select=form.cleaned_data['day_select'])
+        # print(list_photo)
+
+        # TODO сделать удаление фоток при удалении пробега
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
@@ -226,9 +248,14 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
             day_select__gt=0).distinct('day_select').count()
 
+        tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+        if tot_balls['ball__sum'] is None:
+            balls=0
+        else:
+            balls = tot_balls['ball__sum']
         self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
                        tot_days=tot_days,
-                       tot_runs=tot_runs)
+                       tot_runs=tot_runs, tot_balls=balls)
 
         return redirect(success_url, success_msg)
 
