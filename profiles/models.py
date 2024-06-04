@@ -66,9 +66,9 @@ class Statistic(models.Model):
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
     total_time = models.TimeField(verbose_name='общее время пробега', blank=True)
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
-    total_days = models.IntegerField(verbose_name='дни пробега')
-    total_runs = models.IntegerField(verbose_name='количество пробежек')
-
+    total_days = models.IntegerField(verbose_name='дни пробега',null=True)
+    total_runs = models.IntegerField(verbose_name='количество пробежек',null=True)
+    ball = models.IntegerField(verbose_name='баллы',blank=True,null=True)
     def __str__(self):
         return str(self.runner_stat)
 

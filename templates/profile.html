@@ -7,55 +7,48 @@
 
     <div class=" container-fluid ">
 
-        {#   шапка личного кабинета с описанием участника#}
-        {#     {% if request.user.is_authenticated and runner_stat == request.user %}#}
-        <div class="flex justify-content-evenly">
-            <div class="button">
+    {#   шапка личного кабинета с описанием участника#}
+    {#     {% if request.user.is_authenticated and runner_stat == request.user %}#}
+    <div class="flex justify-content-evenly">
+        <div class="button">
 
-                <a href='{% url 'profile:addrunday' runner_stat %}'>
-                    <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"
-                         style="text-align: center; width: 150px "></i>Внести
-                        сведения
-                    </div>
-                </a>
-            </div>
-
-            {#                    <div class="button">#}
-            {##}
-            {#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
-            {#                            <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"#}
-            {#                                 style="text-align: center; width: 150px "></i>Добавить семью#}
-            {#                            </div>#}
-            {#                        </a>#}
-            {#                    </div>#}
+            <a href='{% url 'profile:addrunday' runner_stat %}'>
+                <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"
+                     style="text-align: center; width: 150px "></i>Внести
+                    сведения
+                </div>
+            </a>
         </div>
 
-    {{ photo }}
-    {% for p in photo %}
-        {{ p.url }}
-    {% endfor %}
-        {#            {% endif %}#}
-        <h1> Статистика по участнику № {{ runner_stat }}  </h1>
-       <div class="statistic-user flex justify-content-around">
-       <div>
-        {% if data %}
-            {% for d in data %}
-                <p> дистанция за все время пробега -{{ d.total_distance }}</p>
-                <p> все время пробега - {{ d.total_time }}</p>
-                <p> средний темп - {{ d.total_average_temp }}</p>
-                <p> дней пробега - {{ d.total_days }}</p>
-                <p> количество пробежек - {{ d.total_runs }}</p>
-            {% endfor %}
-</div>
+        {#                    <div class="button">#}
+        {##}
+        {#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
+        {#                            <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"#}
+        {#                                 style="text-align: center; width: 150px "></i>Добавить семью#}
+        {#                            </div>#}
+        {#                        </a>#}
+        {#                    </div>#}
+    </div>
 
 
-        {% else %}
-            <h2 class="bg-red-500"> Участник пока не внес никаких сведений о пробежках</h2>
-        {% endif %}
+    {#            {% endif %}#}
+    <h1> Статистика по участнику № {{ runner_stat }}  </h1>
+    <div class="statistic-user flex justify-content-around">
+        <div>
+            {% if data %}
+                {% for d in data %}
+                    <p> дистанция за все время пробега -{{ d.total_distance }}</p>
+                    <p> все время пробега - {{ d.total_time }}</p>
+                    <p> средний темп - {{ d.total_average_temp }}</p>
+                    <p> дней пробега - {{ d.total_days }}</p>
+                    <p> количество пробежек - {{ d.total_runs }}</p>
+                {% endfor %}
+                </div>
 
 
-
-
+            {% else %}
+                <h2 class="bg-red-500"> Участник пока не внес никаких сведений о пробежках</h2>
+            {% endif %}
 
 
         <div>
@@ -95,20 +88,15 @@
     </div>
 
 
-
-
-
-
-
-
     <table class="table  table-striped" id="profile">
         <thead class="table-dark text-center">
         <tr class="bg">
-            <td> день пробега</td>
-            <td> дистанция пробега</td>
-            <td> время пробега</td>
-            <td> средний темп</td>
-            <td> фото-отчет за день</td>
+            <td> день </td>
+            <td> дистанция </td>
+            <td> время </td>
+            <td>  темп</td>
+            <td> баллы </td>
+            <td> фото</td>
             <td></td>
         </tr>
         </thead>
@@ -141,15 +129,22 @@
                 <td> {{ p.day_distance|floatformat:3 }}</td>
                 <td> {{ p.day_time|time:'H:i:s' }}</td>
                 <td> {{ p.day_average_temp|time:'i:s' }}</td>
-                {% if p.photo and request.user.is_authenticated %}
-                    <td><img class="runday-img" src="{{ p.photo.url }}" alt="" style="width: 50px;"
-                             onClick='this.classList.toggle("show")'
-                            {#                        onclick="changeSizeOneImage(this)" class ="ot4et-photo"></td>#}
-                             class="ot4et-photo"></td>
+                <td>  </td>
 
-                {% else %}
-                    <td>-</td>
-                {% endif %}
+                <td style="width: max-content; display: flex">
+                    {% for image in images %}
+                        {% if request.user.is_authenticated and p.day_select == image.day_select %}
+
+                            <img class="runday-img  ot4et-photo" src="{{ image.photo.url }}" alt=""
+                                 style="width: 50px; margin: 5px"
+                                 onClick='this.classList.toggle("show")'>
+                        {% else %}
+                        {% endif %}
+                    {% endfor %}
+
+
+                </td>
+
 
                 {% for d in data %}
                     {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
@@ -170,11 +165,9 @@
     </table>
 
 
-
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
 
 
 {% endblock %}

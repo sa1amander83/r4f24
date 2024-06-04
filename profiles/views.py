@@ -161,8 +161,13 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         userid = User.objects.get(id=self.request.user.id)
 
         new_item.runner_id = userid.id
-
+        dayselected = form.cleaned_data['day_select']
         new_item.save()
+
+        for each in form.cleaned_data['photo']:
+            Photo.objects.update(runner_id=userid.id,
+                                 day_select=dayselected,
+                                 photo=each)
         # TODO сделать обновление фоток при обновлении пробега
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
             Sum('day_distance'))
