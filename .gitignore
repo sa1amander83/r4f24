@@ -148,7 +148,13 @@ dmypy.json
 node_modules/
 node_modules
 node_modules/*
+migrations
+migrations/
+migrations/*
 
+media
+media/
+media/*
 theme/
 theme
 theme/*
