@@ -5,3 +5,5 @@ theme/static_src/node_modules*
 .idea
 node_modules
 static*
+media*
+media/*
