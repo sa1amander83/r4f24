@@ -151,7 +151,9 @@ node_modules/*
 migrations
 migrations/
 migrations/*
-
+static
+static/
+static/*
 media
 media/
 media/*
