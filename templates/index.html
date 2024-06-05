@@ -59,11 +59,12 @@
             <td>Место</td>
 
             <td>Номер участника</td>
-
-            <td> пробег км</td>
-            <td> общее время пробега</td>
+            <td> Баллы</td>
+            <td> пробег </td>
+            <td> общее время </td>
             <td> средний темп мин/км</td>
             <td> Дней забега</td>
+            <td> Количество пробежек</td>
             </thead>
             <tbody class="text-center">
 
@@ -81,7 +82,7 @@
                     <td> {{ s.total_time }}</td>
 {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
                     <td> {{ s.total_average_temp }}</td>
-                    <td>  считать дни{{ s.day_count}}</td>
+                    <td>  {{ s.day_count}}</td>
 
 
             </tr>

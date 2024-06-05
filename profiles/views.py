@@ -29,7 +29,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
     def get_object(self, queryset=None):
         return self.request.user
-#aaaaaaaaaaa
+
     # TODO здесь должно быть только отображение  из модели статистики а не расчеты
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,7 +42,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
-
 
         photos = User.objects.get(username=self.kwargs['username'])
         context['images'] = photos.photos.all()
@@ -175,8 +174,19 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
         new_item.save()
 
+        old_image=Photo.objects.filter(day_select=dayselected).filter(number_of_run=form.cleaned_data['number_of_run'])
+        print(old_image)
+
+
+        for im in old_image:
+            Photo.objects.get(pk=im.pk).delete()
+            if  os.path.exists(im.photo.path):
+                os.remove(im.photo.path)
+
+
+
         for each in form.cleaned_data['photo']:
-            Photo.objects.update(runner_id=userid.id,
+            Photo.objects.create(runner_id=userid.id,
                                  day_select=dayselected,
                                  number_of_run=form.cleaned_data['number_of_run'],
                                  photo=each)
@@ -225,12 +235,18 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
         get_number_run = RunnerDay.objects.get(pk=self.kwargs['pk']).number_of_run
 
-        print(get_runday)
-        print(get_number_run)
+
+
 
         self.object.delete()
         photos = Photo.objects.filter(runner__username=self.kwargs['username'])
+        old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)
 
+
+        for im in old_image:
+            Photo.objects.get(pk=im.pk).delete()
+            if os.path.exists(im.photo.path):
+                os.remove(im.photo.path)
         # list_photo=photos.photos.filter(day_select=form.cleaned_data['day_select'])
         # print(list_photo)
 

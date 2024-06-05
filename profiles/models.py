@@ -67,7 +67,7 @@ class RunnerDay(models.Model):
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False)
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
     day_average_temp = models.TimeField(verbose_name='средний темп', help_text='введите в формате 00:00:00')
-    ball = models.IntegerField(verbose_name='баллы', blank=True, null=True)
+    ball = models.IntegerField(verbose_name='баллы за пробежку', blank=True, null=True)
     number_of_run = models.IntegerField(verbose_name='номер пробежки', default=1,choices=NUM_OF_RUN, validators=[
         MaxValueValidator(2),
         MinValueValidator(1)

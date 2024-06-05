@@ -202,7 +202,8 @@
         document.querySelector('form').addEventListener('change', calcball);
         document.querySelector('form').addEventListener('input', calcball);
         let tot_koef, ost_dist, ost_koef
-        let span_ball =document.getElementById('ball_for_run')
+        let ball = document.getElementById('ball')
+
         function calcball(event) {
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
@@ -230,7 +231,11 @@
                 }
 
             }
-           span_ball.innerText=Math.round(tot_koef)
+            if (tot_koef){
+           ball.value = Math.round(tot_koef)}
+            else{
+             ball.value = 0
+            }
         }
     </script>
 

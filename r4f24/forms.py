@@ -76,12 +76,10 @@ class MultipleFileField(forms.FileField):
 
 
 class RunnerDayForm(ModelForm):
-
     class Meta:
         day_time = forms.TimeField(help_text='00:00:00')
         day_average_temp = forms.TimeField(help_text="00:00:00")
         model = RunnerDay
-
 
         # current_date = date.today()
         # date16 = datetime.date(2023, 7, 10)
@@ -93,20 +91,17 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
-            'number_of_run':forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
-            'day_distance': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'value': '10', 'id':'day_distance'}),
-            # 'day_time': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00'}),
+            'number_of_run': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
+            'day_distance': forms.NumberInput(
+                attrs={'class': 'form-control form-control-user', 'value': '10', 'id': 'day_distance'}),
             'day_time': MyTotalTimeInput(
                 attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '01:00:00'}),
-            # 'day_average_temp': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00','format':'%H:%i:%s'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'format': '%m:%s', 'value': '00:05:00', 'step': '1', 'id':'temp'} ),
-            # 'calory': forms.NumberInput(
-            #     attrs={'class': 'form-control form-control-user', 'value': '00.000', 'id': 'calory_id'}),
-            # 'photo': MultipleFileInput(attrs={'class': 'form-control form-control-user', 'allow_multiple_selected':'True'}),
-            # 'photo':MultiImageField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5)
+                attrs={'class': 'form-control form-control-user', 'format': '%m:%s', 'value': '00:05:00', 'step': '1',
+                       'id': 'temp'}),
+            'ball': forms.NumberInput(attrs={'class': 'form-control', 'readonly':'True','id':'ball', 'placeholder':'00'})
         }
-        fields = ['day_select', 'number_of_run','day_distance', 'day_time', 'day_average_temp']
+        fields = ['day_select', 'number_of_run', 'day_distance', 'day_time', 'day_average_temp', 'ball']
 
     photo = MultiFileField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5)
 
@@ -116,6 +111,8 @@ class RunnerDayForm(ModelForm):
     #         Photo.objects.create(file=each, message=instance)
     #
     #     return instance
+
+
 class AddFamilyForm(ModelForm):
     class Meta:
         model = Family

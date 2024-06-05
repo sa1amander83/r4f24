@@ -139,14 +139,14 @@
                     {% for image in images %}
                         {% if request.user.is_authenticated and p.day_select == image.day_select and p.number_of_run == image.number_of_run %}
 
-{#                            <img class="runday-img  ot4et-photo" src="{{ image.photo.url }}" alt=""#}
-{#                                 style="width: 50px; margin: 5px"#}
-{#                                 onClick='this.classList.toggle("show")'>#}
+                            <img class="runday-img  ot4et-photo" src="{{ image.photo.url }}" alt=""
+                                 style="width: 50px; margin: 2px"
+                                 onClick='this.classList.toggle("show")'>
 {#                #TODO  ЗДЕСЬ СДЕЛАТЬ ВЫСПЛЫВАЮШЕЕ ОКНО для просмотра пробегов#}
-                            {% thumbnail image "40x40" crop="center" as im %}
-                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" style="margin: 3px" />
-
-                            {% endthumbnail %}
+{#                            {% thumbnail image "40x40" crop="center" as im %}#}
+{#                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" style="margin: 3px" />#}
+{##}
+{#                            {% endthumbnail %}#}
 
 
 
@@ -181,13 +181,7 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-
+    </div>
 {% endblock %}
 
-{#{% block calend %}#}
-{#    {% for value in calend %}#}
-{##}
-{#        <a href="/day_selected/{{ value }}" class="day-selected">{{ value }}</a>#}
-{##}
-{#    {% endfor %}#}
-{#{% endblock %}#}
+
