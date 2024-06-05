@@ -76,13 +76,14 @@
 
 
                     <td>{{ forloop.counter }}</td>
-                    <td><a href="/profile/{{ s.runner_stat__username }}">{{ s.runner_stat__username }} </a></td>
-
+                    <td><a href="/profile/{{ s.runner_stat__username }}">{{ s.runner_stat__username }} </a></td><td>  {{ s.total_balls}}</td>
                     <td> {{ s.total_distance|floatformat:3 }}</td>
                     <td> {{ s.total_time }}</td>
 {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
                     <td> {{ s.total_average_temp }}</td>
-                    <td>  {{ s.day_count}}</td>
+                    <td>  {{ s.total_days}}</td>
+                    <td>  {{ s.total_runs}}</td>
+
 
 
             </tr>

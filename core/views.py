@@ -45,7 +45,7 @@ class IndexView(DataMixin, ListView):
         # print(result[1]['avg_time'])
 
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values('runner_stat__username',
-            'runner_stat__runner_category','total_distance','total_time','total_average_temp')
+            'runner_stat__runner_category','total_distance','total_time','total_average_temp','total_runs','total_days','total_balls').order_by('-total_balls')
 
         return context
 
