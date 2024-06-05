@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     'profiles',
     'authorize',
     'django_cleanup',
-
+    'sorl.thumbnail'
     # 'tailwind',
     # 'theme',
     # 'django_browser_reload',
@@ -114,21 +114,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 ROOT_URLCONF = 'r4f24.urls'
-DRAMATIQ_BROKER = {
-    "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {
-        "url": "redis://localhost:6379",
-    },
-    "MIDDLEWARE": [
-        "dramatiq.middleware.Prometheus",
-        "dramatiq.middleware.AgeLimit",
-        "dramatiq.middleware.TimeLimit",
-        "dramatiq.middleware.Callbacks",
-        "dramatiq.middleware.Retries",
-        "django_dramatiq.middleware.DbConnectionsMiddleware",
-        "django_dramatiq.middleware.AdminMiddleware",
-    ]
-}
+# DRAMATIQ_BROKER = {
+#     "BROKER": "dramatiq.brokers.redis.RedisBroker",
+#     "OPTIONS": {
+#         "url": "redis://localhost:6379",
+#     },
+#     "MIDDLEWARE": [
+#         "dramatiq.middleware.Prometheus",
+#         "dramatiq.middleware.AgeLimit",
+#         "dramatiq.middleware.TimeLimit",
+#         "dramatiq.middleware.Callbacks",
+#         "dramatiq.middleware.Retries",
+#         "django_dramatiq.middleware.DbConnectionsMiddleware",
+#         "django_dramatiq.middleware.AdminMiddleware",
+#     ]
+# }
 
 # Defines which database should be used to persist Task objects when the
 # AdminMiddleware is enabled.  The default value is "default".
@@ -277,15 +277,15 @@ PASSWORD_RESET_TIMEOUT = 60 * 60 * 60 * 60
 
 
 AUTH_USER_MODEL = 'core.user'
-CACHES = {
-    "default": {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": "redis://127.0.0.1:6379/",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         "LOCATION": "redis://127.0.0.1:6379/",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#
+#         }
+#     }
+# }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"

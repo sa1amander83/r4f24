@@ -43,8 +43,9 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select')
 
-        photos = User.objects.get(username=self.kwargs['username'])
 
+        photos = User.objects.get(username=self.kwargs['username'])
+        context['images'] = photos.photos.all()
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat'] = self.kwargs['username']
