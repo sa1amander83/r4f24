@@ -44,7 +44,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             'day_select')
 
         photos = User.objects.get(username=self.kwargs['username'])
-        context['images'] = photos.photos.all()
+
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat'] = self.kwargs['username']
@@ -112,6 +112,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             for each in form.cleaned_data['photo']:
                 Photo.objects.create(runner_id=userid.id,
+                                     number_of_run=form.cleaned_data['number_of_run'],
                                      day_select=dayselected,
                                      photo=each)
 
@@ -128,7 +129,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             else:
                 tot_time = total_time['day_time__sum']
             avg_time = self.avg_temp_function(self.kwargs['username'])
-        #TODO добавлеение второй пробежки через number_of _run
+            # TODO добавлеение второй пробежки через number_of _run
             tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
                 day_distance__gte=0).count()
             tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -170,11 +171,13 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
         new_item.runner_id = userid.id
         dayselected = form.cleaned_data['day_select']
+
         new_item.save()
 
         for each in form.cleaned_data['photo']:
             Photo.objects.update(runner_id=userid.id,
                                  day_select=dayselected,
+                                 number_of_run=form.cleaned_data['number_of_run'],
                                  photo=each)
         # TODO сделать обновление фоток при обновлении пробега
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
@@ -215,13 +218,17 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
     def form_valid(self, form):
 
-
-        print(self.object)
+        # получили удаляемую строку из таблицы Runnerday
         print(self.kwargs)
-        print(form.cleaned_data)
+
+        get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
+        get_number_run = RunnerDay.objects.get(pk=self.kwargs['pk']).number_of_run
+
+        print(get_runday)
+        print(get_number_run)
 
         self.object.delete()
-        photos = User.objects.get(username=self.kwargs['username'])
+        photos = Photo.objects.filter(runner__username=self.kwargs['username'])
 
         # list_photo=photos.photos.filter(day_select=form.cleaned_data['day_select'])
         # print(list_photo)
@@ -250,7 +257,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
         tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
         if tot_balls['ball__sum'] is None:
-            balls=0
+            balls = 0
         else:
             balls = tot_balls['ball__sum']
         self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
