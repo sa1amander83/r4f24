@@ -93,6 +93,7 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
+            'number_of_run':forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'value': '10'}),
             # 'day_time': forms.TimeInput(attrs={'class': 'form-control form-control-user','value':'00:00:00'}),
             'day_time': MyTotalTimeInput(
@@ -105,7 +106,7 @@ class RunnerDayForm(ModelForm):
             # 'photo': MultipleFileInput(attrs={'class': 'form-control form-control-user', 'allow_multiple_selected':'True'}),
             # 'photo':MultiImageField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5)
         }
-        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp']
+        fields = ['day_select', 'number_of_run','day_distance', 'day_time', 'day_average_temp']
 
     photo = MultiFileField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5)
 

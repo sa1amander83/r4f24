@@ -5,6 +5,9 @@
 {% block content %}
     {% csrf_token %}
 
+
+
+
     <div class=" container-fluid ">
 
     {#   шапка личного кабинета с описанием участника#}
@@ -113,23 +116,23 @@
             <tr class="row-cols-md-4 text-center">
                 {#            {% endif %}#}
 
-                {% for d in data %}
+{#                {% for d in data %}#}
 
 
-                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+{#                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}#}
                         {#                            <td><a href="{% url 'editrunday' runner=p.runner pk=p.pk %}">#}
                         <td>
                             <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
                                 <i class="fas fa-pen fa-lg"></i> {{ p.day_select }}</a>
                         </td>
-                    {% else %}
-                        <td> {{ p.day_select }} сентября</td>
-                    {% endif %}
-                {% endfor %}
+{#                    {% else %}#}
+{#                        <td> {{ p.day_select }} сентября</td>#}
+{#                    {% endif %}#}
+{#                  {% endfor %}#}
                 <td> {{ p.day_distance|floatformat:3 }}</td>
                 <td> {{ p.day_time|time:'H:i:s' }}</td>
                 <td> {{ p.day_average_temp|time:'i:s' }}</td>
-                <td>  </td>
+                <td> {{ p.ball }} </td>
 
                 <td style="width: max-content; display: flex">
                     {% for image in images %}
@@ -146,16 +149,16 @@
                 </td>
 
 
-                {% for d in data %}
-                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+{#                {% for d in data %}#}
+{#                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}#}
 
                         <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
                             <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
                         </td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                {% endfor %}
+{#                    {% else %}#}
+{#                        <td></td>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
             </tr>
 
 
