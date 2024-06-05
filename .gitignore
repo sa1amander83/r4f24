@@ -146,17 +146,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 node_modules/
-node_modules
+/node_modules/
 node_modules/*
-migrations
-migrations/
-migrations/*
-static
-static/
-static/*
-media
-media/
-media/*
+/migrations
+/migrations/
+/migrations/*
+/static
+/static/
+/static/*
+/media
+/media/
+/media/*
 theme/
 theme
 theme/*
