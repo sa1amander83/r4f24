@@ -73,6 +73,7 @@ class RunnerDay(models.Model):
         MinValueValidator(1)
     ])
 
+
     def __str__(self):
         return str(self.runner)
 
@@ -90,7 +91,7 @@ class Statistic(models.Model):
     total_days = models.IntegerField(verbose_name='дни пробега', null=True)
     total_runs = models.IntegerField(verbose_name='количество пробежек', null=True)
     total_balls = models.IntegerField(verbose_name='общая сумма баллов', null=True)
-
+    is_qualificated = models.BooleanField(verbose_name='прошел квалификацию', default=False)
     def __str__(self):
         return str(self.runner_stat)
 

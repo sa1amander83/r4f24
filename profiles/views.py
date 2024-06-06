@@ -105,11 +105,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             new_item.save()
 
-            # files = self.request.FILES.getlist('photo')
-            # print(files)
-            # for image in files:
-            #     Photo.objects.create(image=image)
-
             for each in form.cleaned_data['photo']:
                 Photo.objects.create(runner_id=userid.id,
                                      number_of_run=form.cleaned_data['number_of_run'],
@@ -129,7 +124,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             else:
                 tot_time = total_time['day_time__sum']
             avg_time = self.avg_temp_function(self.kwargs['username'])
-            # TODO добавлеение второй пробежки через number_of _run
+
             tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
                 day_distance__gte=0).count()
             tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -174,16 +169,13 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
         new_item.save()
 
-        old_image=Photo.objects.filter(day_select=dayselected).filter(number_of_run=form.cleaned_data['number_of_run'])
-        print(old_image)
-
+        old_image = Photo.objects.filter(day_select=dayselected).filter(
+            number_of_run=form.cleaned_data['number_of_run'])
 
         for im in old_image:
             Photo.objects.get(pk=im.pk).delete()
-            if  os.path.exists(im.photo.path):
+            if os.path.exists(im.photo.path):
                 os.remove(im.photo.path)
-
-
 
         for each in form.cleaned_data['photo']:
             Photo.objects.create(runner_id=userid.id,
@@ -229,28 +221,18 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
     def form_valid(self, form):
 
-        # получили удаляемую строку из таблицы Runnerday
-        print(self.kwargs)
-
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
         get_number_run = RunnerDay.objects.get(pk=self.kwargs['pk']).number_of_run
-
-
-
 
         self.object.delete()
         photos = Photo.objects.filter(runner__username=self.kwargs['username'])
         old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)
 
-
         for im in old_image:
             Photo.objects.get(pk=im.pk).delete()
             if os.path.exists(im.photo.path):
                 os.remove(im.photo.path)
-        # list_photo=photos.photos.filter(day_select=form.cleaned_data['day_select'])
-        # print(list_photo)
 
-        # TODO сделать удаление фоток при удалении пробега
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
         total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(

@@ -228,6 +228,8 @@ class DataMixin:
         return round(tot_koef)
 
     def calc_stat(self, runner_id, dist, tot_time, avg_time, tot_days, tot_runs, tot_balls):
+        is_qual = True if dist >= 30 else False
+
         try:
             run_stat = Statistic.objects.get(runner_stat_id=runner_id)
 
@@ -239,7 +241,9 @@ class DataMixin:
                 total_average_temp=':'.join(str(avg_time).split(':')),
                 total_days=tot_days,
                 total_runs=tot_runs,
-                total_balls=tot_balls
+                total_balls=tot_balls,
+                is_qualificated = is_qual
+
             )
 
         except:
@@ -250,5 +254,6 @@ class DataMixin:
                                                 total_average_temp=':'.join(str(avg_time).split(':')),
                                                 total_days=tot_days,
                                                 total_runs=tot_runs,
-                                                total_balls=ball
+                                                total_balls=ball,
+                                                is_qualificated=is_qual
                                                 )

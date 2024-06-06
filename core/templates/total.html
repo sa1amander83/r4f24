@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% block content %}
+
+    <div class="container-fluid">
+        {% csrf_token %}
+
+    </div>
+ <h1> Общие результаты  команд </h1>
+{#    #}
+{#    <h1> Результаты  команд по пятерым лучшим участникам </h1>#}
+{#         <div class="header-stat-comanda">#}
+{#                <p>#}
+{#                <h2>выбор категории:</h2></p>#}
+{#                {% for value in category %}#}
+{#                    <div>#}
+{#                        <h2><a class="collapse-item day-selected header-number text-center text-danger"#}
+{#                               href="/cat_selected/{{ value }}">{{ value }}</a></h2>#}
+{##}
+{#                    </div>#}
+{##}
+{#                {% endfor %}#}
+{#                <h4><a class="collapse-item  text-center text-danger"#}
+{#                       href="/total/">Все</a></h4>#}
+{#            </div>#}
+
+
+    <hr>
+
+    <div class="container-fluid">
+        <table id="total" class="table  table-striped text-center">
+
+            <thead class="table-dark text-center">
+
+                        <td>Место</td>
+            <td>Номер команды</td>
+            <td> пробег км</td>
+            <td> общее время пробега</td>
+            <td> средний темп мин/км</td>
+            <td> количество участников</td>
+            </thead>
+            <tbody class="table text-center">
+
+
+
+{% for k,v in qs.items %}
+
+            <tr>
+                        {% if v.total_dist__sum > 0 %}
+                            <td>{{forloop.counter}}</td>
+                        <td><a href="/comands/{{ k }}">{{ k}} </a></td>
+                        <td> {{ v.total_dist__sum|floatformat:3 }}</td>
+                        <td> {{ v.total_time__sum }}</td>
+                        <td> {{ v.avg_time__avg|smooth_filter }} </td>
+                        <td> {{ v.count_runners }} </td>
+
+
+{#          {% else %}#}
+{#            <td>{{forloop.counter}}</td>#}
+{#               <td><a href="/comands/{{ k }}">{{ k}} </a></td>#}
+{#                                  <td> нет пробега </td>#}
+{#                                  <td> - - - - - - - </td>#}
+{#                                  <td> - - - - - - -</td> #}
+
+                        {% endif %}
+
+
+
+            </tr>
+
+
+  {% endfor %}
+
+
+            </tbody>
+            <tr></tr>
+
+        </table>
+    </div>
+
+    {#    {% пригодится для статистки по дням %}#}
+    {#       {% for value in tot_dist.values %}#}
+    {#        <p class='first'> пробег участника {{ value }}  </p>#}
+
+
+   <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+{% endblock %}

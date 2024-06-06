@@ -25,14 +25,13 @@
                         <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
                         <div class="form-error">{{ f.errors }}</div>
                     {% endfor %}
-                    <div class="col-lg-4"> Ваши баллы за пробежку: <span id="ball_for_run"> </span></div>
 
                     <button type="submit" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
 
                 </form>
             </div>
         </div>
-    </div>
+
 {% endblock %}
 {% block extrascripts %}
     <script>
@@ -224,7 +223,10 @@
                     if (distance <= d[0]) {
                         let need_list = distance_koef.indexOf(d) - 1;
                         let ost_dist = distance - distance_koef[need_list][0];
-                        let ost_koef = distance_koef[need_list][1] * ost_dist;
+                        console.log(need_list)
+                        console.log(ost_dist)
+                        let ost_koef = (distance_koef[need_list][1]+0.1) * ost_dist;
+                        console.log(ost_koef)
                         tot_koef = (5 * distance_koef[need_list][2] + ost_koef) * avg_temp_koef;
                         break;
                     }

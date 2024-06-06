@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 
 from django.contrib.auth.models import User, AbstractUser, PermissionsMixin
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from django.utils.translation import gettext_lazy as _
@@ -72,14 +73,15 @@ class User(AbstractUser):
     CATEGORY = [
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
     ]
-    CATEGORY_WOMEN = [
-        (1, 'Новичок'), (2, 'Любитель')
-    ]
+
     email = False
     # user= models.CharField( max_length=12,verbose_name='Номер участника', unique=True)
     # runner_team = models.ForeignKey(Teams, on_delete=models.DO_NOTHING, verbose_name='команда', db_index=True)
     runner_team = models.PositiveIntegerField(verbose_name='команда', db_index=True)
-    runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True)
+    runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True, validators=[
+        MaxValueValidator(99),
+        MinValueValidator(5)
+    ])
     runner_category = models.PositiveIntegerField(verbose_name='Заявляетесь в группу', choices=CATEGORY, default=1,
                                                   db_index=True)
     runner_gender = models.CharField(max_length=1, choices=GENDER, verbose_name='пол участника', default='м')
@@ -103,11 +105,3 @@ class User(AbstractUser):
     def __str__(self):
         return str(self.username)
 
-    def _value(self):
-        if self.runner_gender == 'м':
-            return u'%s' % self.CATEGORY
-
-        else:
-            return u'%s' % self.CATEGORY_WOMEN
-
-    value = property(_value)
