@@ -97,9 +97,12 @@ class RunnerDayForm(ModelForm):
             'day_time': MyTotalTimeInput(
                 attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '01:00:00'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'format': '%m:%s', 'value': '00:05:00', 'step': '1',
+                attrs={'class': 'form-control form-control-user', 'type':'time', 'step': '1','value':'00:00:00',
                        'id': 'temp'}),
-            'ball': forms.NumberInput(attrs={'class': 'form-control', 'readonly':'True','id':'ball', 'placeholder':'00'})
+            'ball': forms.NumberInput(attrs={'class': 'form-control', 'readonly':'True','id':'ball', 'placeholder':'00'}),
+
+
+
         }
         fields = ['day_select', 'number_of_run', 'day_distance', 'day_time', 'day_average_temp', 'ball']
 

@@ -1,8 +1,8 @@
 {% load static %}
 
 
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-<ul class="navbar-nav profile-user">
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
+<ul class="navbar-nav profile-user ">
 
 
 
@@ -56,15 +56,21 @@
 
 
         {% endif %}
+    </div>
 
-    </ul>
     <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
+{#    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">#}
+{#        <i class="fa fa-bars"></i>#}
+{#    </button>#}
+
+</ul>
 
     <a href="{% url 'index' %}"> Главная</a>
+    <a href="{% url 'index' %}"> Участники</a>
+    <a href="{% url 'index' %}"> Команды</a>
+    <a href="{% url 'index' %}"> Статистика</a>
 
+    <a href="{% url 'index' %}"> Календарь</a>
 
 </nav>
 

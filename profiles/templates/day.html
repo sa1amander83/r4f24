@@ -202,6 +202,7 @@
         let tot_koef, ost_dist, ost_koef
         let ball = document.getElementById('ball')
         let listoff
+
         function calcball(event) {
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
@@ -219,23 +220,25 @@
                 for (let d of distance_koef) {
                     if (distance <= d[0]) {
                         let need_list_index
-                        if(distance<5){
-                            need_list_index=0
+                        if (distance < 5) {
+                            need_list_index = 0
+                        } else if (distance >= 5 && distance < 10) {
+                            need_list_index = 1
+                        } else {
+                            need_list_index = distance_koef.indexOf(d) - 1
+                            //listoff =distance_koef.findIndex(item=>distance<=item[0])
                         }
-                        else if (distance>=5 && distance <10){
-                            need_list_index=1
+
+                        let ost_dist
+                        let ost_koef
+                        if (distance >= 5) {
+                            ost_dist = distance - distance_koef[need_list_index][0]
+                            ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist
+                        } else {
+                            ost_dist = distance
+                            ost_dist = distance_koef[need_list_index][1] * ost_dist
                         }
-                        else{
-                            need_list_index=distance_koef.indexOf(d)
-                            listoff =distance_koef.find(item=>item[need_list_index])
-                        }
-                        console.log(listoff)
-                        console.log(distance_koef.indexOf(d))
-                        console.log(need_list_index)
-                        let ost_dist = distance - listoff[0] ? distance >= 5 : distance
-                        console.log(distance)
-                        let ost_koef = (listoff[1] + 0.1) * ost_dist ? distance >= 5 : distance_koef[listoff][1] * ost_dist
-                        tot_koef = (5 * listoff[2] + ost_koef) * avg_temp_koef;
+                        tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef;
                         break;
                     }
 
