@@ -7,35 +7,34 @@
 
     <div class="card o-hidden border-0 shadow-lg my-5">
 
-        <div class="row">
+    <div class="row">
 
 
-            <div class="user-creation-form">
-                <form method="post" enctype="multipart/form-data">
+        <div class="user-creation-form">
+            <form method="post" enctype="multipart/form-data">
 
-                    {% csrf_token %}
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% for f in form %}
-                        <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
-                        <div class="form-error">{{ f.errors }}</div>
-                    {% endfor %}
+                {% csrf_token %}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% for f in form %}
+                    <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
+                    <div class="form-error">{{ f.errors }}</div>
+                {% endfor %}
 
-                    <button type="submit" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
+                <button type="submit" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
 
-                </form>
-            </div>
+            </form>
         </div>
+    </div>
 
 {% endblock %}
 {% block extrascripts %}
     <script>
-
         let avg_temp_koef = 0
         let distance_koef = [
             [4.999, 1, 1], [9.999, 1.1, 2.1],
@@ -202,14 +201,12 @@
         document.querySelector('form').addEventListener('input', calcball);
         let tot_koef, ost_dist, ost_koef
         let ball = document.getElementById('ball')
-
+        let listoff
         function calcball(event) {
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
                 let distance = document.getElementById('day_distance').value
 
-                console.log(temp)
-                console.log(distance)
 
                 for (const key in temp_koef) {
                     if (temp <= key) {
@@ -217,26 +214,38 @@
                         break
                     }
                 }
-                console.log(avg_temp_koef)
 
+//https://doka.guide/js/array-find/
                 for (let d of distance_koef) {
                     if (distance <= d[0]) {
-                        let need_list = distance_koef.indexOf(d) - 1;
-                        let ost_dist = distance - distance_koef[need_list][0];
-                        console.log(need_list)
-                        console.log(ost_dist)
-                        let ost_koef = (distance_koef[need_list][1]+0.1) * ost_dist;
-                        console.log(ost_koef)
-                        tot_koef = (5 * distance_koef[need_list][2] + ost_koef) * avg_temp_koef;
+                        let need_list_index
+                        if(distance<5){
+                            need_list_index=0
+                        }
+                        else if (distance>=5 && distance <10){
+                            need_list_index=1
+                        }
+                        else{
+                            need_list_index=distance_koef.indexOf(d)
+                            listoff =distance_koef.find(item=>item[need_list_index])
+                        }
+                        console.log(listoff)
+                        console.log(distance_koef.indexOf(d))
+                        console.log(need_list_index)
+                        let ost_dist = distance - listoff[0] ? distance >= 5 : distance
+                        console.log(distance)
+                        let ost_koef = (listoff[1] + 0.1) * ost_dist ? distance >= 5 : distance_koef[listoff][1] * ost_dist
+                        tot_koef = (5 * listoff[2] + ost_koef) * avg_temp_koef;
                         break;
                     }
+
                 }
 
             }
-            if (tot_koef){
-           ball.value = Math.round(tot_koef)}
-            else{
-             ball.value = 0
+            if (tot_koef) {
+                ball.value = Math.round(tot_koef)
+            } else {
+                ball.value = 0
             }
         }
     </script>
