@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="container-fluid">
+
+        {% if cat_selected == '1' %}
+     <h2> Участников в  категории "Новичок" - {{ count_of_runners }}</h2>
+       {% elif cat_selected == '2' %}
+     <h2> Участников в  категории "Легкий" - {{ count_of_runners }}</h2>
+       {% elif cat_selected == '3' %}
+     <h2> Участников в  категории "Средний" - {{ count_of_runners }}</h2>
+       {% elif cat_selected == '4' %}
+     <h2> Участников в  категории "Тяжелый" - {{ count_of_runners }}</h2>
+       {% elif cat_selected == '5' %}
+     <h2> Участников в  категории "Ультра" - {{ count_of_runners }}</h2>
+
+
+        {% elif cat_selected == '50' %}
+     <h2> Участников в  категории "50+" - {{ count_of_runners }}</h2>
+
+        {% elif cat_selected == 'woman' %}
+     <h2> Участников женщин" - {{ count_of_runners }}</h2>
+
+
+             {% endif%}
+
+
+
+
+
+            <br>
+              <div class="header-stat-comanda">
+                <p>
+                <h2>выбор категории:</h2></p>
+
+              <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 0 %}"> Все </a>
+
+             <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 1 %}">Новичок</a>
+
+        <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 2 %}">Легкий</a>
+
+        <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 3 %}">Средний</a>
+
+        <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 4 %}">Тяжелый</a>
+
+        <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 5 %}">Ультра</a>
+
+        <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 50 %}">50+</a>
+          <a class=" text-center text-warning"
+                           href="{% url 'usercat_selected' 'woman' %}"> Женщины</a>
+
+
+
+                </div>
+
+        <hr>
+
+        <table class="table  table-striped footer" id="catstable">
+            <thead class="table-dark text-center">
+            <tr>
+                <td>№ п/п</td>
+                <td> номер участника</td>
+                <td> категория</td>
+                <td> возраст</td>
+                <td> пол</td>
+
+            </tr>
+            </thead>
+
+
+            <tbody class="table">
+            {% for p in profile %}
+                <tr class="row-cols-md-4 text-center">
+                <td>{{forloop.counter}}</td>
+                    <td><a href="/profile/{{ p.user__username }}"> {{ p.user__username }}</a></td>
+                    <td> {{ p.runner_category }}</td>
+                    <td> {{ p.runner_age }}</td>
+                    <td> {{ p.runner_gender }}</td>
+                </tr>
+
+
+            {% endfor %}
+            </tbody>
+            <tr></tr>
+        </table>
+
+    </div>
+   <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+
+
+
+{% endblock %}

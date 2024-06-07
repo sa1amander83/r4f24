@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 app_name='profile'
-from .views import ProfileUser, InputRunnerDayData, EditRunnerDayData, DeleteRunnerDayData, AddFamily
+from .views import ProfileUser, InputRunnerDayData, EditRunnerDayData, DeleteRunnerDayData, AddFamily, EditProfile
 
 urlpatterns = [
 
@@ -10,5 +10,6 @@ urlpatterns = [
     path('profile/<slug:username>/<pk>/editrunday/', EditRunnerDayData.as_view(), name='editrunday'),
     path('profile/<slug:username>/<pk>/delete/', DeleteRunnerDayData.as_view(), name='delete'),
     path('profile/<slug:username>/addfamily', AddFamily.as_view(), name='addfamily'),
+    path('profile/<slug:username>/edit', EditProfile.as_view(), name='editprofile'),
 
 ]

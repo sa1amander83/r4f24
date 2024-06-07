@@ -4,9 +4,18 @@
 {% load time_tag %}
 {% load divide_tag %}
 {% load cat_tag %}
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
 {% include 'components/sidebar.html' %}
 {% block content %}
 
@@ -17,10 +26,10 @@
 
 
 
-        {% if cat_selected == 'woman' %}
+        {% if cat_selected == 5 %}
             <h2> Результаты участников женщин </h2>
         {% elif cat_selected %}
-            <h2> Результаты участников в категории  {{ cat_selected|cat_tag }} </h2>
+            <h2> Результаты участников в категории {{ cat_selected|cat_tag }} </h2>
         {% else %}
             <h3> Общие результаты участников</h3>
 
@@ -30,24 +39,58 @@
         <div class="topbar-divider"></div>
         <div class="flex justify-content-around">
 
-            <h2>выбор категории:</h2>
-            <a class="text-center text-warning text-3xl" href="{% url 'index' %}">Общий</a>
 
 
-            <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 1 %}">Новичок</a>
 
-            <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 2 %}">Любитель</a>
+                <h2>выбор категории:</h2>
+                <a class="text-center text-warning text-3xl" href="{% url 'index' %}">Общий</a>
+                <a class=" text-center text-warning text-3xl"
+                   href="{% url 'runnercat_selected' 1  0 %}">Новичок</a>
+                <a class=" text-center text-warning text-3xl"
+                   href="{% url 'runnercat_selected' 2 0 %}">Любитель</a>
+                <a class=" text-center text-warning text-3xl"
+                   href="{% url 'runnercat_selected' 3 0 %}">Профи</a>
+                <a class="text-center text-warning text-3xl"
+                   href="{% url 'runnercat_selected' 5 0 %}">Женщины</a>
+                </div>
 
-            <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 3 %}">Профи</a>
+                <div class=" dropdown">
+
+                    <a class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Возраст
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">Возраст
+                        <a class="dropdown-item text-center"
+
+                           href="{% url 'runnercat_selected' cat=cat_selected   age=0 %}">Все</a>
+
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center"
+                           href="{% url 'runnercat_selected' cat=cat_selected age=1 %}">до 17
+                            лет</a>
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item text-center"
+                           href="{% url 'runnercat_selected' cat=cat_selected age=2 %}">18-35
+                            лет</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center"
+                           href="{% url 'runnercat_selected' cat=cat_selected age=3 %}"> 36-49
+                            лет </a>
+                        <div class="dropdown-divider"></div>
 
 
-            <a class="text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 'woman' %}">Женщины</a>
+                        <a class="dropdown-item text-center"
+                           href="{% url 'runnercat_selected' cat=cat_selected age=4 %}">
+                            50+</a>
+                        <div class="dropdown-divider"></div>
 
-        </div>
+                    </div>
+                </div>
+
+
         <div class="container-fluid">
             <table id="myTable" class="table  table-striped text-center">
 
@@ -66,7 +109,6 @@
                 <tbody class="text-center">
 
 
-
                 {% for s in tot_dist %}
 
 
@@ -74,7 +116,7 @@
 
 
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="/profile/{{ s.runner_stat }}">{{ s.runner_stat}} </a></td>
+                        <td><a href="/profile/{{ s.runner_stat }}">{{ s.runner_stat }} </a></td>
                         <td>  {{ s.total_balls }}</td>
                         <td> {{ s.total_distance|floatformat:3 }}</td>
                         <td> {{ s.total_time }}</td>

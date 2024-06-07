@@ -23,8 +23,13 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Семья</a>
                     <div class="dropdown-divider"></div>
+
+                       <a class="dropdown-item text-center" href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
+                    <div class="dropdown-divider"></div>
                      <a  class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i class="fa-brands fa-telegram "></i> Telegram </a>
                     <div class="dropdown-divider"></div>
+
+
                     <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
                      <div class="dropdown-divider"></div>
 
@@ -66,7 +71,7 @@
 </ul>
 
     <a href="{% url 'index' %}"> Главная</a>
-    <a href="{% url 'index' %}"> Участники</a>
+    <a href="{% url 'runnercat_selected' 0 0 %}"> Участники</a>
     <a href="{% url 'index' %}"> Команды</a>
     <a href="{% url 'index' %}"> Статистика</a>
 

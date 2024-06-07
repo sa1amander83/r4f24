@@ -18,7 +18,7 @@ from core.models import User, Family
 from profiles.models import RunnerDay, Statistic, Photo
 
 from profiles.utils import DataMixin
-from r4f24.forms import RunnerDayForm, AddFamilyForm
+from r4f24.forms import RunnerDayForm, AddFamilyForm, RegisterUserForm
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -64,6 +64,20 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             context['tot_dist'] = {}
 
             return dict(list(context.items()) + list(c_def.items()))
+
+
+class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
+    model = User
+    # form_class = RegisterUserForm
+    template_name = 'editprofile.html'
+
+    def get_success_url(self):
+        return reverse_lazy('profile:profile', kwargs={'username': self.object})
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    fields = ['runner_age','runner_category', 'runner_gender', 'zabeg22','zabeg23']
+
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):

@@ -17,7 +17,8 @@ class IndexView(DataMixin, ListView):
 
         # context['userid'] = Statistic.objects.filter(runner_id__gte=0)
         context['user_detail'] = User.objects.filter(id=self.request.user.id)
-
+        context['cat_selected'] = 0
+        context['age'] = 0
         context['count_of_runners'] = User.objects.exclude(not_running=True).count()
 
         # print( context['count_of_runners'])
@@ -94,22 +95,47 @@ class CatListView(DataMixin, ListView):
 
 class RunnersCatView(DataMixin, ListView):
     model = RunnerDay
-    template_name = 'index.html'
+    template_name = 'category.html'
     context_object_name = 'stat'
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        global start_age, last_age
         context = super().get_context_data(**kwargs)
         cat_selected = self.kwargs['cat']
         # context['calend'] = {x: x for x in range(1, 31)}
+        get_age = self.kwargs['age']
 
-        if cat_selected=='woman':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_gender='ж').\
-                filter(runner_stat__not_running=False)
-
+        if cat_selected == 5:
+            gender = 'ж'
         else:
+            gender = 'м'
+            # context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_gender='ж').\
+            #     filter(runner_stat__not_running=False)
+        print(cat_selected)
+        if get_age == 0:
+            start_age = 4
+            last_age = 99
+        elif get_age == 1:
+            start_age = 4
+            last_age = 17
+        elif get_age == 2:
+            start_age = 18
+            last_age = 34
 
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__not_running=False)
+        elif get_age == 3:
+            start_age = 35
+            last_age = 49
+
+        elif get_age == 4:
+            start_age = 50
+            last_age = 99
+
+        if  cat_selected==0:
+            context['tot_dist'] = User.objects.filter(not_running=False)
+        else:
+            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(runner_age__gte=start_age).\
+            filter(runner_age__lte=last_age).filter(runner_gender=gender)
+
 
         #
         # context['userid'] = Statistic.objects.filter(runner_id__gte=0)
@@ -144,3 +170,59 @@ class RunnersCatView(DataMixin, ListView):
 
     def get_queryset(self):
         return RunnerDay.objects.all()
+
+
+class RunnersView(DataMixin, ListView):
+    model = User
+    template_name = 'runners.html'
+
+    # def user(self):
+    #     return RunnerDay.objects.get(pk=self.pk)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['calend'] = {x: x for x in range(1, 31)}
+
+        if self.kwargs:
+            cat_selected = self.kwargs['cat']
+            context['cat_selected'] = cat_selected
+
+            if cat_selected == '0':
+                context['profile'] = User.objects.filter(not_running=False).values('username',
+                                                                                   'runner_category', 'runner_age',
+                                                                                   'runner_gender')
+                context['count_of_runners'] = User.objects.filter(not_running=False).count()
+                return context
+            elif cat_selected == 5:
+                context['profile'] = User.objects.filter(runner_gender='ж').values('username',
+                                                                                   'runner_category',
+                                                                                   'runner_age',
+                                                                                   'runner_gender')
+                context['count_of_runners'] = User.objects.filter(runner_gender='ж').count()
+
+                return context
+
+            elif cat_selected == '50':
+
+                context['profile'] = User.objects.filter(runner_age__gte=50).values('username',
+                                                                                    'runner_category',
+                                                                                    'runner_age',
+                                                                                    'runner_gender')
+                context['count_of_runners'] = User.objects.filter(runner_age__gte=50).count()
+                return context
+            elif int(cat_selected) > 0 and int(cat_selected) < 6:
+                context['profile'] = User.objects.filter(runner_category=cat_selected).values('username',
+                                                                                              'runner_category',
+                                                                                              'runner_age',
+                                                                                              'runner_gender')
+                context['count_of_runners'] = User.objects.filter(runner_category=cat_selected).count()
+                return context
+
+
+
+        else:
+            context['count_of_runners'] = User.objects.all().count()
+            context['profile'] = User.objects.all().filter(not_running=False).values('username', 'runner_category',
+                                                                                     'runner_age',
+                                                                                     'runner_gender')
+            return context

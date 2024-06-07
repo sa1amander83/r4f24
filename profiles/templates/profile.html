@@ -2,6 +2,7 @@
 {% load static %}
 {% load divide_tag %}
 {% load time_tag %}
+{% load cat_tag %}
 {% block content %}
     {% load thumbnail %}
     {% csrf_token %}
@@ -63,7 +64,7 @@
                 <p class="col-form-label"> Команда - №{{ d.runner_team }}</p>
                 <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
                 <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
-                <p class="col-form-label"> Категория - {{ d.runner_category }}</p>
+                <p class="col-form-label"> Категория - {{ d.runner_category|cat_tag }}</p>
 
 
 

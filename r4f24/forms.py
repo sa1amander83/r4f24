@@ -50,6 +50,7 @@ class UserImportForm(ModelForm):
 class MyAverage(forms.TimeInput):
     input_type = 'time'
     format = '%M:%S'
+    TIME_INPUT_FORMAT=['%M:%S']
 
 
 class MyTotalTimeInput(forms.TimeInput):

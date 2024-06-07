@@ -55,6 +55,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class Family(models.Model):
+    family_title=models.CharField(max_length=100, verbose_name='Название команды')
     runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
     runner_family = models.ManyToManyField(to='User', blank=True,verbose_name='Семья', related_name='runners_family')
 

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <body class="bg-gradient-primary">
+
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+
+            <div class="row">
+
+                <br>
+
+                <div class="user-creation-form  flex justify-center">
+{#                    <form method="post" action="{% url 'register' %}" enctype="text/plain">#}
+                    <form method="post">
+                           {% csrf_token %}
+                    {{ form.name.errors }}
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }} text-danger "
+                                                             style="font-size:20px;"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+
+                        {% for f in form %}
+
+                            <p><label class="form-label" for="{{ f.id_for_label }}"
+                                      style="font-size: 20px;">{{ f.label }}: </label>{{ f }}</p>
+                            <div class="form-error">{{ f.errors }}</div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-facebook btn-user btn-block"> Обновить сведения</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+ {% block extrascripts %}
+     <script src="{% static  'register.js' %}"></script>
+<script>
+document.getElementById("username").addEventListener("change", myFunction);
+let user=document.getElementById('username')
+let  team= document.getElementById('team');
+console.log(user.value)
+user.onchange=function () {
+    team.value=user.value.slice(0,3)}
+
+function myFunction() {
+
+
+    team.value=user.value.slice(0,3)
+console.log(team.value)
+}
+
+</script>
+{% endblock %}
