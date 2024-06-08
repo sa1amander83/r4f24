@@ -36,7 +36,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         c_def = self.get_user_context(calend='calend')
         context['user_data'] = User.objects.filter(username=self.kwargs['username'])
 
-        run_user = User.objects.get(username=self.kwargs['username'])
+        context['run_user'] = User.objects.get(username=self.kwargs['username'])
 
         # photo = run_user.photos.filter(day_select=)
 

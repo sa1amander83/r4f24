@@ -1,4 +1,6 @@
-from django.db.models import Count, Q, Sum
+from datetime import datetime
+
+from django.db.models import Count, Q, Sum, Avg
 
 from core.models import User
 from profiles.models import Statistic, RunnerDay
@@ -241,7 +243,15 @@ class DataMixin:
             tot_time = '00:00'
         else:
             tot_time = total_time['day_time__sum']
-        avg_time = self.avg_temp_function(username)
+        # avg_time = self.avg_temp_function(username)
+        avg_time = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
+
+        if avg_time['day_average_temp__avg'] is None:
+            avg_time = '00:00'
+        else:
+            avg_time=avg_time['day_average_temp__avg']
+
+
 
         tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
             day_distance__gte=0).count()
@@ -253,11 +263,11 @@ class DataMixin:
         else:
             balls = tot_balls['ball__sum']
         is_qual = True if dist >= 30 else False
-
+        from dateutil import parser
         try:
             run_stat = Statistic.objects.get(runner_stat_id=runner_id)
-
-            ball = self.calc_ball(dist, avg_time)
+            print(avg_time)
+            ball = self.calc_ball(dist, str(avg_time))
 
             run_stat_new = Statistic.objects.filter(runner_stat_id=runner_id).update(
                 total_distance=dist,

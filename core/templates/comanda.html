@@ -15,18 +15,18 @@
             <hr>
             <div class="statistic-team">
 
-                <p class="col-form-label">пробег за все время - {{ res.total_dist__sum|floatformat:3 }} км</p>
+                <p class="col-form-label">пробег за все время - {{ res.tot_distance__sum|floatformat:3 }} км</p>
                 {% if res.total_time__sum %}
-                    <p class="col-form-label">общее время пробега - {{ res.total_time__sum }}</p>
+                    <p class="col-form-label">общее время пробега - {{ res.tot_time__sum }}</p>
                 {% else %}
                     <p class="col-form-label">общее время пробега - км</p>
                 {% endif %}
-                {% if res.avg_time__avg %}
-                    <p class="col-form-label"> средний темп команды - {{ res.avg_time__avg|smooth_filter }} мин/км</p>
+                 {% if res.avg_time__avg %}
+                  <p class="col-form-label"> средний темп команды - {{ res.avg_time__avg|smooth_filter}} мин/км</p>
                 {% else %}
                     <p class="col-form-label"> средний темп команды - мин/км</p>
                 {% endif %}
-
+                    <p class="col-form-label"> количество пробежек -{{ res.tot_runs__sum }} </p>
 
             </div>
 
@@ -50,7 +50,7 @@
 
             </tr>
             </thead>
-            <tbody class="table">
+            <tbody class="">
 
             {% for  c in qs %}
 

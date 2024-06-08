@@ -337,53 +337,68 @@ class OneTeamStat(DataMixin, ListView):
         comand_number = self.kwargs['comanda']
         context['comand_number'] = comand_number
 
-        team_count = RunnerDay.objects.filter(runner__runner_team__team=comand_number).count()
+        team_count = RunnerDay.objects.filter(runner__runner_team=comand_number).count()
         # context['res'] = RunnerDay.objects.filter(runner__runner_team__team=comand_number).filter(Q(
         #     day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)).values(
         #     'runner__user__username'). \
         #     annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
         #              avg_time=Avg('day_average_temp')).aggregate(Sum('total_dist'), Sum('total_time'), Avg('avg_time'))
 
-        context['res'] = RunnerDay.objects.filter(runner__runner_team__team=comand_number). \
+        context['res'] = Statistic.objects.filter(runner_stat__runner_team=comand_number).values(
+            'runner_stat__username', 'runner_stat__runner_category',).annotate(
+            tot_time=Sum('total_time'),
+            tot_avg_temp=Sum('total_average_temp'),
+            tot_distance=Sum('total_distance'),
+            tot_runs=Sum('total_runs'),
+            day_count=Count(Q(total_days__gt=0)),
+            avg_time=ExpressionWrapper(
+                F('tot_avg_temp') / F('total_runs'),
+                output_field=TimeField())). \
+            aggregate(Sum('tot_distance'), Sum('tot_time'), Avg('avg_time'), Sum('tot_runs'))
+
+        print( context['res'] )
+        #
+        # context['res'] = RunnerDay.objects.filter(runner__runner_team=comand_number). \
+        #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
+        #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
+        #     'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
+        #                                                                   total_time=Sum('day_time'),
+        #                                                                   total_average_temp=Sum('day_average_temp'),
+        #                                                                   day_count=Count(
+        #                                                                       (Q(day_average_temp__lte="00:08:00") & Q(
+        #                                                                           day_distance__gt=0)) |
+        #                                                                       (Q(day_average_temp__gte='00:08:00') & Q(
+        #                                                                           runner__runner_age__gte=60))),
+        #                                                                   avg_time=ExpressionWrapper(
+        #                                                                       F('total_average_temp') / F('day_count'),
+        #                                                                       output_field=TimeField())). \
+        #     aggregate(Sum('total_dist'), Sum('total_time'), Avg('avg_time'))
+
+        result = RunnerDay.objects.filter(runner__runner_team=comand_number). \
             filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
                    (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-            'runner__user__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-                                                                          total_time=Sum('day_time'),
-                                                                          total_average_temp=Sum('day_average_temp'),
-                                                                          day_count=Count(
-                                                                              (Q(day_average_temp__lte="00:08:00") & Q(
-                                                                                  day_distance__gt=0)) |
-                                                                              (Q(day_average_temp__gte='00:08:00') & Q(
-                                                                                  runner__runner_age__gte=60))),
-                                                                          avg_time=ExpressionWrapper(
-                                                                              F('total_average_temp') / F('day_count'),
-                                                                              output_field=TimeField())). \
-            aggregate(Sum('total_dist'), Sum('total_time'), Avg('avg_time'))
+            'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
+                                                                    total_time=Sum('day_time'),
+                                                                    total_average_temp=Sum('day_average_temp'),
+                                                                    day_count=Count(
+                                                                        (Q(day_average_temp__lte="00:08:00") & Q(
+                                                                            day_distance__gt=0)) |
+                                                                        (Q(day_average_temp__gte='00:08:00') & Q(
+                                                                            runner__runner_age__gte=60))),
+                                                                    avg_time=ExpressionWrapper(
+                                                                        F('total_average_temp') / F('day_count'),
+                                                                        output_field=TimeField()),
+                                                                    avg_team_time=ExpressionWrapper(
+                                                                        F('avg_time') / team_count,
+                                                                        output_field=TimeField()),
 
-        result = RunnerDay.objects.filter(runner__runner_team__team=comand_number). \
-            filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-                   (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-            'runner__user__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-                                                                          total_time=Sum('day_time'),
-                                                                          total_average_temp=Sum('day_average_temp'),
-                                                                          day_count=Count(
-                                                                              (Q(day_average_temp__lte="00:08:00") & Q(
-                                                                                  day_distance__gt=0)) |
-                                                                              (Q(day_average_temp__gte='00:08:00') & Q(
-                                                                                  runner__runner_age__gte=60))),
-                                                                          avg_time=ExpressionWrapper(
-                                                                              F('total_average_temp') / F('day_count'),
-                                                                              output_field=TimeField()),
-                                                                          avg_team_time=ExpressionWrapper(
-                                                                              F('avg_time') / team_count,
-                                                                              output_field=TimeField()),
-
-                                                                          ). \
+                                                                    ). \
             order_by('-total_dist')
         context['tot_dist'] = result
 
-        number_runner = User.objects.filter(user__username__startswith=comand_number) \
-            .values('username', 'runner_category', 'runner_age', 'runner_gender').order_by('username')
+        number_runner = User.objects.filter(username__startswith=comand_number) \
+            .values('username', 'runner_category', 'runner_age', 'runner_gender', 'zabeg22', 'zabeg23').order_by(
+            'username')
 
         qs = list()
         for i in result:
