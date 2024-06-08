@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% block content %}
+{%  load okon4_tag%}
+    {% csrf_token %}
+
+
+    <div class=" container-fluid statistic ">
+
+        <div>
+            <div>
+                <h3 class="text-dark"> Всего  {{ total_runners|okon4 }}</h3>
+
+            </div>
+
+            <div>
+                <p class="text-gray-900  text-lg"> Мужчины - {{ runners_mens|okon4  }}</p>
+                <p class="text-gray-900  text-lg"> Женщины - {{ runners_womens|okon4  }}</p>
+
+            </div>
+            <hr>
+            <div>
+                <h3 class="text-success">Принимали участие в #МыZaБег: </h3>
+
+                    <p class="text-gray-900  text-lg"> {{ run2022|okon4  }} </p>
+
+
+
+            </div>
+
+          <div>
+                <h3 class="text-success"> Выполнили ZaБег: </h3>
+                {% for k, v in get_finished.items %}
+                    <p class="text-gray-900  text-lg"> {{ k }} категория - {{ v|okon4  }} </p>
+
+                {% endfor %}
+
+            </div>
+
+  <div>
+                <h3 class="text-success"> Пробежали 30 из 30 дней: </h3>
+
+                    <p class="text-gray-900  text-lg">  {{ run30|okon4  }} </p>
+
+
+
+            </div>
+            <hr>
+            <div>
+                <h3 class="text-danger"> Дисквалифицированы: </h3>
+                <p class="text-gray-900  text-lg"> {{ disqauled|okon4  }}  </p>
+                <p class="text-gray-900  text-lg"> Из них нет отсутствует пробег у {{ not_run|okon4  }} </p>
+            </div>
+        </div>
+        <div>
+
+
+            <div>
+                <h3 class="text-warning"> Участники по категориям</h3>
+                <p class="text-gray-900  text-lg"> I категория - {{ runners_cat1|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> II категория - {{ runners_cat2|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> II категория - {{ runners_cat3|okon4  }} </p>
+                <p class="text-gray-900  text-lg">IV категория - {{ runners_cat4|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> V категория - {{ runners_cat5|okon4  }} </p>
+            </div>
+            <hr>
+
+            <div>
+                <h3 class="text-dark">Возраст участников:</h3>
+                <p class="text-gray-900  text-lg"> до 25 лет - {{ runner_age_1|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 25 - 30 лет - {{ runner_age_2|okon4  }} </p>
+                <p class="text-gray-900  text-lg">31 - 35 лет - {{ runner_age_3|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 36 - 40 лет - {{ runner_age_4|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 41 - 45 лет - {{ runner_age_5|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 46 - 50 лет - {{ runner_age_6|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 51 - 59 лет - {{ runner_age_7|okon4  }} </p>
+                <p class="text-gray-900  text-lg"> 60 и старше - {{ runner_age_8|okon4  }} </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+
+{% endblock %}
+
+{#{% block calend %}#}
+{#    {% for value in calend %}#}
+{##}
+{#        <a href="/day_selected/{{ value }}" class="day-selected">{{ value }}</a>#}
+{##}
+{#    {% endfor %}#}
+{#{% endblock %}#}

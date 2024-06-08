@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load time_tag %}
+{% load divide_tag %}
+    {% csrf_token %}
+ <h3> Количество команд - {{ comand.count }}</h3>
+    <div class=" container-fluid ">
+
+        <table class="table  table-striped" id="comandTable">
+            <thead class="table-dark text-center">
+            <tr>
+                <td>№ п/п</td>
+                <td> команда</td>
+                <td> количество участников</td>
+
+            </tr>
+            </thead>
+
+
+            <tbody class="">
+            {% for key,value in comset.items %}
+                <tr class="row-cols-md-4 text-center">
+                   <td>{{forloop.counter}}</td>
+                    <td><a href="{% url "oneteamstat" key %}">{{ key }}</a></td>
+                    <td> {{ value }}</td>
+
+                </tr>
+
+            {% endfor %}
+            </tbody>
+            <tr></tr>
+        </table>
+    </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+{% endblock %}

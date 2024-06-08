@@ -71,9 +71,10 @@
 </ul>
 
     <a href="{% url 'index' %}"> Главная</a>
-    <a href="{% url 'runnercat_selected' 0 0 %}"> Участники</a>
-    <a href="{% url 'index' %}"> Команды</a>
-    <a href="{% url 'index' %}"> Статистика</a>
+    <a href="{% url 'runnercat_selected' 0 0 'all' %}"> Участники</a>
+    <a href="{% url 'championat' %}"> Чемпионат</a>
+    <a href="{% url 'comandsview' %}"> Команды</a>
+    <a href="{% url 'statistic' %}"> Статистика</a>
 
     <a href="{% url 'index' %}"> Календарь</a>
 

@@ -45,13 +45,13 @@
                 <h2>выбор категории:</h2>
                 <a class="text-center text-warning text-3xl" href="{% url 'index' %}">Общий</a>
                 <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runnercat_selected' 1  0 %}">Новичок</a>
+                   href="{% url 'runnercat_selected' 1 0 'm' %}">Новичок</a>
                 <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runnercat_selected' 2 0 %}">Любитель</a>
+                   href="{% url 'runnercat_selected' 2 0 'm'%}">Любитель</a>
                 <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runnercat_selected' 3 0 %}">Профи</a>
+                   href="{% url 'runnercat_selected' 3 0 'm' %}">Профи</a>
                 <a class="text-center text-warning text-3xl"
-                   href="{% url 'runnercat_selected' 5 0 %}">Женщины</a>
+                   href="{% url 'runnercat_selected' 1 0 'f'%}">Женщины</a>
                 </div>
 
                 <div class=" dropdown">
@@ -63,27 +63,27 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">Возраст
                         <a class="dropdown-item text-center"
 
-                           href="{% url 'runnercat_selected' cat=cat_selected   age=0 %}">Все</a>
+                           href="{% url 'runnercat_selected' cat=cat_selected  age=0 gender='m' %}">Все</a>
 
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-center"
-                           href="{% url 'runnercat_selected' cat=cat_selected age=1 %}">до 17
+                           href="{% url 'runnercat_selected' cat=cat_selected age=1  gender='m'%}">до 17
                             лет</a>
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item text-center"
-                           href="{% url 'runnercat_selected' cat=cat_selected age=2 %}">18-35
+                           href="{% url 'runnercat_selected' cat=cat_selected age=2 gender='m'%}">18-35
                             лет</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-center"
-                           href="{% url 'runnercat_selected' cat=cat_selected age=3 %}"> 36-49
+                           href="{% url 'runnercat_selected' cat=cat_selected age=3 gender='m'%}"> 36-49
                             лет </a>
                         <div class="dropdown-divider"></div>
 
 
                         <a class="dropdown-item text-center"
-                           href="{% url 'runnercat_selected' cat=cat_selected age=4 %}">
+                           href="{% url 'runnercat_selected' cat=cat_selected age=4 gender='m'%}">
                             50+</a>
                         <div class="dropdown-divider"></div>
 

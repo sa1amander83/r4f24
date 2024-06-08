@@ -1,20 +1,17 @@
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import path, include
+from django.urls import path
 
-from core.views import IndexView, CatListView, RunnersCatView
+from core.views import IndexView, CatListView, RunnersCatView, ComandsResults, Championat, OneTeamStat, ComandsView, \
+    StatisticView
 
 urlpatterns = [
 
-    path('',IndexView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('cat_selected/<slug:cat>/', CatListView.as_view(), name='cat_selected'),
-    # path('runnercat_selected/<slug:cat>/', RunnersCatView.as_view(), name='runnercat_selected'),
-    path('runnercat_selected/<slug:cat>&<int:age>/', RunnersCatView.as_view(), name='runnercat_selected'),
-
-
-
-
+    path('runnercat_selected/<int:cat>/<int:age>/<str:gender>/', RunnersCatView.as_view(), name='runnercat_selected'),
+    path('total/', ComandsResults.as_view(), name='totalteamstat'),
+    path('championat/', Championat.as_view(), name='championat'),
+    path('comands/<slug:comanda>/', OneTeamStat.as_view(), name='oneteamstat'),
+    path('comands/', ComandsView.as_view(), name='comandsview'),
+    path('statistic/', StatisticView.as_view(), name='statistic'),
 
 ]

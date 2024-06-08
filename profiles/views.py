@@ -68,16 +68,15 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
 class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     model = User
-    # form_class = RegisterUserForm
     template_name = 'editprofile.html'
 
     def get_success_url(self):
         return reverse_lazy('profile:profile', kwargs={'username': self.object})
+
     def get_object(self, queryset=None):
         return self.request.user
 
-    fields = ['runner_age','runner_category', 'runner_gender', 'zabeg22','zabeg23']
-
+    fields = ['runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
@@ -91,18 +90,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #     files = request.FILES.getlist('photo')
-    #     if form.is_valid():
-    #         for image in files:
-    #             Photo.objects.create(image=image)
-    #
-    #         return redirect('profile:profile')
-    #
-    #     else:
-    #         form = RunnerDayForm()
     def form_valid(self, form):
         dayselected = form.cleaned_data['day_select']
         count_run_in_day = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
@@ -125,32 +112,30 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                                      day_select=dayselected,
                                      photo=each)
 
-            total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-                Sum('day_distance'))
-            if total_distance['day_distance__sum'] is None:
-                dist = 0
-            else:
-                dist = total_distance['day_distance__sum']
-
-            total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-            if total_time['day_time__sum'] is None:
-                tot_time = '00:00'
-            else:
-                tot_time = total_time['day_time__sum']
-            avg_time = self.avg_temp_function(self.kwargs['username'])
-
-            tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-                day_distance__gte=0).count()
-            tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-                day_select__gte=0).distinct('day_select').count()
-            tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-            if tot_balls['ball__sum'] is None:
-                balls = 0
-            else:
-                balls = tot_balls['ball__sum']
-            self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
-                           tot_days=tot_days,
-                           tot_runs=tot_runs, tot_balls=balls)
+            # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
+            #     Sum('day_distance'))
+            # if total_distance['day_distance__sum'] is None:
+            #     dist = 0
+            # else:
+            #     dist = total_distance['day_distance__sum']
+            #
+            # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
+            # if total_time['day_time__sum'] is None:
+            #     tot_time = '00:00'
+            # else:
+            #     tot_time = total_time['day_time__sum']
+            # avg_time = self.avg_temp_function(self.kwargs['username'])
+            #
+            # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            #     day_distance__gte=0).count()
+            # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            #     day_select__gte=0).distinct('day_select').count()
+            # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+            # if tot_balls['ball__sum'] is None:
+            #     balls = 0
+            # else:
+            #     balls = tot_balls['ball__sum']
+            self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
@@ -196,33 +181,31 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
                                  day_select=dayselected,
                                  number_of_run=form.cleaned_data['number_of_run'],
                                  photo=each)
-        # TODO сделать обновление фоток при обновлении пробега
-        total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-            Sum('day_distance'))
-        if total_distance['day_distance__sum'] is None:
-            dist = 0
-        else:
-            dist = total_distance['day_distance__sum']
 
-        total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        if total_time['day_time__sum'] is None:
-            tot_time = '00:00'
-        else:
-            tot_time = total_time['day_time__sum']
-        avg_time = self.avg_temp_function(self.kwargs['username'])
-
-        tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_distance__gt=0).count()
-        tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_select__gt=0).distinct('day_select').count()
-        tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-        if tot_balls['ball__sum'] is None:
-            balls = 0
-        else:
-            balls = tot_balls['ball__sum']
-        self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
-                       tot_days=tot_days,
-                       tot_runs=tot_runs, tot_balls=balls)
+        # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
+        #     Sum('day_distance'))
+        # if total_distance['day_distance__sum'] is None:
+        #     dist = 0
+        # else:
+        #     dist = total_distance['day_distance__sum']
+        #
+        # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
+        # if total_time['day_time__sum'] is None:
+        #     tot_time = '00:00'
+        # else:
+        #     tot_time = total_time['day_time__sum']
+        # avg_time = self.avg_temp_function(self.kwargs['username'])
+        #
+        # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+        #     day_distance__gt=0).count()
+        # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+        #     day_select__gt=0).distinct('day_select').count()
+        # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+        # if tot_balls['ball__sum'] is None:
+        #     balls = 0
+        # else:
+        #     balls = tot_balls['ball__sum']
+        self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
 
         return redirect('profile:profile', username=self.request.user)
 
@@ -249,33 +232,31 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
-        total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-            Sum('day_distance'))
-        if total_distance['day_distance__sum'] is None:
-            dist = 0
-        else:
-            dist = total_distance['day_distance__sum']
-
-        total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        if total_time['day_time__sum'] is None:
-            tot_time = '00:00'
-        else:
-            tot_time = total_time['day_time__sum']
-        avg_time = self.avg_temp_function(self.kwargs['username'])
-
-        tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_distance__gt=0).count()
-        tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_select__gt=0).distinct('day_select').count()
-
-        tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-        if tot_balls['ball__sum'] is None:
-            balls = 0
-        else:
-            balls = tot_balls['ball__sum']
-        self.calc_stat(runner_id=self.request.user.pk, dist=dist, tot_time=tot_time, avg_time=avg_time,
-                       tot_days=tot_days,
-                       tot_runs=tot_runs, tot_balls=balls)
+        # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
+        #     Sum('day_distance'))
+        # if total_distance['day_distance__sum'] is None:
+        #     dist = 0
+        # else:
+        #     dist = total_distance['day_distance__sum']
+        #
+        # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
+        # if total_time['day_time__sum'] is None:
+        #     tot_time = '00:00'
+        # else:
+        #     tot_time = total_time['day_time__sum']
+        # avg_time = self.avg_temp_function(self.kwargs['username'])
+        #
+        # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+        #     day_distance__gt=0).count()
+        # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+        #     day_select__gt=0).distinct('day_select').count()
+        #
+        # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
+        # if tot_balls['ball__sum'] is None:
+        #     balls = 0
+        # else:
+        #     balls = tot_balls['ball__sum']
+        self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
 
         return redirect(success_url, success_msg)
 

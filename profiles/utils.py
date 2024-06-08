@@ -227,7 +227,31 @@ class DataMixin:
 
         return round(tot_koef)
 
-    def calc_stat(self, runner_id, dist, tot_time, avg_time, tot_days, tot_runs, tot_balls):
+    def calc_stat(self, runner_id, username):
+
+        total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
+            Sum('day_distance'))
+        if total_distance['day_distance__sum'] is None:
+            dist = 0
+        else:
+            dist = total_distance['day_distance__sum']
+
+        total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
+        if total_time['day_time__sum'] is None:
+            tot_time = '00:00'
+        else:
+            tot_time = total_time['day_time__sum']
+        avg_time = self.avg_temp_function(username)
+
+        tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
+            day_distance__gte=0).count()
+        tot_days = RunnerDay.objects.filter(runner__username=username).filter(
+            day_select__gte=0).distinct('day_select').count()
+        tot_balls = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('ball'))
+        if tot_balls['ball__sum'] is None:
+            balls = 0
+        else:
+            balls = tot_balls['ball__sum']
         is_qual = True if dist >= 30 else False
 
         try:
@@ -241,7 +265,7 @@ class DataMixin:
                 total_average_temp=':'.join(str(avg_time).split(':')),
                 total_days=tot_days,
                 total_runs=tot_runs,
-                total_balls=tot_balls,
+                total_balls=balls,
                 is_qualificated = is_qual
 
             )

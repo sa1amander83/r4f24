@@ -38,7 +38,7 @@ class RunnerAdmin(admin.ModelAdmin):
     list_editable = ( 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
     list_display = ('username', 'runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
     # 'пробег_за_день','дистанция_за_день', 'время_пробега', 'средний_темп',)
-    # list_display = ('user', 'runner_age', 'runner_category', 'runner_gender', 'is_admin', 'пробег_за_день', )
+
     list_display_links = ('username', 'runner_team')
 
     list_filter = ('runner_category', 'runner_team',)

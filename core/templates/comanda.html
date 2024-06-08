@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% load divide_tag %}
+{% block content %}
+    {% csrf_token %}
+    {#    //страница отображает Список команд #}
+    <div class=" container-fluid ">
+        <div class="header-stat-comanda">
+
+            {#            {% for c in comand %}#}
+            <h1> состав команды № {{ comand_number }} </h1>
+            {#            {% endfor %}#}
+
+            <hr>
+            <div class="statistic-team">
+
+                <p class="col-form-label">пробег за все время - {{ res.total_dist__sum|floatformat:3 }} км</p>
+                {% if res.total_time__sum %}
+                    <p class="col-form-label">общее время пробега - {{ res.total_time__sum }}</p>
+                {% else %}
+                    <p class="col-form-label">общее время пробега - км</p>
+                {% endif %}
+                {% if res.avg_time__avg %}
+                    <p class="col-form-label"> средний темп команды - {{ res.avg_time__avg|smooth_filter }} мин/км</p>
+                {% else %}
+                    <p class="col-form-label"> средний темп команды - мин/км</p>
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+        <table class="table  table-striped" id="comanda">
+            <thead class="table-dark text-center">
+            <tr>
+                <td>№</td>
+                <td> номер</td>
+                <td> баллы</td>
+                <td> пробег</td>
+                <td> время</td>
+                <td> темп</td>
+                <td> категория</td>
+                <td> возраст</td>
+                <td> пол</td>
+                <td> пробежки</td>
+
+
+            </tr>
+            </thead>
+            <tbody class="table">
+
+            {% for  c in qs %}
+
+                <tr class="row-cols-md-4 text-center">
+                    <td>{{ forloop.counter }}</td>
+
+                    <td><a href="/profile/{{ c.username }}"> {{ c.username }}</a></td>
+                    <td> {{ c.total_balls }}</td>
+                    <td> {{ c.total_dist|floatformat:3 }} км</td>
+                    <td> {{ c.total_time }}</td>
+                    <td> {{ c.avg_time|smooth_filter }}</td>
+
+                    <td> {{ c.runner_category }}</td>
+                    <td> {{ c.runner_age }}</td>
+                    <td> {{ c.runner_gender }}</td>
+
+
+                    <td> {{ c.total_runs }}</td>
+
+                    {#                    <td> {{ c.avg_time}}</td>#}
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tr></tr>
+        </table>
+
+    </div>
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+
+{% endblock %}
+

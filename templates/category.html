@@ -41,15 +41,15 @@
 
 
             <h2>выбор категории:</h2>
-            <a class="text-center text-warning text-3xl" href="{% url 'runnercat_selected' 1  0 %}">Общий</a>
+            <a class="text-center text-warning text-3xl" href="{% url 'runnercat_selected' 0 0 'all' %}">Общий</a>
             <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 1  0 %}">Новичок</a>
+               href="{% url 'runnercat_selected' 1 0 'all' %}">Новичок</a>
             <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 2 0 %}">Любитель</a>
+               href="{% url 'runnercat_selected' 2 0 'all' %}">Любитель</a>
             <a class=" text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 3 0 %}">Профи</a>
+               href="{% url 'runnercat_selected' 3 0 'all' %}">Профи</a>
             <a class="text-center text-warning text-3xl"
-               href="{% url 'runnercat_selected' 5 0 %}">Женщины</a>
+               href="{% url 'runnercat_selected' 0 0 'f' %}">Женщины</a>
         </div>
 
         <div class=" dropdown">
@@ -61,27 +61,27 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">Возраст
                 <a class="dropdown-item text-center"
 
-                   href="{% url 'runnercat_selected' cat=cat_selected   age=0 %}">Все</a>
+                   href="{% url 'runnercat_selected' cat_selected 0  'all' %}">Все</a>
 
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-center"
-                   href="{% url 'runnercat_selected' cat=cat_selected age=1 %}">до 17
+                   href="{% url 'runnercat_selected' cat_selected 1  'all'%}">до 17
                     лет</a>
                 <div class="dropdown-divider"></div>
 
                 <a class="dropdown-item text-center"
-                   href="{% url 'runnercat_selected' cat=cat_selected age=2 %}">18-35
+                   href="{% url 'runnercat_selected' cat_selected 2  'all' %}">18-35
                     лет</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-center"
-                   href="{% url 'runnercat_selected' cat=cat_selected age=3 %}"> 36-49
+                   href="{% url 'runnercat_selected' cat_selected 3  'all'%}"> 36-49
                     лет </a>
                 <div class="dropdown-divider"></div>
 
 
                 <a class="dropdown-item text-center"
-                   href="{% url 'runnercat_selected' cat=cat_selected age=4 %}">
+                   href="{% url 'runnercat_selected' cat_selected 4  'all'%}">
                     50+</a>
                 <div class="dropdown-divider"></div>
 
@@ -109,18 +109,19 @@
                 {% for s in tot_dist %}
 
 
-                    <tr class="row-cols-md-4 c">
+                    <tr class="row-cols-xl-auto c">
 
 
                         <td>{{ forloop.counter }}</td>
                         <td><a href="/profile/{{ s.username }}">{{ s.username }} </a></td>
                         <td>  {{ s.runner_team }}</td>
-                        <td> {{ s.runner_category }}</td>
+                        <td> {{ s.runner_category|cat_tag }}</td>
                         <td> {{ s.runner_age }}</td>
                         {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
-                        <td> {{ s.runner_gender }}</td>
-                        <td>  {{ s.zabeg22 }}</td>
-                        <td>  {{ s.zabeg23 }}</td>
+                        <td> {% if s.runner_gender == 'м' %} <i class="fa-solid fa-person fa-2xl"></i> {% else %}<i class="fa-solid fa-person-dress fa-2xl"></i> {% endif %}</td>
+                        <td> {% if s.zabeg22 %} <i class="fa-solid fa-check"></i>{% else %} <i class="fa-duotone fa-x"></i> {% endif %}</td>
+                        <td> {% if s.zabeg23 %}<i class="fa-solid fa-check"></i> {% else %} <i class="fa-duotone fa-x"></i> {% endif %}</td>
+
 
 
                     </tr>
