@@ -30,7 +30,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
     def get_object(self, queryset=None):
         return self.request.user
 
-    # TODO здесь должно быть только отображение  из модели статистики а не расчеты
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
@@ -48,6 +48,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat'] = self.kwargs['username']
+
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
             context['haverun'] = 1
         else:
@@ -80,22 +81,18 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
+
     form_class = RunnerDayForm
     template_name = 'day.html'
     success_url = reverse_lazy('profile:profile')
     model = RunnerDay
 
-    def get_context_data(self, *args, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        return context
-
     def form_valid(self, form):
+
         dayselected = form.cleaned_data['day_select']
         count_run_in_day = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
             day_select=dayselected).count()
-        args = {}
-        args.update(csrf(request))
+
 
         if count_run_in_day <= 1:
             cd = form.cleaned_data
@@ -111,36 +108,13 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                                      number_of_run=form.cleaned_data['number_of_run'],
                                      day_select=dayselected,
                                      photo=each)
-
-            # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-            #     Sum('day_distance'))
-            # if total_distance['day_distance__sum'] is None:
-            #     dist = 0
-            # else:
-            #     dist = total_distance['day_distance__sum']
-            #
-            # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-            # if total_time['day_time__sum'] is None:
-            #     tot_time = '00:00'
-            # else:
-            #     tot_time = total_time['day_time__sum']
-            # avg_time = self.avg_temp_function(self.kwargs['username'])
-            #
-            # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            #     day_distance__gte=0).count()
-            # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            #     day_select__gte=0).distinct('day_select').count()
-            # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-            # if tot_balls['ball__sum'] is None:
-            #     balls = 0
-            # else:
-            #     balls = tot_balls['ball__sum']
             self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
-            messages.error(self.request, 'В день учитываются только две пробежки')
+            messages.error(self.request, 'В день учитываются только две пробежки, обновите сведения по одной из пробежек')
             return redirect('profile:profile', username=self.kwargs['username'])
+
 
 
 class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
@@ -182,29 +156,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
                                  number_of_run=form.cleaned_data['number_of_run'],
                                  photo=each)
 
-        # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-        #     Sum('day_distance'))
-        # if total_distance['day_distance__sum'] is None:
-        #     dist = 0
-        # else:
-        #     dist = total_distance['day_distance__sum']
-        #
-        # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        # if total_time['day_time__sum'] is None:
-        #     tot_time = '00:00'
-        # else:
-        #     tot_time = total_time['day_time__sum']
-        # avg_time = self.avg_temp_function(self.kwargs['username'])
-        #
-        # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_distance__gt=0).count()
-        # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_select__gt=0).distinct('day_select').count()
-        # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-        # if tot_balls['ball__sum'] is None:
-        #     balls = 0
-        # else:
-        #     balls = tot_balls['ball__sum']
+
         self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
 
         return redirect('profile:profile', username=self.request.user)

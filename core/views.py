@@ -69,7 +69,7 @@ class CatListView(DataMixin, ListView):
             all_runners = User.objects.all()
 
             comand_list = dict()
-
+        #TODO сделать модель статистики команд???? наподобие участника
             for v in all_teams:
                 teamsss = RunnerDay.objects.filter(runner__runner_team__team=v).filter(
                     day_average_temp__lte="00:08:00"). \
@@ -86,8 +86,6 @@ class CatListView(DataMixin, ListView):
         else:
             pass  # сумма по всем категориям
 
-            # values('runner__runner_team', 'total_dist', 'total_time',
-            #        'avg_time').
 
 
 class RunnersCatView(DataMixin, ListView):
@@ -132,68 +130,73 @@ class RunnersCatView(DataMixin, ListView):
             last_age = 99
 
         if cat_selected == 0 and get_age == 0 and gender == 'all':
-            context['tot_dist'] = User.objects.filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values(
+                'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
+                'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
 
         elif cat_selected == 0 and get_age == 0 and get_gender == 'f':
-            context['tot_dist'] = User.objects.filter(not_running=False).filter(runner_gender='ж')
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
+                runner_stat__runner_gender='ж').values('runner_stat__username', 'runner_stat__runner_team',
+                                                       'total_runs', 'total_time',
+                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_average_temp').order_by('-total_balls')
 
 
         elif cat_selected != 0 and get_age != 0 and gender != 'all':
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(runner_age__gte=start_age). \
-                filter(runner_age__lte=last_age).filter(runner_gender=gender).filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+                runner_stat__runner_age__gte=start_age). \
+                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
+                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
+                                                       'total_runs', 'total_time',
+                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_average_temp').order_by('-total_balls')
 
         elif cat_selected != 0 and gender != 'all':
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(runner_age__gte=start_age). \
-                filter(runner_age__lte=last_age).filter(runner_gender=gender).filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+                runner_stat__runner_age__gte=start_age). \
+                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
+                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
+                                                       'total_runs', 'total_time',
+                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_average_temp').order_by('-total_balls')
 
         elif cat_selected == 0 and gender == 'all':
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(runner_age__gte=start_age). \
-                filter(runner_age__lte=last_age).filter(runner_gender=gender).filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+                runner_stat__runner_age__gte=start_age). \
+                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
+                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
+                                                       'total_runs', 'total_time',
+                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_average_temp').order_by('-total_balls')
 
 
 
 
         elif gender == 'all' and get_age != 0 and cat_selected != 0:
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected). \
-                filter(not_running=False).filter(runner_age__gte=start_age). \
-                filter(runner_age__lte=last_age)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected). \
+                filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=start_age). \
+                filter(runner_stat__runner_age__lte=last_age).values('runner_stat__username',
+                                                                     'runner_stat__runner_team', 'total_runs',
+                                                                     'total_time',
+                                                                     'total_balls', 'total_days', 'total_distance',
+                                                                     'total_average_temp').order_by('-total_balls')
 
         elif cat_selected == 0 and gender == 'all':
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
+                                                       'total_runs', 'total_time',
+                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_average_temp').order_by('-total_balls')
 
         else:
-            context['tot_dist'] = User.objects.filter(runner_category=cat_selected).filter(runner_age__gte=start_age). \
-                filter(runner_age__lte=last_age).filter(not_running=False)
+            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+                runner_stat__runner_age__gte=start_age). \
+                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__not_running=False).values(
+                'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
+                'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
 
-        #
-        # context['userid'] = Statistic.objects.filter(runner_id__gte=0)
-        # context['user_detail'] = User.objects.filter(id=self.request.user.id)
-        context['cat_selected'] = cat_selected
+            context['cat_selected'] = cat_selected
 
-        # if cat_selected == 'woman':
-        #     result = RunnerDay.objects.filter(id__gte=1).filter(runner__runner_gender='ж').values('runner__user_id',
-        #                                                                                           'runner__runner_category',
-        #                                                                                           'runner__user__username'). \
-        #         annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #                  avg_time=Avg('day_average_temp')).order_by('-total_dist')
-        #
-        #
-        # elif cat_selected == '50':
-        #     result = RunnerDay.objects.filter(id__gte=1).filter(runner__runner_age__gte=50).values('runner__user_id',
-        #                                                                                            'runner__runner_category',
-        #                                                                                            'runner__user__username'). \
-        #         annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #                  avg_time=Avg('day_average_temp')).order_by('-total_dist')
-        #
-        #
-        #
-        # else:
-        #     result = RunnerDay.objects.filter(id__gte=1).filter(runner__runner_category=cat_selected).values(
-        #         'runner__user_id', 'runner__user__username', 'runner__runner_category'). \
-        #         annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #                  avg_time=Avg('day_average_temp')).order_by('-total_dist')
-        #
-        # context['tot_dist'] = result
 
         return context
 
@@ -205,8 +208,7 @@ class RunnersView(DataMixin, ListView):
     model = User
     template_name = 'runners.html'
 
-    # def user(self):
-    #     return RunnerDay.objects.get(pk=self.pk)
+
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -337,15 +339,10 @@ class OneTeamStat(DataMixin, ListView):
         comand_number = self.kwargs['comanda']
         context['comand_number'] = comand_number
 
-        team_count = RunnerDay.objects.filter(runner__runner_team=comand_number).count()
-        # context['res'] = RunnerDay.objects.filter(runner__runner_team__team=comand_number).filter(Q(
-        #     day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)).values(
-        #     'runner__user__username'). \
-        #     annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #              avg_time=Avg('day_average_temp')).aggregate(Sum('total_dist'), Sum('total_time'), Avg('avg_time'))
+        context['team_count'] = User.objects.filter(runner_team=comand_number).filter(not_running=False).count()
 
         context['res'] = Statistic.objects.filter(runner_stat__runner_team=comand_number).values(
-            'runner_stat__username', 'runner_stat__runner_category',).annotate(
+            'runner_stat__username', 'runner_stat__runner_category', ).annotate(
             tot_time=Sum('total_time'),
             tot_avg_temp=Sum('total_average_temp'),
             tot_distance=Sum('total_distance'),
@@ -356,67 +353,11 @@ class OneTeamStat(DataMixin, ListView):
                 output_field=TimeField())). \
             aggregate(Sum('tot_distance'), Sum('tot_time'), Avg('avg_time'), Sum('tot_runs'))
 
-        print( context['res'] )
-        #
-        # context['res'] = RunnerDay.objects.filter(runner__runner_team=comand_number). \
-        #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-        #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-        #     'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-        #                                                                   total_time=Sum('day_time'),
-        #                                                                   total_average_temp=Sum('day_average_temp'),
-        #                                                                   day_count=Count(
-        #                                                                       (Q(day_average_temp__lte="00:08:00") & Q(
-        #                                                                           day_distance__gt=0)) |
-        #                                                                       (Q(day_average_temp__gte='00:08:00') & Q(
-        #                                                                           runner__runner_age__gte=60))),
-        #                                                                   avg_time=ExpressionWrapper(
-        #                                                                       F('total_average_temp') / F('day_count'),
-        #                                                                       output_field=TimeField())). \
-        #     aggregate(Sum('total_dist'), Sum('total_time'), Avg('avg_time'))
-
-        result = RunnerDay.objects.filter(runner__runner_team=comand_number). \
-            filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-                   (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-            'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-                                                                    total_time=Sum('day_time'),
-                                                                    total_average_temp=Sum('day_average_temp'),
-                                                                    day_count=Count(
-                                                                        (Q(day_average_temp__lte="00:08:00") & Q(
-                                                                            day_distance__gt=0)) |
-                                                                        (Q(day_average_temp__gte='00:08:00') & Q(
-                                                                            runner__runner_age__gte=60))),
-                                                                    avg_time=ExpressionWrapper(
-                                                                        F('total_average_temp') / F('day_count'),
-                                                                        output_field=TimeField()),
-                                                                    avg_team_time=ExpressionWrapper(
-                                                                        F('avg_time') / team_count,
-                                                                        output_field=TimeField()),
-
-                                                                    ). \
-            order_by('-total_dist')
-        context['tot_dist'] = result
-
-        number_runner = User.objects.filter(username__startswith=comand_number) \
-            .values('username', 'runner_category', 'runner_age', 'runner_gender', 'zabeg22', 'zabeg23').order_by(
-            'username')
-
-        qs = list()
-        for i in result:
-            user = list(i.values())[0]
-
-            try:
-                for j in number_runner:
-
-                    user2 = list(j.values())[0]
-
-                    if user == user2:
-                        qs.append({**j, **i})
-
-            except:
-                continue
-
-        context['qs'] = qs
-
+        context['qs'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
+            runner_stat__runner_team=comand_number). \
+            values('runner_stat__runner_team', 'runner_stat__username', 'runner_stat__runner_category',
+                   'total_time', 'total_distance', 'total_days', 'total_runs', 'total_balls',
+                   'total_average_temp').order_by('-total_balls')
         return context
 
 

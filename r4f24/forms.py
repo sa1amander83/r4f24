@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from django.forms import ModelForm
+from django.utils import timezone
 
 from core.models import User, Family
 from profiles.models import UserImport, RunnerDay, Photo
@@ -16,7 +17,7 @@ class RegisterUserForm(UserCreationForm):
                                   widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'team'}))
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.TextInput(attrs={'class': 'form-control form-control-user'}))
-
+    # runner_status = forms.ChoiceField(widget=forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'}))
     password1 = forms.CharField(label='Пароль',
                                 widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user'}))
     password2 = forms.CharField(label='Повтор пароля',
@@ -24,12 +25,13 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'runner_team', 'keyword', 'runner_age', 'runner_gender', 'runner_category', 'password1',
-                  'password2', 'zabeg22', 'zabeg23')
+
         widgets = {
-
+        'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
         }
-
+        fields = (
+        'username', 'runner_status', 'runner_team', 'keyword', 'runner_age', 'runner_gender', 'runner_category',
+        'password1','password2', 'zabeg22', 'zabeg23')
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user'}))
@@ -77,10 +79,17 @@ class MultipleFileField(forms.FileField):
 
 
 class RunnerDayForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RunnerDayForm, self).__init__(*args, **kwargs)
+        self.fields['number_of_run'].labe="111"
+
+
+
     class Meta:
         day_time = forms.TimeField(help_text='00:00:00')
         day_average_temp = forms.TimeField(help_text="00:00:00")
         model = RunnerDay
+
 
         # current_date = date.today()
         # date16 = datetime.date(2023, 7, 10)
@@ -91,8 +100,9 @@ class RunnerDayForm(ModelForm):
         # photo = MultipleFileField(label='Выберите файлы', required=False)
 
         widgets = {
+
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
-            'number_of_run': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
+            'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
                 attrs={'class': 'form-control form-control-user', 'value': '10', 'id': 'day_distance'}),
             'day_time': MyTotalTimeInput(
@@ -107,7 +117,7 @@ class RunnerDayForm(ModelForm):
         }
         fields = ['day_select', 'number_of_run', 'day_distance', 'day_time', 'day_average_temp', 'ball']
 
-    photo = MultiFileField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5)
+    photo = MultiFileField(min_num=1, max_num=6, max_file_size=2048 * 2048 * 5)
 
     # def save(self, commit=True):
     #     instance = super(RunnerDayForm, self).save(commit)

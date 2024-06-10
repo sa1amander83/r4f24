@@ -67,7 +67,7 @@ class RegisterUser(CreateView):
         print(keyword_of_team)
         if form.cleaned_data['keyword'].lower() == keyword_of_team:
             user = form.save()
-            # login(self.request, user)
+
 
             return redirect('authorize:login')
         else:

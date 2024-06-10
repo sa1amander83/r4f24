@@ -96,16 +96,20 @@
                 <td> №п/п</td>
                 <td>Номер участника</td>
                 <td> Команда</td>
-                <td> Категория</td>
-                <td> Возраст</td>
-                <td> пол</td>
-                <td> Участник забега 2022</td>
-                <td> Участник забега 2023</td>
+                <td> Баллы</td>
+                <td> пробег</td>
+                <td> время</td>
+                <td> средний темп</td>
+                <td> пробежки</td>
 
                 </thead>
                 <tbody class="text-center">
 
 
+                {% for s, val in tot_dist.items %}
+
+                    {{ s }}
+                {% endfor %}
                 {% for s in tot_dist %}
 
 
@@ -113,14 +117,14 @@
 
 
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="/profile/{{ s.username }}">{{ s.username }} </a></td>
-                        <td>  {{ s.runner_team }}</td>
-                        <td> {{ s.runner_category|cat_tag }}</td>
-                        <td> {{ s.runner_age }}</td>
-                        {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
-                        <td> {% if s.runner_gender == 'м' %} <i class="fa-solid fa-person fa-2xl"></i> {% else %}<i class="fa-solid fa-person-dress fa-2xl"></i> {% endif %}</td>
-                        <td> {% if s.zabeg22 %} <i class="fa-solid fa-check"></i>{% else %} <i class="fa-duotone fa-x"></i> {% endif %}</td>
-                        <td> {% if s.zabeg23 %}<i class="fa-solid fa-check"></i> {% else %} <i class="fa-duotone fa-x"></i> {% endif %}</td>
+                        <td><a href="/profile/{{ s.runner_stat__username }}">{{ s.runner_stat__username }} </a></td>
+                        <td>  {{ s.runner_stat__runner_team }}</td>
+                        <td> {{ s.total_balls }}</td>
+                        <td> {{ s.total_distance }}</td>
+                        <td> {{ s.total_time|time:"H:i:s" }}</td>
+                        <td> {{ s.total_average_temp|time:"i:s" }}</td>
+                        <td> {{ s.total_runs }}</td>
+
 
 
 

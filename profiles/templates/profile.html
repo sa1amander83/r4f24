@@ -39,8 +39,6 @@
     {#                    </div>#}
 </div>
 
-
-{#            {% endif %}#}
 <h1> Статистика по участнику № {{ runner_stat }}  </h1>
 <div class="statistic-user flex justify-content-around">
     <div>
@@ -48,8 +46,8 @@
             {% for d in data %}
                 <p> Сумма балов - {{ d.total_balls }}</p>
                 <p> дистанция за все время пробега - {{ d.total_distance }}</p>
-                <p> все время пробега - {{ d.total_time }}</p>
-                <p> средний темп - {{ d.total_average_temp }}</p>
+                <p> все время пробега - {{ d.total_time|time:"H:i:s" }}</p>
+                <p> средний темп - {{ d.total_average_temp|time:"i:s" }}</p>
                 <p> дней пробега - {{ d.total_days }}</p>
                 <p> количество пробежек - {{ d.total_runs }}</p>
                 <p> квалификация пройдена - {% if d.is_qualificated %} Да {% else %} Нет {% endif %}</p>

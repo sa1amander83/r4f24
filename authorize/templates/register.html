@@ -53,7 +53,8 @@
 document.getElementById("username").addEventListener("change", myFunction);
 let user=document.getElementById('username')
 let  team= document.getElementById('team');
-console.log(user.value)
+
+
 user.onchange=function () {
     team.value=user.value.slice(0,3)}
 
@@ -62,7 +63,32 @@ function myFunction() {
 
     team.value=user.value.slice(0,3)
 console.log(team.value)
+
+
 }
+
+document.getElementById("status").addEventListener("change", function() {
+    let username=document.getElementById('username')
+    let status=document.getElementById("status")
+    let v = parseInt(username.value);
+    console.log(status)
+     const fruits = document.querySelectorAll('input[name="runner_status"]');
+  for (const f of fruits) {
+      if (f.checked && f.value===1) {
+            if (v < 100000) username.value = 100000;
+            if (v > 250000) username.value = 250000;
+      }
+      else{
+            if (v < 10000) username.value = 10000;
+            if (v > 99999) username.value = 99999;
+      }
+  }
+
+});
+
+
+
+
 
 </script>
 {% endblock %}

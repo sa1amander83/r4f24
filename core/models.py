@@ -17,7 +17,8 @@ class Teams(models.Model):
     TEAM = [(i, i) for i in rangeteam]
 
     team = models.PositiveIntegerField(verbose_name='команда', unique=True, choices=TEAM, default=100)
-    keyword=models.CharField(max_length=20,verbose_name='кодовое слово')
+    keyword = models.CharField(max_length=20, verbose_name='кодовое слово')
+
     def __str__(self):
         return str(self.team)
 
@@ -55,9 +56,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class Family(models.Model):
-    family_title=models.CharField(max_length=100, verbose_name='Название команды')
+    family_title = models.CharField(max_length=100, verbose_name='Название команды')
     runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
-    runner_family = models.ManyToManyField(to='User', blank=True,verbose_name='Семья', related_name='runners_family')
+    runner_family = models.ManyToManyField(to='User', blank=True, verbose_name='Семья', related_name='runners_family')
 
     class Meta:
         verbose_name = 'Семейное участие'
@@ -75,6 +76,11 @@ class User(AbstractUser):
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
     ]
 
+    STATUS = [
+        (1, 'Участник'), (2, 'член семьи участника')
+    ]
+
+    runner_status = models.IntegerField(choices=STATUS, verbose_name='Ваш статус', default=1)
     email = False
     # user= models.CharField( max_length=12,verbose_name='Номер участника', unique=True)
     # runner_team = models.ForeignKey(Teams, on_delete=models.DO_NOTHING, verbose_name='команда', db_index=True)
@@ -95,7 +101,7 @@ class User(AbstractUser):
     #                                                null=True)
     # completed = models.BooleanField(default=False, verbose_name="Выполнена квал-я", )
     is_staff = models.BooleanField(verbose_name='ответственный', default=False)
-    not_running= models.BooleanField(verbose_name='не бегает', default=False)
+    not_running = models.BooleanField(verbose_name='не бегает', default=False)
     REQUIRED_FIELDS = ['runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
     objects = CustomUserManager()
 
@@ -105,4 +111,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return str(self.username)
-

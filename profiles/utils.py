@@ -216,7 +216,7 @@ class DataMixin:
         }
 
         for key, val in temp_koef.items():
-            if avg_time <= key:
+            if str(avg_time) <= key:
                 avg_temp_koef = val
                 break
 
@@ -267,7 +267,7 @@ class DataMixin:
         try:
             run_stat = Statistic.objects.get(runner_stat_id=runner_id)
             print(avg_time)
-            ball = self.calc_ball(dist, str(avg_time))
+            ball = self.calc_ball(dist, avg_time)
 
             run_stat_new = Statistic.objects.filter(runner_stat_id=runner_id).update(
                 total_distance=dist,

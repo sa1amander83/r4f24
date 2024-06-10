@@ -119,9 +119,9 @@
                         <td><a href="/profile/{{ s.runner_stat }}">{{ s.runner_stat }} </a></td>
                         <td>  {{ s.total_balls }}</td>
                         <td> {{ s.total_distance|floatformat:3 }}</td>
-                        <td> {{ s.total_time }}</td>
+                        <td> {{ s.total_time|time:"H:i:s"}}</td>
                         {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
-                        <td> {{ s.total_average_temp }}</td>
+                        <td> {{ s.total_average_temp|time:"i:s" }}</td>
                         <td>  {{ s.total_days }}</td>
                         <td>  {{ s.total_runs }}</td>
 
