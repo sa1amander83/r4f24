@@ -1,7 +1,8 @@
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg
+
 from django.views.generic import ListView
 from core.models import User, Teams
-from profiles.models import RunnerDay, Statistic, RunnerDay
+from profiles.models import Statistic, RunnerDay
 from profiles.utils import DataMixin
 
 
@@ -12,41 +13,14 @@ class IndexView(DataMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['calend'] = {x: x for x in range(1, 31)}
-        # cats=list('Новичок','Легкий','Средний', 'Тяжелый', 'Ультра' )
 
-        # context['userid'] = Statistic.objects.filter(runner_id__gte=0)
         context['user_detail'] = User.objects.filter(id=self.request.user.id)
         context['cat_selected'] = 0
         context['age'] = 0
         context['count_of_runners'] = User.objects.exclude(not_running=True).count()
-
-        # result = RunnerDay.objects.filter(id__gte=1).values('runner__user_id', 'runner__user__username'). \
-        #     annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #              avg_time=Avg('day_average_temp')).order_by('-total_dist')
-
-        # result = RunnerDay.objects.filter(id__gte=1). \
-        #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-        #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-        #     'runner__user__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance'),
-        #                                                                   total_time=Sum('day_time'),
-        #                                                                   total_average_temp=Sum('day_average_temp'),
-        #                                                                   day_count=Count(
-        #                                                                       (Q(day_average_temp__lte="00:08:00") & Q(
-        #                                                                           day_distance__gt=0)) |
-        #                                                                       (Q(day_average_temp__gte='00:08:00') & Q(
-        #                                                                           runner__runner_age__gte=60))),
-        #                                                                   avg_time=ExpressionWrapper(
-        #                                                                       F('total_average_temp') / F('day_count'),
-        #                                                                       output_field=TimeField())). \
-        #     order_by('-total_dist')
-
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).order_by('-total_balls')
 
         return context
-
-    # def get_queryset(self):
-    #     return RunnerDay.objects.all()
 
 
 class CatListView(DataMixin, ListView):
@@ -93,32 +67,34 @@ class RunnersCatView(DataMixin, ListView):
     context_object_name = 'stat'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        global start_age, last_age, get_gender, get_age
+        global start_age, last_age, get_age
         context = super().get_context_data(**kwargs)
         cat_selected = self.kwargs['cat']
         context['cat_selected'] = cat_selected
-        get_gender = self.kwargs['gender']
+
+        context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values(
+            'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
+            'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
+
+        return context
+
+
+def get_queryset(self):
+    return RunnerDay.objects.all()
+
+
+class RunnersCatAgeView(DataMixin, ListView):
+    model = RunnerDay
+    template_name = 'category.html'
+    context_object_name = 'stat'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        global start_age, last_age, get_age
+        context = super().get_context_data(**kwargs)
+        cat_selected = self.kwargs['cat']
+        context['cat_selected'] = cat_selected
+
         get_age = self.kwargs['age']
-        context['age'] = get_age
-        context['gender'] = get_gender
-        try:
-            get_gender = self.kwargs['gender']
-            get_age = self.kwargs['age']
-        except:
-            get_age = 0
-            get_gender = 'all'
-
-        if cat_selected == 'all':
-            context['all'] = User.objects.filter(not_running=False)
-
-        if get_gender == 'm':
-            gender = 'м'
-
-        elif get_gender == 'f':
-            gender = 'ж'
-
-        else:
-            gender = 'all'
 
         if get_age == 0:
             start_age = 4
@@ -138,21 +114,7 @@ class RunnersCatView(DataMixin, ListView):
             start_age = 50
             last_age = 99
 
-        if cat_selected == 0 and get_age == 0 and gender == 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values(
-                'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
-                'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
-
-            return context
-        elif cat_selected == 0 and get_age == 0 and get_gender == 'f':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
-                runner_stat__runner_gender='ж').values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-            return context
-
-        elif cat_selected != 0 and get_age != 0:
+        if cat_selected != 0:
             context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
                 runner_stat__runner_age__gte=start_age). \
                 filter(runner_stat__runner_age__lte=last_age).filter(
@@ -162,9 +124,7 @@ class RunnersCatView(DataMixin, ListView):
                                                        'total_average_temp').order_by('-total_balls')
 
             return context
-
-
-        elif cat_selected == 0 and get_age != 0:
+        else:
             context['tot_dist'] = Statistic.objects.filter(
                 runner_stat__runner_age__gte=start_age). \
                 filter(runner_stat__runner_age__lte=last_age).filter(
@@ -175,64 +135,6 @@ class RunnersCatView(DataMixin, ListView):
 
             return context
 
-        elif cat_selected != 0 and get_age != 0 and gender != 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
-                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-            return context
-        elif cat_selected != 0 and gender != 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
-                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-            return context
-        elif cat_selected == 0 and gender == 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
-                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-
-            return context
-
-
-        elif gender == 'all' and get_age != 0 and cat_selected != 0:
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected). \
-                filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).values('runner_stat__username',
-                                                                     'runner_stat__runner_team', 'total_runs',
-                                                                     'total_time',
-                                                                     'total_balls', 'total_days', 'total_distance',
-                                                                     'total_average_temp').order_by('-total_balls')
-            return context
-        elif cat_selected == 0 and gender == 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-            return context
-        else:
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__not_running=False).values(
-                'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
-                'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
-
-            return context
-
-    def get_queryset(self):
-        return RunnerDay.objects.all()
-
 
 class RunnersCatGenderView(DataMixin, ListView):
     model = RunnerDay
@@ -242,22 +144,9 @@ class RunnersCatGenderView(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         global start_age, last_age, get_gender, get_age
         context = super().get_context_data(**kwargs)
-        cat_selected = self.kwargs['cat']
-        context['cat_selected'] = cat_selected
-        get_gender = self.kwargs['gender']
+
         get_age = self.kwargs['age']
-
-        if cat_selected == 'all':
-            context['all'] = User.objects.filter(not_running=False)
-
-        if get_gender == 'm':
-            gender = 'м'
-
-        elif get_gender == 'f':
-            gender = 'ж'
-
-        else:
-            gender = 'all'
+        context['f'] = 'f'
 
         if get_age == 0:
             start_age = 4
@@ -276,14 +165,8 @@ class RunnersCatGenderView(DataMixin, ListView):
         elif get_age == 4:
             start_age = 50
             last_age = 99
-#TODO  доделать класс для просмотра с категориями
-        if cat_selected == 0 and get_age == 0 and gender == 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values(
-                'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
-                'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
 
-            return context
-        elif cat_selected == 0 and get_age == 0 and get_gender == 'f':
+        if get_age == 0:
             context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
                 runner_stat__runner_gender='ж').values('runner_stat__username', 'runner_stat__runner_team',
                                                        'total_runs', 'total_time',
@@ -292,34 +175,14 @@ class RunnersCatGenderView(DataMixin, ListView):
             return context
 
 
-        elif cat_selected != 0 and get_age != 0 and gender != 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
+        else:
+            context['tot_dist'] = Statistic.objects.filter(
                 runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
+                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender='ж').filter(
                 runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
                                                        'total_runs', 'total_time',
                                                        'total_balls', 'total_days', 'total_distance',
                                                        'total_average_temp').order_by('-total_balls')
-            return context
-        elif cat_selected != 0 and gender != 'all':
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected).filter(
-                runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender=gender).filter(
-                runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',
-                                                       'total_balls', 'total_days', 'total_distance',
-                                                       'total_average_temp').order_by('-total_balls')
-            return context
-
-
-        elif gender == 'all' and get_age != 0 and cat_selected != 0:
-            context['tot_dist'] = Statistic.objects.filter(runner_stat__runner_category=cat_selected). \
-                filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=start_age). \
-                filter(runner_stat__runner_age__lte=last_age).values('runner_stat__username',
-                                                                     'runner_stat__runner_team', 'total_runs',
-                                                                     'total_time',
-                                                                     'total_balls', 'total_days', 'total_distance',
-                                                                     'total_average_temp').order_by('-total_balls')
             return context
 
 
@@ -334,12 +197,19 @@ class RunnersView(DataMixin, ListView):
         if self.kwargs:
             cat_selected = self.kwargs['cat']
             context['cat_selected'] = cat_selected
+            if cat_selected != 'f':
+                context['profile'] = User.objects.filter(runner_category=cat_selected).values('username',
+                                                                                              'runner_category',
+                                                                                              'runner_age',
+                                                                                              'runner_gender')
+                context['count_of_runners'] = User.objects.filter(runner_category=cat_selected).count()
 
-            context['profile'] = User.objects.filter(runner_category=cat_selected).values('username',
-                                                                                          'runner_category',
-                                                                                          'runner_age',
-                                                                                          'runner_gender')
-            context['count_of_runners'] = User.objects.filter(runner_category=cat_selected).count()
+            else:
+                context['profile'] = User.objects.filter(runner_gender='ж').values('username',
+                                                                                   'runner_category',
+                                                                                   'runner_age',
+                                                                                   'runner_gender')
+
             return context
 
 
@@ -551,45 +421,75 @@ class Championat(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
         # TODO переделать расчет
-        # for team in teams:
-        #     total_run_sum = 0
-        #     my_list.append(team)
-        #     for i in range(1, 4):
-        #         best1cat = RunnerDay.objects.filter(runner__runner_team=team).filter(runner__runner_category=i). \
-        #                        filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-        #                               (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
-        #             'runner__username', 'runner__runner_category').annotate(total_dist=Sum('day_distance')) \
-        #                        .order_by('-total_dist')[:4].aggregate(Sum('total_dist'))
-        #
-        #         my_list.append(i)
-        #
-        #         if best1cat['total_dist__sum'] == None:
-        #             my_list.append(0)
-        #         else:
-        #             my_list.append(best1cat['total_dist__sum'])
-        #             total_run_sum += best1cat['total_dist__sum']
-        #
-        #     my_list.append('total_run_sum')
-        #     my_list.append(total_run_sum)
-        #
-        # new_list = []
+        for team in teams:
+            total_run_sum = 0
+            my_list.append(team)
+#
+            # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+            #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
+            #                     order_by('-total_balls')[:4].annotate(total_ball=Sum('total_balls')).aggregate(
+            #     Sum('total_ball'))
 
-        # for i in range(0, len(my_list), 13):
-        #     new_list.append(my_list[i:i + 13])
-        #
-        # list_of_lists = sorted(new_list, key=lambda x: x[12], reverse=True)
-        #
-        # for item in list_of_lists:
-        #     my_dict[item[0]] = {
-        #         'cat1': item[2],
-        #         'cat2': item[4],
-        #         'cat3': item[6],
-        #         'cat4': item[8],
-        #         'cat5': item[10],
-        #         'total_run_sum': item[12]
-        #     }
+            # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+            #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
+            #                     order_by('-total_balls')[:4]
+            # print(best18runners)
+            # best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+            #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
+            #     runner_stat__runner_age__lte=34).order_by('-total_balls')[:4].annotate(
+            #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+            best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+                                filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
+                runner_stat__runner_age__lte=34).order_by('-total_balls')[:5]
 
-        # context['qs'] = my_dict
+
+            print(best34runners)
+            # best49runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+            #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=35).filter(
+            #     runner_stat__runner_age__lte=49).order_by('-total_balls')[:4].annotate(
+            #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+            # print(best49runners)
+            # best50runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+            #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=50).order_by(
+            #     '-total_balls')[:4].annotate(
+            #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+            #
+            # print(best50runners)
+
+            for i in range(1, 4):
+                best1cat = Statistic.objects.filter(runner_stat__runner_team=team).filter(
+                    runner_stat__runner_category=i). \
+                               filter(total_distance__gt=0).values(
+                    'runner_stat__username', 'runner_stat__runner_category').annotate(total_ball=Sum('total_balls')) \
+                               .order_by('-total_ball')[:4].aggregate(Sum('total_ball'))
+
+                my_list.append(i)
+
+                if best1cat['total_ball__sum'] == None:
+                    my_list.append(0)
+                else:
+                    my_list.append(best1cat['total_ball__sum'])
+                    total_run_sum += best1cat['total_ball__sum']
+
+            my_list.append('total_ball_sum')
+            my_list.append(total_run_sum)
+        #
+        new_list = []
+
+        for i in range(0, len(my_list), 9):
+            new_list.append(my_list[i:i + 9])
+
+        list_of_lists = sorted(new_list, key=lambda x: x[8], reverse=True)
+
+        for item in list_of_lists:
+            my_dict[item[0]] = {
+                'cat1': item[2],
+                'cat2': item[4],
+                'cat3': item[6],
+                'total_run_sum': item[8]
+            }
+
+        context['qs'] = my_dict
 
         return context
 

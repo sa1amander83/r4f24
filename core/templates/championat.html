@@ -21,9 +21,10 @@
 
             <td>Место</td>
             <td>Номер команды</td>
-            <td> Новичок</td>
-            <td> Любитель</td>
-            <td> Профи</td>
+            <td> до 18 лет</td>
+            <td>  18-35 лет</td>
+            <td>  36-49 лет</td>
+            <td>  50+ лет</td>
 
             <td> Всего</td>
             </thead>
@@ -38,16 +39,18 @@
                     <td>{{ forloop.counter }}</td>
                     {% if  v.total_run_sum %}
                         <td><a href="/comands/{{ k }}">{{ k }} </a></td>
-                        <td> {{ v.cat3|floatformat:3 }} км</td>
-                        <td> {{ v.cat4|floatformat:3 }} км</td>
-                        <td> {{ v.cat5|floatformat:3 }} км</td>
-                        <td> {{ v.total_run_sum|floatformat:3 }} км</td>
+                        <td> {{ v.cat1}} </td>
+                        <td> {{ v.cat2 }} </td>
+                        <td> {{ v.cat3 }} </td>
+                        <td> {{ v.cat3 }} </td>
+                        <td> {{ v.total_run_sum }}</td>
 
                     {% else %}
 
                         <td><a href="/comands/{{ k }}">{{ k }} </a></td>
                         <td> нет пробега</td>
 
+                        <td> - - - - - - -</td>
                         <td> - - - - - - -</td>
                         <td> - - - - - - -</td>
                         <td> - - - - - - -</td>

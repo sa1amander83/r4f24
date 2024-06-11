@@ -1,59 +1,54 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cat_tag %}
 
 {% block content %}
     {% csrf_token %}
     <div class="container-fluid">
 
         {% if cat_selected == '1' %}
-     <h2> Участников в  категории "Новичок" - {{ count_of_runners }}</h2>
-       {% elif cat_selected == '2' %}
-     <h2> Участников в  категории "Любитель" - {{ count_of_runners }}</h2>
-       {% elif cat_selected == '3' %}
-     <h2> Участников в  категории "Профи" - {{ count_of_runners }}</h2>
-
-
+            <h2> Участников в категории "Новичок" - {{ count_of_runners }}</h2>
+        {% elif cat_selected == '2' %}
+            <h2> Участников в категории "Любитель" - {{ count_of_runners }}</h2>
+        {% elif cat_selected == '3' %}
+            <h2> Участников в категории "Профи" - {{ count_of_runners }}           </h2>
 
 
         {% elif cat_selected == '50' %}
-     <h2> Участников в  категории "50+" - {{ count_of_runners }}</h2>
+            <h2> Участников в категории "50+" - {{ count_of_runners }}</h2>
 
         {% elif cat_selected == 'woman' %}
-     <h2> Участников женщин" - {{ count_of_runners }}</h2>
+            <h2> Участников женщин" - {{ count_of_runners }}</h2>
 
 
-             {% endif%}
+        {% endif %}
+
+        <br>l
+        <div class="header-stat-comanda">
+            <p>
+            <h2>выбор категории:</h2>
+
+            <a class=" text-center text-warning"
+               href="{% url 'runners' %}"> Все </a>
+
+            <a class=" text-center text-warning"
+               href="{% url 'runners' 1 %}">Новичок</a>
+
+            <a class=" text-center text-warning"
+               href="{% url 'runners'  2 %}">Любитель</a>
+
+            <a class=" text-center text-warning"
+               href="{% url 'runners'  3 %}">Профи</a>
 
 
+            {#        <a class=" text-center text-warning"#}
+            {#                           href="{% url 'runners' 50 %}">50+</a>#}
+            <a class=" text-center text-warning"
+
+               href="{% url 'runners'  'f' %}"> Женщины</a>
 
 
-
-            <br>
-              <div class="header-stat-comanda">
-                <p>
-                <h2>выбор категории:</h2></p>
-
-              <a class=" text-center text-warning"
-                           href="{% url 'runners' %}"> Все </a>
-
-             <a class=" text-center text-warning"
-                           href="{% url 'runners' 1 %}">Новичок</a>
-
-        <a class=" text-center text-warning"
-                           href="{% url 'runners'  2  %}">Любитель</a>
-
-        <a class=" text-center text-warning"
-                           href="{% url 'runners'  3  %}">Профи</a>
-
-
-{#        <a class=" text-center text-warning"#}
-{#                           href="{% url 'runners' 50 %}">50+</a>#}
-{#          <a class=" text-center text-warning"#}
-{#                           href="{% url 'runners'  'f' %}"> Женщины</a>#}
-
-
-
-                </div>
+        </div>
 
         <hr>
 
@@ -73,9 +68,9 @@
             <tbody class="">
             {% for p in profile %}
                 <tr class="row-cols-md-4 text-center">
-                <td>{{forloop.counter}}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td><a href="/profile/{{ p.username }}"> {{ p.username }}</a></td>
-                    <td> {{ p.runner_category }}</td>
+                    <td> {{ p.runner_category|cat_tag }}</td>
                     <td> {{ p.runner_age }}</td>
                     <td> {{ p.runner_gender }}</td>
                 </tr>
@@ -87,7 +82,7 @@
         </table>
 
     </div>
-   <a class="scroll-to-top rounded" href="#page-top">
+    <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 

@@ -1,15 +1,15 @@
 from django.urls import path
 
 from core.views import IndexView, CatListView, RunnersCatView, ComandsResults, Championat, OneTeamStat, ComandsView, \
-    StatisticView, RunnersView, RunnersCatGenderView
+    StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView
 
 urlpatterns = [
 
     path('', IndexView.as_view(), name='index'),
     path('cat_selected/<slug:cat>/', CatListView.as_view(), name='cat_selected'),
     path('runner_category/<int:cat>/', RunnersCatView.as_view(), name='runner_category'),
-    path('runner_category/<int:cat>/<int:age>/', RunnersCatView.as_view(), name='runner_category_age'),
-    path('runner_category/<int:cat>/<int:age>/<str:gender>/', RunnersCatGenderView.as_view(), name='runner_category_age_female'),
+    path('runner_category/<int:cat>/<int:age>/', RunnersCatAgeView.as_view(), name='runner_category_age'),
+    path('runner_category/woman/<int:age>', RunnersCatGenderView.as_view(), name='runner_category_age_female'),
     path('total/', ComandsResults.as_view(), name='totalteamstat'),
     path('championat/', Championat.as_view(), name='championat'),
     path('comands/<slug:comanda>/', OneTeamStat.as_view(), name='oneteamstat'),
