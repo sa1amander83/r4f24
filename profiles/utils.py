@@ -1,9 +1,12 @@
 from datetime import datetime
 
+from asgiref.sync import sync_to_async
 from django.db.models import Count, Q, Sum, Avg
 
-from core.models import User
+from core.models import User, Teams
 from profiles.models import Statistic, RunnerDay
+
+
 
 
 class DataMixin:
@@ -53,7 +56,10 @@ class DataMixin:
     def calc_ball(self, dist, avg_time, ):
 
         global need_list, ost_koef
+        need_list = 0
         avg_temp_koef = 0
+        ost_koef=0
+        temp_koef={}
         distance_koef = [
             [4.999, 1, 1], [9.999, 1.1, 2.1],
             [14.999, 1.2, 3.3], [19.999, 1.3, 4.6],
@@ -230,7 +236,6 @@ class DataMixin:
         return round(tot_koef)
 
     def calc_stat(self, runner_id, username):
-
         total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
             Sum('day_distance'))
         if total_distance['day_distance__sum'] is None:
@@ -249,9 +254,7 @@ class DataMixin:
         if avg_time['day_average_temp__avg'] is None:
             avg_time = '00:00'
         else:
-            avg_time=avg_time['day_average_temp__avg']
-
-
+            avg_time = avg_time['day_average_temp__avg']
 
         tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
             day_distance__gte=0).count()
@@ -265,24 +268,25 @@ class DataMixin:
         is_qual = True if dist >= 30 else False
         from dateutil import parser
         try:
+
             run_stat = Statistic.objects.get(runner_stat_id=runner_id)
-            print(avg_time)
+
             ball = self.calc_ball(dist, avg_time)
 
-            run_stat_new = Statistic.objects.filter(runner_stat_id=runner_id).update(
+            run_stat_new=Statistic.objects.filter(runner_stat_id=runner_id).aupdate(
                 total_distance=dist,
                 total_time=':'.join(str(tot_time).split(':')),
                 total_average_temp=':'.join(str(avg_time).split(':')),
                 total_days=tot_days,
                 total_runs=tot_runs,
                 total_balls=balls,
-                is_qualificated = is_qual
+                is_qualificated=is_qual
 
             )
 
         except:
             ball = self.calc_ball(dist, avg_time)
-            run_stat = Statistic.objects.create(runner_stat_id=runner_id,
+            run_stat_new=Statistic.objects.acreate(runner_stat_id=runner_id,
                                                 total_distance=dist,
                                                 total_time=':'.join(str(tot_time).split(':')),
                                                 total_average_temp=':'.join(str(avg_time).split(':')),

@@ -11,7 +11,7 @@
         {% elif cat_selected == '2' %}
             <h2> Участников в категории "Любитель" - {{ count_of_runners }}</h2>
         {% elif cat_selected == '3' %}
-            <h2> Участников в категории "Профи" - {{ count_of_runners }}           </h2>
+            <h2> Участников в категории "Профи" - {{ count_of_rulnners }}</h2>
 
 
         {% elif cat_selected == '50' %}
@@ -23,13 +23,13 @@
 
         {% endif %}
 
-        <br>l
+        <br>
         <div class="header-stat-comanda">
             <p>
             <h2>выбор категории:</h2>
 
             <a class=" text-center text-warning"
-               href="{% url 'runners' %}"> Все </a>
+               href="{% url 'runners'  %}"> Все </a>
 
             <a class=" text-center text-warning"
                href="{% url 'runners' 1 %}">Новичок</a>

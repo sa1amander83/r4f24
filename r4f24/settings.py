@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     'profiles',
     'authorize',
     'django_cleanup',
-    'sorl.thumbnail'
+    'sorl.thumbnail',
+    "debug_toolbar",
     # 'tailwind',
     # 'theme',
     # 'django_browser_reload',
@@ -88,7 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
@@ -106,7 +107,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.history.HistoryPanel',
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
 
 # COMPRESS_ROOT = BASE_DIR / 'static'
 #
@@ -256,8 +271,8 @@ LOGGING = {
     # }
 }
 #
-# CELERY_BROKER_URL = 'redis://redis:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = 'redis://redis:63790'
+CELERY_RESULT_BACKEND = 'redis://redis:63790'
 # CELERY_RESULT_EXTENDED = True
 # CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
