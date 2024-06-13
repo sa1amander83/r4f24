@@ -48,21 +48,23 @@ def get_best_five_summ():
             summ = summ + balls
             my_list.append(balls)
         try:
-            BestFiveRunners.objects.create(team=team,
-                                            age18=my_list[0],
-                                            age35=my_list[1],
-                                            age49=my_list[2],
-                                            ageover50=my_list[3],
-                                            balls=summ)
-        except IntegrityError:
-            pass
-            # BestFiveRunners.objects.update(team=team,
-            #                                 age18=my_list[0],
-            #                                 age35=my_list[1],
-            #                                 age49=my_list[2],
-            #                                 ageover50=my_list[3],
-            #                                 balls=summ)
-        # d[team] = {'age': my_list, 'summ': summ}
+            get_team = BestFiveRunners.objects.get(team=team)
+            new_stat = BestFiveRunners.objects.filter(team=team).update(
+            age18=my_list[0],
+            age35=my_list[1],
+            age49=my_list[2],
+            ageover50=my_list[3],
+            balls=summ)
+            print(new_stat)
+        except:
+
+            new_stat = BestFiveRunners.objects.create(team=team,
+                                                  age18=my_list[0],
+                                                  age35=my_list[1],
+                                                  age49=my_list[2],
+                                                  ageover50=my_list[3],
+                                                  balls=summ)
+        d[team] = {'age': my_list, 'summ': summ}
         balls = 0
         my_list = []
         summ = 0

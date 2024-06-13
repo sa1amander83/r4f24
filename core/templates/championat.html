@@ -50,25 +50,25 @@
                 <tbody class="text-center">
 
 
-                {#{{ qs }}#}
-                {% for k,v in qs.items %}
+
+                {% for k in qs %}
 
                     <tr>
 
                         <td>{{ forloop.counter }}</td>
-                        {% if  v.summ %}
-                            <td><a href="/comands/{{ k }}">{{ k }} </a></td>
+                        {% if  k.6 != 0 %}
+                            <td><a href="/comands/{{ k.1 }}">{{ k.1}} </a></td>
 
 
-                            <td> {{ v.age.0 }} </td>
-                            <td> {{ v.age.1 }} </td>
-                            <td> {{ v.age.2 }} </td>
-                            <td> {{ v.age.3 }} </td>
-                            <td> {{ v.summ }}</td>
+                            <td> {{ k.2 }} </td>
+                            <td> {{ k.3 }} </td>
+                            <td> {{ k.4 }} </td>
+                            <td> {{ k.5 }} </td>
+                            <td> {{ k.6 }}</td>
 
                         {% else %}
 
-                            <td><a href="/comands/{{ k }}">{{ k }} </a></td>
+                            <td><a href="/comands/{{ k.1 }}">{{ k.1 }} </a></td>
                             <td> нет пробега</td>
 
                             <td> - - - - - - -</td>

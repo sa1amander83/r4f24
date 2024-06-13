@@ -447,8 +447,8 @@ class Championat(DataMixin, ListView):
         context['calend'] = {x: x for x in range(1, 31)}
         # TODO переделать расчет по первым 5 участникам каждой возрастной категории
 
-        context['qs']=BestFiveRunners.objects.all().order_by('-balls')
-        
+        context['qs']=BestFiveRunners.objects.all().values_list().order_by('-balls')
+
         # team_scores = Statistic.objects.annotate(
         #     age_group=F('runner_stat__runner_age')// 18 ,
         #
@@ -578,10 +578,10 @@ class StatisticView(DataMixin, ListView):
         context['runners_mens'] = User.objects.filter(runner_gender='м').count()
         context['runners_womens'] = User.objects.filter(runner_gender='ж').count()
 
-        context['runner_age_1'] = User.objects.filter(runner_age__lte=25).count()
-        context['runner_age_2'] = User.objects.filter(runner_age__gte=26).filter(runner_age__lte=30).count()
-        context['runner_age_3'] = User.objects.filter(runner_age__gte=31).filter(runner_age__lte=35).count()
-        context['runner_age_4'] = User.objects.filter(runner_age__gte=36).filter(runner_age__lte=40).count()
+        context['runner_age_1'] = User.objects.filter(runner_age__lte=17).count()
+        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(runner_age__lte=35).count()
+        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(runner_age__lte=49).count()
+        context['runner_age_4'] = User.objects.filter(runner_age__gte=50).count()
 
         context['run2022'] = User.objects.filter(zabeg22=True).count()
         context['run2023'] = User.objects.filter(zabeg23=True).count()
@@ -592,29 +592,25 @@ class StatisticView(DataMixin, ListView):
                 runner__runner_age__gte=60)))).count()
         count_cat_list = {}
         i = 1
-        num_of_runners = 0
-        for j in [400, 200, 100, 50, 20]:
-            count_cat = RunnerDay.objects.filter(runner_category=i). \
-                filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-                       (Q(day_average_temp__gte='00:08:00') & Q(runner_age__gte=60))).values(
-                'username').annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-                                     total_average_temp=Sum('day_average_temp')).filter(
-                total_dist__gte=j).count()
-            count_cat_list[i] = count_cat
-            num_of_runners += count_cat
-            i += 1
-            if i > 5:
-                break
+        # num_of_runners = 0
+        # for j in [400, 200, 100, 50, 20]:
+        #     count_cat = RunnerDay.objects.filter(runner__runner_category=i). \
+        #         filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
+        #                (Q(day_average_temp__gte='00:08:00') & Q(runner_age__gte=60))).values(
+        #         'username').annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
+        #                              total_average_temp=Sum('day_average_temp')).filter(
+        #         total_dist__gte=j).count()
+        #     count_cat_list[i] = count_cat
+        #     num_of_runners += count_cat
+        #     i += 1
+        #     if i > 5:
+        #         break
 
         context['get_finished'] = count_cat_list
 
-        context['disqauled'] = context['total_runners'] - num_of_runners
+        context['disqauled'] = Statistic.objects.filter(total_distance__lt=30).count()
 
-        have_run = RunnerDay.objects.filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-                                            (Q(day_average_temp__gte='00:08:00') & Q(
-                                                runner_age__gte=60))).values(
-            'runner__user__username').annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-                                               total_average_temp=Sum('day_average_temp')).count()
+        have_run = Statistic.objects.filter(total_distance__gt=0).count()
 
         context['not_run'] = context['total_runners'] - have_run
 

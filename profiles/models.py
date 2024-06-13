@@ -130,3 +130,6 @@ class BestFiveRunners(models.Model):
     age49= models.IntegerField(verbose_name='возраст 36-49',db_index=True)
     ageover50 = models.IntegerField(verbose_name='возраст 50+',null=True,db_index=True)
     balls = models.IntegerField(verbose_name='баллы',null=True,db_index=True)
+
+    def __str__(self):
+        return str(self.team)
