@@ -104,11 +104,11 @@ class RunnerDayForm(ModelForm):
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
             'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
-                attrs={'class': 'form-control form-control-user', 'value': '10', 'id': 'day_distance'}),
+                attrs={'class': 'form-control form-control-user', 'value': '5', 'id': 'day_distance'}),
             'day_time': MyTotalTimeInput(
-                attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '01:00:00'}),
+                attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '00:15:00'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'type':'time', 'step': '1','value':'00:00:00',
+                attrs={'class': 'form-control form-control-user', 'type':'time', 'step': '1','value':'00:04:00',
                        'id': 'temp'}),
             'ball': forms.NumberInput(attrs={'class': 'form-control', 'readonly':'True','id':'ball', 'placeholder':'00'}),
 

@@ -236,11 +236,13 @@
                         if (distance >= 5) {
                             ost_dist = distance - distance_koef[need_list_index][0]
                             ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist
+                            tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef;
                         } else {
-                            ost_dist = distance
-                            ost_dist = distance_koef[need_list_index][1] * ost_dist
+
+                            ost_koef = distance_koef[need_list_index][1] * distance
+                             tot_koef =  ost_koef * avg_temp_koef;
                         }
-                        tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef;
+
                         break;
                     }
 

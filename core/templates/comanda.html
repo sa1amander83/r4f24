@@ -44,6 +44,7 @@
                 <td> время</td>
                 <td> темп</td>
                 <td> категория</td>
+                <td> возраст</td>
                <td> пробежки</td>
 
 
@@ -62,6 +63,8 @@
                     <td> {{ c.total_time|time:"H:i:s" }}</td>
                     <td> {{ c.total_average_temp|time:"i:s" }}</td>
                     <td> {{ c.runner_stat__runner_category }}</td>
+                    <td> {{ c.runner_stat__runner_age }}</td>
+
                     <td> {{ c.total_runs }}</td>
 
                     {#                    <td> {{ c.avg_time}}</td>#}
