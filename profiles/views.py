@@ -16,7 +16,7 @@ from tornado.gen import Runner
 
 from core.models import User, Family
 from profiles.models import RunnerDay, Statistic, Photo
-from profiles.tasks import get_best_five_summ
+from profiles.tasks import get_best_five_summ, calc_stat
 
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, RegisterUserForm
@@ -109,13 +109,13 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                                      number_of_run=form.cleaned_data['number_of_run'],
                                      day_select=dayselected,
                                      photo=each)
-            self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-            get_best_five_summ()
+            calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+            get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, обновите сведения по одной из пробежек')
-            self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-            get_best_five_summ()
+            calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+            get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
 
 
@@ -160,8 +160,8 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
                                  photo=each)
 
 
-        self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-        get_best_five_summ()
+        calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+        get_best_five_summ.delay()
         return redirect('profile:profile', username=self.request.user)
 
 
@@ -211,8 +211,8 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         #     balls = 0
         # else:
         #     balls = tot_balls['ball__sum']
-        self.calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-        get_best_five_summ()
+        calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+        get_best_five_summ.delay()
         return redirect(success_url, success_msg)
 
 

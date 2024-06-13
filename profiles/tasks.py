@@ -1,9 +1,10 @@
+from celery import shared_task
 from django.db import IntegrityError
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Avg
 from django.db.models.signals import post_save, post_delete, pre_delete, pre_save
 from django.dispatch import receiver, Signal
 
-from core.models import Teams
+from core.models import Teams, User
 from profiles.models import Statistic, BestFiveRunners, RunnerDay
 
 
@@ -18,7 +19,7 @@ from profiles.models import Statistic, BestFiveRunners, RunnerDay
 # def my_signal_handler(instance, **kwargs):
 #     get_best_five_summ()
 
-
+@shared_task
 def get_best_five_summ():
     teams = Teams.objects.values_list('team', flat=True)
     my_list = []
@@ -75,6 +76,84 @@ def get_best_five_summ():
                 'balls': grand_total
             }
         )
+
+@shared_task()
+def calc_stat(runner_id, username):
+    total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
+        Sum('day_distance'))
+    if total_distance['day_distance__sum'] is None:
+        dist = 0
+    else:
+        dist = total_distance['day_distance__sum']
+
+    total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
+    if total_time['day_time__sum'] is None:
+        tot_time = '00:00'
+    else:
+        tot_time = total_time['day_time__sum']
+    # avg_time = self.avg_temp_function(username)
+    avg_time = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
+
+    if avg_time['day_average_temp__avg'] is None:
+        avg_time = '00:00'
+    else:
+        avg_time = avg_time['day_average_temp__avg']
+
+    tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
+        day_distance__gte=0).count()
+    tot_days = RunnerDay.objects.filter(runner__username=username).filter(
+        day_select__gte=0).distinct('day_select').count()
+    tot_balls = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('ball'))
+    if tot_balls['ball__sum'] is None:
+        balls = 0
+    else:
+        balls = tot_balls['ball__sum']
+    is_qual = True if dist >= 30 else False
+    try:
+        run_stat_new = Statistic.objects.filter(runner_stat_id=runner_id).update(
+            total_distance=dist,
+            total_time=':'.join(str(tot_time).split(':')),
+            total_average_temp=':'.join(str(avg_time).split(':')),
+            total_days=tot_days,
+            total_runs=tot_runs,
+            total_balls=balls,
+            is_qualificated=is_qual)
+
+    except:
+        run_stat_new = Statistic.objects.create(
+            total_distance=dist,
+            total_time=':'.join(str(tot_time).split(':')),
+            total_average_temp=':'.join(str(avg_time).split(':')),
+            total_days=tot_days,
+            total_runs=tot_runs,
+            total_balls=balls,
+            is_qualificated=is_qual)
+
+#
+# def avg_temp_function(user):
+#     tottime = User.objects.filter(username=user).aggregate(Sum('runner__day_average_temp'))
+#
+#     count = User.objects.filter(username=user).count()
+#
+#     if tottime['runner__day_average_temp__sum'] is None:
+#         obr = 0
+#     else:
+#
+#         obr = (tottime['runner__day_average_temp__sum'] / count)
+#
+#     def timedelta_tohms(duration):
+#         if duration != 0:
+#             days, seconds = duration.days, duration.seconds
+#             minutes = (seconds % 3600) // 60
+#             seconds = seconds % 60
+#             return f"{minutes}:{seconds}"
+#         else:
+#             return f"{00}:{00}"
+#
+#     avg_temp = timedelta_tohms(obr)
+#
+#     return avg_temp
+
     # return results
     #
     # # Usage
@@ -105,28 +184,28 @@ def get_best_five_summ():
     #         for x in my_list:
     #             print(x)
 
-        #
-        # try:
-        #     get_team = BestFiveRunners.objects.get(team=team)
-        #     new_stat = BestFiveRunners.objects.filter(team=team).update(
-        #     age18=my_list[0],
-        #     age35=my_list[1],
-        #     age49=my_list[2],
-        #     ageover50=my_list[3],
-        #     balls=summ)
-        #     print(new_stat)
-        # except:
-        #
-        #     new_stat = BestFiveRunners.objects.create(team=team,
-        #                                           age18=my_list[0],
-        #                                           age35=my_list[1],
-        #                                           age49=my_list[2],
-        #                                           ageover50=my_list[3],
-        #                                           balls=summ)
-        # d[team] = {'age': my_list, 'summ': summ}
-        # balls = 0
-        # my_list = []
-        # summ = 0
+    #
+    # try:
+    #     get_team = BestFiveRunners.objects.get(team=team)
+    #     new_stat = BestFiveRunners.objects.filter(team=team).update(
+    #     age18=my_list[0],
+    #     age35=my_list[1],
+    #     age49=my_list[2],
+    #     ageover50=my_list[3],
+    #     balls=summ)
+    #     print(new_stat)
+    # except:
+    #
+    #     new_stat = BestFiveRunners.objects.create(team=team,
+    #                                           age18=my_list[0],
+    #                                           age35=my_list[1],
+    #                                           age49=my_list[2],
+    #                                           ageover50=my_list[3],
+    #                                           balls=summ)
+    # d[team] = {'age': my_list, 'summ': summ}
+    # balls = 0
+    # my_list = []
+    # summ = 0
 
 # rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
 # dramatiq.set_broker(rabbitmq_broker)

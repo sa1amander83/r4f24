@@ -8,7 +8,6 @@ from profiles.models import Statistic, RunnerDay
 
 
 
-
 class DataMixin:
 
     # коэф за каждые 5 км
@@ -24,34 +23,6 @@ class DataMixin:
         if 'cat_selected' not in context:
             context['cat_selected'] = 0
         return context
-
-    def avg_temp_function(self, user):
-        tottime = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).aggregate(Sum('runner__day_average_temp'))
-
-        count = User.objects.filter(username=user). \
-            filter(Q(runner__day_distance__gt=0) & Q(runner__day_average_temp__lte='00:08:00') |
-                   Q(runner__day_distance__gt=0) & Q(runner_age__gte=60)).count()
-
-        if tottime['runner__day_average_temp__sum'] is None:
-            obr = 0
-        else:
-
-            obr = (tottime['runner__day_average_temp__sum'] / count)
-
-        def timedelta_tohms(duration):
-            if duration != 0:
-                days, seconds = duration.days, duration.seconds
-                minutes = (seconds % 3600) // 60
-                seconds = seconds % 60
-                return f"{minutes}:{seconds}"
-            else:
-                return f"{00}:{00}"
-
-        avg_temp = timedelta_tohms(obr)
-
-        return avg_temp
 #ЭТА функция отрабатывает в джаваскрипте
     # def calc_ball(self, dist, avg_time, ):
     #
@@ -241,57 +212,3 @@ class DataMixin:
     #
     #     return round(tot_koef)
 
-    def calc_stat(self, runner_id, username):
-        total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
-            Sum('day_distance'))
-        if total_distance['day_distance__sum'] is None:
-            dist = 0
-        else:
-            dist = total_distance['day_distance__sum']
-
-        total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
-        if total_time['day_time__sum'] is None:
-            tot_time = '00:00'
-        else:
-            tot_time = total_time['day_time__sum']
-        # avg_time = self.avg_temp_function(username)
-        avg_time = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
-
-        if avg_time['day_average_temp__avg'] is None:
-            avg_time = '00:00'
-        else:
-            avg_time = avg_time['day_average_temp__avg']
-
-        tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
-            day_distance__gte=0).count()
-        tot_days = RunnerDay.objects.filter(runner__username=username).filter(
-            day_select__gte=0).distinct('day_select').count()
-        tot_balls = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('ball'))
-        if tot_balls['ball__sum'] is None:
-            balls = 0
-        else:
-            balls = tot_balls['ball__sum']
-        is_qual = True if dist >= 30 else False
-        try:
-            run_stat_new=Statistic.objects.filter(runner_stat_id=runner_id).update(
-                total_distance=dist,
-                total_time=':'.join(str(tot_time).split(':')),
-                total_average_temp=':'.join(str(avg_time).split(':')),
-                total_days=tot_days,
-                total_runs=tot_runs,
-                total_balls=balls,
-                is_qualificated=is_qual
-            )
-
-
-        except:
-
-            run_stat_new=Statistic.objects.create(
-                                                total_distance=dist,
-                                                total_time=':'.join(str(tot_time).split(':')),
-                                                total_average_temp=':'.join(str(avg_time).split(':')),
-                                                total_days=tot_days,
-                                                total_runs=tot_runs,
-                                                total_balls=balls,
-                                                is_qualificated=is_qual
-                                                )

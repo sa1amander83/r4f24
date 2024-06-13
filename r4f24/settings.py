@@ -271,8 +271,11 @@ LOGGING = {
     # }
 }
 #
-CELERY_BROKER_URL = 'redis://redis:63790'
-CELERY_RESULT_BACKEND = 'redis://redis:63790'
+# CELERY_BROKER_URL = 'redis://redis:6379'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 # CELERY_RESULT_EXTENDED = True
 # CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
