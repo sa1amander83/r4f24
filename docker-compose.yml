@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=yourdbname
+      - POSTGRES_USER=yourdbuser
+      - POSTGRES_PASSWORD=yourdbpassword
+    ports:
+      - "5432:5432"
+    restart: always
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=1  # Set to 0 in production
+      - DATABASE_URL=postgres://yourdbuser:yourdbpassword@db:5432/yourdbname
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    restart: always
+
+  celery_worker1:
+    build: .
+    command: celery -A r4f24 worker --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    restart: always
+
+  celery_worker2:
+    build: .
+    command: celery -A r4f24 worker --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    restart: always
+
+  flower:
+    image: mher/flower
+    command: flower --broker=redis://redis:6379
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    restart: always
+
+volumes:
+  postgres_data:
