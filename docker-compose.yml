@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.10'
 
 services:
   db:
@@ -6,11 +6,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=yourdbname
-      - POSTGRES_USER=yourdbuser
-      - POSTGRES_PASSWORD=yourdbpassword
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_PORT=5432
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: always
 
   redis:
@@ -21,9 +23,10 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+
     volumes:
-      - .:/code
+      - .:/r4f
     ports:
       - "8000:8000"
     depends_on:
@@ -31,16 +34,19 @@ services:
       - redis
     environment:
       - DEBUG=1  # Set to 0 in production
-      - DATABASE_URL=postgres://yourdbuser:yourdbpassword@db:5432/yourdbname
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - DATABASE_URL=postgres://postgres:123@db:5432/postgres
       - CELERY_BROKER_URL=redis://redis:6379
       - CELERY_RESULT_BACKEND=redis://redis:6379
     restart: always
 
   celery_worker1:
     build: .
-    command: celery -A r4f24 worker --loglevel=info
+    command: celery -A r4f24 worker --loglevel=info --pool=solo
     volumes:
-      - .:/code
+      - .:/r4f
     depends_on:
       - web
       - redis
@@ -51,9 +57,9 @@ services:
 
   celery_worker2:
     build: .
-    command: celery -A r4f24 worker --loglevel=info
+    command: celery -A r4f24 worker --loglevel=info --pool=solo
     volumes:
-      - .:/code
+      - .:/r4f24
     depends_on:
       - web
       - redis
@@ -64,7 +70,7 @@ services:
 
   flower:
     image: mher/flower
-    command: flower --broker=redis://redis:6379
+    command: celery --broker=redis://redis:6379/0 flower --port=5555
     ports:
       - "5555:5555"
     depends_on:

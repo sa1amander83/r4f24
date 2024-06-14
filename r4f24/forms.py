@@ -80,8 +80,21 @@ class MultipleFileField(forms.FileField):
 
 class RunnerDayForm(ModelForm):
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('username', None)
         super(RunnerDayForm, self).__init__(*args, **kwargs)
-        self.fields['number_of_run'].labe="111"
+
+        if self.user:
+            # Get the selected day from the form data
+            day_select = self.data.get('day_select')
+            if day_select:
+                # Count the number of runs the user has on the selected day
+                run_count = RunnerDay.objects.filter(runner=self.user, day_select=day_select).count()
+                if run_count >= 2:
+                    self.fields['number_of_run'].choices = [(2, 2)]
+                else:
+                    self.fields['number_of_run'].choices = [(run_count + 1, run_count + 1)]
+            else:
+                self.fields['number_of_run'].choices = [(1, 1)]
 
 
 

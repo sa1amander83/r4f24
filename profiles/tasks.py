@@ -3,9 +3,53 @@ from django.db import IntegrityError
 from django.db.models import Sum, Q, Avg
 from django.db.models.signals import post_save, post_delete, pre_delete, pre_save
 from django.dispatch import receiver, Signal
-
+import logging
 from core.models import Teams, User
 from profiles.models import Statistic, BestFiveRunners, RunnerDay
+
+
+
+
+
+
+#
+# @receiver(post_save, sender=RunnerDay)
+# def runner_daysaved(sender, instance, **kwargs):
+#
+#     calc_stat.delay(runner_id=instance.runner.id, username=instance.runner)
+#
+#
+# @receiver(post_delete, sender=RunnerDay)
+# def runner_daydeleted(sender, instance, **kwargs):
+#     calc_stat.delay(runner_id=instance.runner.id, username=instance.runner)
+  
+# @receiver(post_save, sender=RunnerDay)
+# def runner_day_saved(sender, instance, **kwargs):
+#     # Call the task with appropriate arguments
+#     calc_stat.delay(
+#         runner_id=instance.runner.id,
+#         username=instance.runner
+#         # dist=instance.day_distance,
+#         # tot_time=instance.day_time,
+#         # avg_time=instance.day_average_temp,
+        # tot_days=instance.total_days,
+        # tot_runs=instance.total_runs
+    # )
+
+# @receiver(post_delete, sender=RunnerDay)
+# def runner_day_deleted(sender, instance, **kwargs):
+#     # Call the task with appropriate arguments
+#     calc_stat.delay(
+#         runner_id=instance.runner.id,
+#         username=instance.runner
+#         # dist=instance.day_distance,
+#         # tot_time=instance.day_time,
+#         # avg_time=instance.day_average_temp,
+#         # tot_days=instance.total_days,
+#         # tot_runs=instance.total_runs
+#     )
+
+
 
 
 # TODO  эту функцию через селери запускать после каждого внесения данных о пробежке
@@ -18,9 +62,10 @@ from profiles.models import Statistic, BestFiveRunners, RunnerDay
 # @receiver(pre_delete, sender=RunnerDay)
 # def my_signal_handler(instance, **kwargs):
 #     get_best_five_summ()
-
+logger = logging.getLogger(__name__)
 @shared_task
 def get_best_five_summ():
+    logger.info("Starting get_best_five_summ task")
     teams = Teams.objects.values_list('team', flat=True)
     my_list = []
     my_dict = {}
@@ -76,6 +121,16 @@ def get_best_five_summ():
                 'balls': grand_total
             }
         )
+    logger.info("Completed get_best_five_summ task")
+    return 'success'
+
+
+@shared_task()
+def start_save(pk):
+    instance= RunnerDay(pk=pk)
+    instance.save()
+
+
 
 @shared_task()
 def calc_stat(runner_id, username):
@@ -110,7 +165,7 @@ def calc_stat(runner_id, username):
         balls = tot_balls['ball__sum']
     is_qual = True if dist >= 30 else False
     try:
-        run_stat_new = Statistic.objects.filter(runner_stat_id=runner_id).update(
+        run_stat_new= Statistic.objects.filter(runner_stat_id=runner_id).update(
             total_distance=dist,
             total_time=':'.join(str(tot_time).split(':')),
             total_average_temp=':'.join(str(avg_time).split(':')),
@@ -120,7 +175,7 @@ def calc_stat(runner_id, username):
             is_qualificated=is_qual)
 
     except:
-        run_stat_new = Statistic.objects.create(
+        run_stat_new, created  = Statistic.objects.create(
             total_distance=dist,
             total_time=':'.join(str(tot_time).split(':')),
             total_average_temp=':'.join(str(avg_time).split(':')),
@@ -129,7 +184,7 @@ def calc_stat(runner_id, username):
             total_balls=balls,
             is_qualificated=is_qual)
 
-#
+    return "susscess"
 # def avg_temp_function(user):
 #     tottime = User.objects.filter(username=user).aggregate(Sum('runner__day_average_temp'))
 #
@@ -159,9 +214,9 @@ def calc_stat(runner_id, username):
     # # Usage
     # top_five_results = calculate_top_five_in_age_categories()
     # print(top_five_results)
-
-    category_name = ''
-    ball_summ_in_category = 0
+    #
+    # category_name = ''
+    # ball_summ_in_category = 0
     # summ = 0
     # balls = 0
     # for team in teams:

@@ -62,13 +62,9 @@ class RegisterUser(CreateView):
 
     def form_valid(self, form, **kwargs):
         get_team = Teams.objects.filter(team=form.cleaned_data['runner_team'])
-        print(get_team[0].keyword)
         keyword_of_team = get_team[0].keyword
-        print(keyword_of_team)
         if form.cleaned_data['keyword'].lower() == keyword_of_team:
             user = form.save()
-
-
             return redirect('authorize:login')
         else:
             messages.error(self.request, 'Неверно указано кодовое слово')

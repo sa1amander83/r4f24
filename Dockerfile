@@ -14,15 +14,17 @@ RUN apk update \
 
 # Install Python dependencies
 COPY requirements.txt /requirements.txt
-RUN pip install --upgrade pip \
-    && pip install -r /requirements.txt
+RUN pip install -r /requirements.txt
 
 # Copy project files to the container
-COPY . /app
-WORKDIR /app
+COPY . /r4f
+WORKDIR /r4f
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
+RUN python manage.py makemigrations
+
+
 
 # Expose port 8000 to allow communication to/from the server
 EXPOSE 8000

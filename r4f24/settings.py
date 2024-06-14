@@ -52,7 +52,7 @@ INTERNAL_IPS = [
 
 INSTALLED_APPS = [
     # 'compressor',
-
+    'core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'fontawesomefree',
-    'core',
     'profiles',
     'authorize',
     'django_cleanup',
@@ -210,7 +209,8 @@ WSGI_APPLICATION = 'r4f24.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': "django.db.backends.postgresql",
-        'HOST': 'localhost',
+        # 'HOST': 'localhost',
+        'HOST': 'db',
         'NAME': 'postgres',
         'USER': 'postgres',
         'PORT': '5432',
@@ -258,24 +258,40 @@ USE_TZ = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {'class': 'logging.StreamHandler'}
+#     },
+#     # 'loggers': {
+#     #     'django.db.backends': {
+#     #         'handlers': ['console'],
+#     #         'level': 'DEBUG'
+#     #     }
+#     # }
+# }
+
+
 LOGGING = {
     'version': 1,
+    'disable_existing_loggers': False,
     'handlers': {
-        'console': {'class': 'logging.StreamHandler'}
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
     },
-    # 'loggers': {
-    #     'django.db.backends': {
-    #         'handlers': ['console'],
-    #         'level': 'DEBUG'
-    #     }
-    # }
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }
-#
-# CELERY_BROKER_URL = 'redis://redis:6379'
-# CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+#
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 # CELERY_RESULT_EXTENDED = True
 # CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
@@ -298,7 +314,8 @@ AUTH_USER_MODEL = 'core.user'
 CACHES = {
     "default": {
         'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": "redis://127.0.0.1:6379/",
+        "LOCATION": "redis://redis:6379/",
+        # "LOCATION": "redis://127.0.0.1:6379/",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
 
