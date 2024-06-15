@@ -79,10 +79,6 @@ class MultipleFileField(forms.FileField):
 
 
 class RunnerDayForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(RunnerDayForm, self).__init__(*args, **kwargs)
-        self.fields['number_of_run'].labe="111"
-
 
 
     class Meta:
@@ -102,7 +98,7 @@ class RunnerDayForm(ModelForm):
         widgets = {
 
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
-            'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
+            # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
                 attrs={'class': 'form-control form-control-user', 'value': '5', 'id': 'day_distance'}),
             'day_time': MyTotalTimeInput(
@@ -115,7 +111,7 @@ class RunnerDayForm(ModelForm):
 
 
         }
-        fields = ['day_select', 'number_of_run', 'day_distance', 'day_time', 'day_average_temp', 'ball']
+        fields = ['day_select',  'day_distance', 'day_time', 'day_average_temp', 'ball']
 
     photo = MultiFileField(min_num=1, max_num=6, max_file_size=2048 * 2048 * 5)
 

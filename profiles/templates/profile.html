@@ -102,6 +102,7 @@
     <thead class="table-dark text-center">
     <tr class="bg">
         <td> день</td>
+        <td> пробежка</td>
         <td> дистанция</td>
         <td> время</td>
         <td> темп</td>
@@ -137,6 +138,7 @@
                 <td> {{ p.day_select }} сентября</td>
             {% endif %}
             {#                  {% endfor %}#}
+            <td> {{ p.number_of_run}}</td>
             <td> {{ p.day_distance|floatformat:3 }}</td>
             <td> {{ p.day_time|time:'H:i:s' }}</td>
             <td> {{ p.day_average_temp|time:'i:s' }}</td>

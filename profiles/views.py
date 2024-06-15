@@ -42,7 +42,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         # photo = run_user.photos.filter(day_select=)
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
-            'day_select')
+            'day_select', 'number_of_run')
 
         photos = User.objects.get(username=self.kwargs['username'])
         context['images'] = photos.photos.all()
@@ -91,24 +91,42 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
 
         dayselected = form.cleaned_data['day_select']
-        count_run_in_day = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_select=dayselected).count()
+        first_run = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
+            day_select=dayselected).filter(number_of_run=1).count()
 
 
-        if count_run_in_day <= 1:
+        if first_run <= 1:
             cd = form.cleaned_data
             new_item = form.save(commit=False)
 
             userid = User.objects.get(username=self.kwargs['username'])
             new_item.runner_id = userid.id
-
-            new_item.save()
-
+            number_of_run = 2 if first_run == 1 else 1
             for each in form.cleaned_data['photo']:
-                Photo.objects.create(runner_id=userid.id,
-                                     number_of_run=form.cleaned_data['number_of_run'],
+                runner_id = userid.id
+                dayselected = dayselected
+
+                filename = each.name
+                filepath = os.path.join('media', str(userid.username), str(dayselected), str(number_of_run), filename)
+
+                Photo.objects.create(runner_id=runner_id,
+                                     number_of_run=number_of_run,
                                      day_select=dayselected,
                                      photo=each)
+
+            RunnerDay.objects.create(
+                runner_id=userid.id,
+                day_select=form.cleaned_data['day_select'],
+                day_distance=form.cleaned_data['day_distance'],
+                day_time=form.cleaned_data['day_time'],
+                day_average_temp=form.cleaned_data['day_average_temp'],
+                ball=form.cleaned_data['ball'],
+                number_of_run=number_of_run
+
+            )
+
+
+
             calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
             get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
@@ -136,17 +154,17 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         return reverse_lazy('profile:profile', kwargs={'runner': self.object})
 
     def form_valid(self, form):
+        self.object=self.get_object()
         cd = form.cleaned_data
         new_item = form.save(commit=False)
         userid = User.objects.get(id=self.request.user.id)
 
         new_item.runner_id = userid.id
-        dayselected = form.cleaned_data['day_select']
-
-        new_item.save()
+        dayselected = self.object.day_select
+        runs = self.object.number_of_run
 
         old_image = Photo.objects.filter(day_select=dayselected).filter(
-            number_of_run=form.cleaned_data['number_of_run'])
+            number_of_run=runs)
 
         for im in old_image:
             Photo.objects.get(pk=im.pk).delete()
@@ -156,8 +174,13 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         for each in form.cleaned_data['photo']:
             Photo.objects.create(runner_id=userid.id,
                                  day_select=dayselected,
-                                 number_of_run=form.cleaned_data['number_of_run'],
+                                 number_of_run=runs,
                                  photo=each)
+
+
+        new_item.save()
+
+
 
 
         calc_stat.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
@@ -172,10 +195,9 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
     context_object_name = 'runday'
 
     def form_valid(self, form):
-
+        self.object=self.get_object()
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
-        get_number_run = RunnerDay.objects.get(pk=self.kwargs['pk']).number_of_run
-
+        get_number_run = self.object.number_of_run
         self.object.delete()
         photos = Photo.objects.filter(runner__username=self.kwargs['username'])
         old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)

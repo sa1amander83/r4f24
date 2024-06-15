@@ -77,7 +77,7 @@ INSTALLED_APPS = [
     # 'csscompressor',
 
 ]
-
+DEFAULT_FILE_STORAGE='django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
 CORS_ORIGIN_ALLOW_ALL = True
 TAILWIND_APP_NAME = 'theme'
 MIDDLEWARE = [
