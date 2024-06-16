@@ -9,7 +9,7 @@ from django.urls import reverse, path
 from django.utils.safestring import mark_safe
 
 from core.models import User
-from profiles.models import RunnerDay, Statistic
+from profiles.models import RunnerDay, Statistic, BestFiveRunners
 from r4f24.forms import UserImportForm
 
 
@@ -219,6 +219,15 @@ class StatisticAdmin(admin.ModelAdmin):
     ordering = ('total_distance',)
     # всего_времени.admin_order_field = '-total_time'
 
+class BestFiveAdmin(admin.ModelAdmin):
+    list_display = ('team','age18','age35','age49','ageover50', 'balls')
+
+
+    class Meta:
+        verbose_name='Лучшие 5'
+
+
 admin.site.register(RunnerDay, RunnerDayAdmin)
 admin.site.register(User, RunnerAdmin)
 admin.site.register(Statistic, StatisticAdmin)
+admin.site.register(BestFiveRunners, BestFiveAdmin)

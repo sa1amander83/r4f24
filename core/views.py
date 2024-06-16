@@ -4,11 +4,13 @@ from django.db import models
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window, CharField, Value, \
     IntegerField, FloatField
 from django.db.models.functions import Cast, RowNumber, Coalesce, Round
+from django.shortcuts import redirect, render
 
 from django.views.generic import ListView
-from core.models import User, Teams
+from core.models import User, Teams, Family
 from profiles.models import Statistic, RunnerDay, BestFiveRunners
 from profiles.utils import DataMixin
+from r4f24.forms import FamilyForm
 
 
 class IndexView(DataMixin, ListView):
@@ -575,21 +577,21 @@ class StatisticView(DataMixin, ListView):
         context['calend'] = {x: x for x in range(1, 31)}
 
         context['total_runners'] = User.objects.all().filter(not_running=False).count()
-        context['runners_mens'] = User.objects.filter(runner_gender='м').count()
-        context['runners_womens'] = User.objects.filter(runner_gender='ж').count()
+        context['runners_mens'] = User.objects.filter(runner_gender='м').filter(not_running=False).count()
+        context['runners_womens'] = User.objects.filter(runner_gender='ж').filter(not_running=False).count()
 
-        context['runner_age_1'] = User.objects.filter(runner_age__lte=17).count()
-        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(runner_age__lte=35).count()
-        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(runner_age__lte=49).count()
-        context['runner_age_4'] = User.objects.filter(runner_age__gte=50).count()
+        context['runner_age_1'] = User.objects.filter(runner_age__lte=17).filter(not_running=False).count()
+        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(not_running=False).filter(runner_age__lte=35).count()
+        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(not_running=False).filter(runner_age__lte=49).count()
+        context['runner_age_4'] = User.objects.filter(runner_age__gte=50).filter(not_running=False).count()
 
-        context['run2022'] = User.objects.filter(zabeg22=True).count()
-        context['run2023'] = User.objects.filter(zabeg23=True).count()
-        context['run30'] = RunnerDay.objects.filter(runner_id__gte=1).annotate(day_count=Count(
-            (Q(day_average_temp__lte="00:08:00") & Q(
-                day_distance__gt=0)) |
-            (Q(day_average_temp__gte='00:08:00') & Q(
-                runner__runner_age__gte=60)))).count()
+        context['run2022'] = User.objects.filter(zabeg22=True).filter(not_running=False).count()
+        context['run2023'] = User.objects.filter(zabeg23=True).filter(not_running=False).count()
+        # context['run30'] = RunnerDay.objects.annotate(day_count=Count(
+        #     (Q(day_average_temp__lte="00:08:00") & Q(
+        #         day_distance__gt=0)) |
+        #     (Q(day_average_temp__gte='00:08:00') & Q(
+        #         runner__runner_age__gte=60)))).count()
         count_cat_list = {}
         i = 1
         # num_of_runners = 0
@@ -639,8 +641,22 @@ class StatisticView(DataMixin, ListView):
         #                                        total_average_temp=Sum('day_average_temp')).filter(
         #     total_dist__gte=50).count()
 
-        context['runners_cat1'] = User.objects.filter(runner_category=1).count()
-        context['runners_cat2'] = User.objects.filter(runner_category=2).count()
-        context['runners_cat3'] = User.objects.filter(runner_category=3).count()
+        context['runners_cat1'] = User.objects.filter(runner_category=1).filter(not_running=False).count()
+        context['runners_cat2'] = User.objects.filter(runner_category=2).filter(not_running=False).count()
+        context['runners_cat3'] = User.objects.filter(runner_category=3).filter(not_running=False).count()
 
         return context
+
+
+class GroupsView(ListView, DataMixin):
+    model = Family
+    template_name = 'groups.html'
+    context_object_name = 'data'
+
+    def get_queryset(self):
+        return Family.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['calend'] = {x: x for x in range(1, 31)}
+        return  context

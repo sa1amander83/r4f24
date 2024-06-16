@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% for d in data %}
+    {{ d }}
+    {{ d.runner_set.all}}
+    {{ d.runners_family  }}
+    {% endfor %}
+{% endblock %}

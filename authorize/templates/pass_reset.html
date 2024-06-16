@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <body class="bg-gradient-primary">
+
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+
+            <div >
+
+                <br>
+
+                <div class="user-creation-form">
+                    <form method="post">
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }} text-danger " style="font-size:20px;"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% csrf_token %}
+
+                        {% for f in form %}
+
+                            <p><label class="form-label" for="{{ f.id_for_label }}" style="font-size: 20px;">{{ f.label }}: </label>{{ f }}</p>
+                            <div class="form-error">{{ f.errors }}</div>
+                        {% endfor %}
+                        <input type="submit" class="btn btn-facebook btn-user btn-block" value="Обновить пароль">
+
+                    </form>
+                </div>
+
+
+
+
+{% endblock %}

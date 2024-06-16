@@ -62,17 +62,17 @@ class RunnerDay(models.Model):
     NUM_OF_RUN = [
         (1, 1), (2, 2)
     ]
-    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner')
-    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=datetime.now().day)
+    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner', db_index=True)
+    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=datetime.now().day, db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1)])
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
     day_average_temp = models.TimeField(verbose_name='средний темп', help_text='введите в формате 00:00:00')
-    ball = models.IntegerField(verbose_name='баллы за пробежку', blank=True, null=True)
+    ball = models.IntegerField(verbose_name='баллы за пробежку', blank=True, null=True, db_index=True)
     number_of_run = models.IntegerField(verbose_name='номер пробежки', default=1, choices=NUM_OF_RUN, validators=[
         MaxValueValidator(2),
         MinValueValidator(1)
-    ])
+    ], db_index=True)
 
     def __str__(self):
         return str(self.runner)
@@ -85,12 +85,12 @@ class Statistic(models.Model):
     runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False)
     # runner_stat = models.CharField(verbose_name='участник')
     # team = models.IntegerField(verbose_name='команда')
-    total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True)
-    total_time = models.TimeField(verbose_name='общее время пробега', blank=True)
+    total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True, db_index=True)
+    total_time = models.TimeField(verbose_name='общее время пробега', blank=True, db_index=True)
     total_average_temp = models.TimeField(verbose_name='средний темп за все время', blank=True)
-    total_days = models.IntegerField(verbose_name='дни пробега', null=True)
-    total_runs = models.IntegerField(verbose_name='количество пробежек', null=True)
-    total_balls = models.IntegerField(verbose_name='общая сумма баллов', null=True)
+    total_days = models.IntegerField(verbose_name='дни пробега', null=True, db_index=True)
+    total_runs = models.IntegerField(verbose_name='количество пробежек', null=True, db_index=True)
+    total_balls = models.IntegerField(verbose_name='общая сумма баллов', null=True, db_index=True)
     is_qualificated = models.BooleanField(verbose_name='прошел квалификацию', default=False)
 
     def __str__(self):

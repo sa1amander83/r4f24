@@ -24,11 +24,10 @@ class TeamsAdmin(admin.ModelAdmin):
 
 
 
-
-class UsersInline(admin.TabularInline):
-    model = Family.runner_family.through
-    # model=Family
-    extra = 1
+# class UsersInline(admin.TabularInline):
+#     model = Family.runner_family.through
+#     # model=Family
+#     extra = 1
 
 
 @admin.register(Family)
@@ -39,10 +38,10 @@ class FamilyAdmin(admin.ModelAdmin):
     def __str__(self):
         return str(self.username)
 
-    inlines = (UsersInline,)
+    # inlines = (UsersInline,)
     list_display = ["runner"]
 
-    filter_horizontal = ('runner_family',)
+    # filter_horizontal = ('runner_family',)
 
 
 

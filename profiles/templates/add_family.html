@@ -1,0 +1,17 @@
+ {% extends 'base.html' %}
+    {% block content %}
+
+    <h1> Выберите из списка свою группу</h1>
+  <ul>
+    {% for family in families %}
+        <li ><i class="fa-solid fa-people-group"></i> {{ family.family_title }}</li>
+    {% endfor %}
+</ul>
+
+ <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-primary btn fill-blue-600">вступить в группу</button>
+</form>
+
+ {% endblock %}

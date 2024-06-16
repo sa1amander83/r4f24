@@ -21,7 +21,7 @@
                      <a class="dropdown-item text-center" href="{% url 'profile:profile' username=user.username %}">Моя страница</a>
                      <div class="dropdown-divider"></div>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Семья</a>
+                    <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Группа</a>
                     <div class="dropdown-divider"></div>
 
                        <a class="dropdown-item text-center" href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
@@ -74,6 +74,7 @@
     <a href="{% url 'runners' %}"> Участники</a>
     <a href="{% url 'championat' %}"> Чемпионат</a>
     <a href="{% url 'comandsview' %}"> Команды</a>
+    <a href="{% url 'groupsview' %}"> Группы</a>
     <a href="{% url 'statistic' %}"> Статистика</a>
 
     <a href="{% url 'index' %}"> Календарь</a>

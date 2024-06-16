@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.utils import timezone
 
 from core.models import User, Family
@@ -126,4 +126,28 @@ class RunnerDayForm(ModelForm):
 class AddFamilyForm(ModelForm):
     class Meta:
         model = Family
-        fields = ['runner_family']
+        fields = ['family_title']
+
+
+class FamilyForm(forms.ModelForm):
+    class Meta:
+        model = Family
+        fields = ('family_title', 'runner')
+
+
+class ResetForm(Form):
+    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user','id':'id_username', 'autocomplete':'username', 'autofocus':'on'}))
+    # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+
+    keyword = forms.CharField(label='Кодовое слово',
+                              widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
+
+    password1 = forms.CharField(label='Пароль',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
+    password2 = forms.CharField(label='Повтор пароля',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
+
+
+    class Meta:
+        model = User
+        fields = ('username', 'keyword', 'password1', 'password2')

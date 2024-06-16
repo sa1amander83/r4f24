@@ -68,10 +68,12 @@
             <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
             <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
             <p class="col-form-label"> Категория - {{ d.runner_category|cat_tag }}</p>
+            {% endfor %}
+    {% if exists_in_group %}
+        <p class="col-form-label"> состоит в группе {{ exists_in_group.family_title }}</p>
 
 
-
-        {% endfor %}
+    {% endif %}
 
     </div>
     <div>

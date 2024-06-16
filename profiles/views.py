@@ -3,10 +3,11 @@ import os
 from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.db.models.deletion import Collector
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
@@ -14,12 +15,12 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from tornado.gen import Runner
 
-from core.models import User, Family
+from core.models import User, Family, Teams
 from profiles.models import RunnerDay, Statistic, Photo
 from profiles.tasks import get_best_five_summ,  calc_start
 
 from profiles.utils import DataMixin
-from r4f24.forms import RunnerDayForm, AddFamilyForm, RegisterUserForm
+from r4f24.forms import RunnerDayForm, AddFamilyForm, RegisterUserForm, FamilyForm, ResetForm
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -57,6 +58,8 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
+        context['exists_in_group']=Family.objects.filter(runner__username=self.kwargs['username'])
+        context['runner_status']=User.objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
             return dict(list(context.items()) + list(c_def.items()))
@@ -248,3 +251,76 @@ class AddFamily(CreateView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
 
         return context
+
+
+
+
+def add_family(request, username):
+    families = Family.objects.all()
+
+    if request.method == 'POST' and Family.objects.filter(runner__runner_status=1):
+        form = FamilyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('profile:family_list', request.user )
+
+
+
+
+
+    else:
+        form = FamilyForm()
+    return render(request, 'add_family.html', {'form': form, 'families':families})
+
+def family_list(request, username):
+    families = Family.objects.all()
+
+    return render(request, 'family_list.html', {'families': families, 'username':request.user.username})
+
+
+def show_reset(request):
+    form = ResetForm()
+    if request.method == "POST":
+        try:
+            username_form = request.POST.get("username")
+            password = request.POST.get("password1")
+            password2 = request.POST.get("password2")
+            key = request.POST.get("keyword")
+
+            getTeam = Teams.objects.get(team=username_form[:3])
+
+            keywordOfTeam = getTeam.keyword
+
+            try:
+                username = User.objects.get(username=username_form)
+            except ObjectDoesNotExist:
+                messages.error(request,
+                               'Участник с таким номером не найден')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if key != keywordOfTeam:
+                messages.error(request,
+                               'Неверно указано кодовое слово')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if password != password2:
+                messages.error(request,
+                               'Введенные пароли не совпадают')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if key.lower() == keywordOfTeam and User.objects.get(username=username_form) and password == password2:
+                user = User.objects.get(username=username_form)
+                print(user)
+
+                user.set_password(password)
+                user.save()
+                return redirect('authorize:login')
+
+        except:
+            pass
+
+    return render(request, 'pass_reset.html', {'form': form})
+
+
+def show_reset_success(request):
+    return render(request, 'pass_updated.html')

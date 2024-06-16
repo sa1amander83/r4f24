@@ -1,0 +1,11 @@
+ {% extends 'base.html' %}
+{% block content %}
+
+
+<ul>
+    {% for family in families %}
+        <li>{{ family.runner }} ({{ family.family_title }})</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
