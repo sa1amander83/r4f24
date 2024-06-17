@@ -2,7 +2,60 @@
 
 <h1>hello</h1>
 {% block content %}
+<div class="container-fluid">
+<h3> Ваша группа и участники</h3>
+    <br>
+    {% for k,v in qs.items %}
 
-    {{ fam }}
+<table class="table  table-striped">
+	<tbody>
+		<tr class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary">
+			<td colspan="9" > {{ k }}</td>
+		</tr>
+		<tr class="row-cols-md-4 text-center table-warning">
+			<td >№п/п</td>
+			<td>Участник</td>
+			<td>баллы</td>
+			<td>дистанция</td>
+			<td>время</td>
+			<td>средний темп</td>
+			<td>всего дней</td>
+			<td> пробежки</td>
+			<td>квалификация</td>
+		</tr>
+        {% for u in v %}
+		<tr class="row-cols-md-4 text-center">
 
+			<td> {{ forloop.counter }}</td>
+			<td> {{ u.user }}</td>
+            	<td> {{ u.total_balls }}</td>
+			<td> {{ u.total_distance }}</td>
+			<td> {{ u.total_time }}</td>
+			<td> {{ u.total_average_temp }}</td>
+			<td> {{ u.total_days }}</td>
+			<td> {{ u.total_runs }}</td>
+				<td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
+
+		</tr>
+
+            <p>
+            <p>
+            <p>
+
+
+
+
+    {% endfor %}
+
+
+
+
+
+	</tbody>
+</table>
+
+
+
+{% endfor %}
+</div>
 {% endblock %}

@@ -132,7 +132,7 @@ class AddFamilyForm(ModelForm):
 class FamilyForm(forms.ModelForm):
     class Meta:
         model = Group
-        fields = ('group_title', 'runner')
+        fields = ('group_title',)
 
 
 class ResetForm(Form):

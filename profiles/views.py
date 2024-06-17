@@ -58,7 +58,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
-        context['exists_in_group']=Group.objects.filter(runner__username=self.kwargs['username'])
+
         context['runner_status']=User.objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
@@ -345,11 +345,45 @@ def addRunnerToGroup(request, username):
 
 
 #отображение участников группы в профиле
-def my_group(request, username):
 
-    data ={}
-    data['fam']=Group.objects.filter(runner__username=username)
+class MyGroup(ListView):
+    template_name = 'mygroup.html'
+    model = Group
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        group_users={}
+        #поулчаем группу через юезра из кварг
+        try:
+            obj= User.objects.get(username=self.kwargs['username'])
+            group= obj.runner_group
+
+        #получаем всех пользователей с этой группой
+            group_stat = User.objects.filter(runner_group=obj.runner_group)
+            group_users[obj.runner_group] = []
+
+            for user in group_stat:
+                stats_obj=Statistic.objects.get(runner_stat_id=obj.id)
+                group_users[obj.runner_group].append({
+                    'group': str(group),
+                    'user': user.username,
+                    'total_distance': stats_obj.total_distance,
+                    'total_time': stats_obj.total_time,
+                    'total_average_temp': stats_obj.total_average_temp,
+                    'total_days': stats_obj.total_days,
+                    'total_runs': stats_obj.total_runs,
+                    'total_balls': stats_obj.total_balls,
+                    'is_qualificated': stats_obj.is_qualificated
+                })
+            context['qs']=group_users
+
+        except:
+            context['qs'] = None
 
 
-
-    return render(request, 'mygroup.html',context=data)
+        return context
+# def my_group(request, username):
+#
+#     print(data)
+#
+#     return render(request, 'mygroup.html',data)

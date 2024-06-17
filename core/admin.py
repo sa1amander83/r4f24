@@ -39,7 +39,7 @@ class FamilyAdmin(admin.ModelAdmin):
         return str(self.username)
 
     # inlines = (UsersInline,)
-    list_display = ["runner"]
+    list_display = ["group_title"]
 
     # filter_horizontal = ('runner_family',)
 

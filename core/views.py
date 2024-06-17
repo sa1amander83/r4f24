@@ -655,15 +655,21 @@ def group_list(request):
 
     group_users = {}
     for group in groups:
-        mygroup = Group.objects.filter(runner=request.user.username).select_related('runner')
-        print(mygroup)
-        group_users[group.group_title] = []
-        for user in group.runners_groups.all():
-            print(user)
-            user_stat = Statistic.objects.filter(runner_stat=user).first()
-            if user_stat:
+
+
+        members = Statistic.objects.filter(runner_stat__runner_group=group)
+
+        mygroup = User.objects.filter(runner_group=group)
+
+        group_users[group] = []
+        for user in mygroup:
+
+            try:
+                user_stat = Statistic.objects.get(runner_stat_id=user.id)
+
                 group_users[group].append({
-                    'user': user,
+                    'group':group.group_title,
+                    'user': user.username,
                     'total_distance': user_stat.total_distance,
                     'total_time': user_stat.total_time,
                     'total_average_temp': user_stat.total_average_temp,
@@ -672,6 +678,9 @@ def group_list(request):
                     'total_balls': user_stat.total_balls,
                     'is_qualificated': user_stat.is_qualificated
                 })
+                print(group_users[group])
+            except:
+                pass
 
     return render(request, 'groups.html', {'groups': groups, 'group_users': group_users})
 
