@@ -4,10 +4,10 @@ from django.db import models
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window, CharField, Value, \
     IntegerField, FloatField
 from django.db.models.functions import Cast, RowNumber, Coalesce, Round
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from django.views.generic import ListView
-from core.models import User, Teams, Family
+from core.models import User, Teams, Group
 from profiles.models import Statistic, RunnerDay, BestFiveRunners
 from profiles.utils import DataMixin
 from r4f24.forms import FamilyForm
@@ -648,15 +648,43 @@ class StatisticView(DataMixin, ListView):
         return context
 
 
-class GroupsView(ListView, DataMixin):
-    model = Family
-    template_name = 'groups.html'
-    context_object_name = 'data'
+#отображение групп с участниками
 
-    def get_queryset(self):
-        return Family.objects.all()
+def group_list(request):
+    groups = Group.objects.all()
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['calend'] = {x: x for x in range(1, 31)}
-        return  context
+    group_users = {}
+    for group in groups:
+        mygroup = Group.objects.filter(runner=request.user.username).select_related('runner')
+        print(mygroup)
+        group_users[group.group_title] = []
+        for user in group.runners_groups.all():
+            print(user)
+            user_stat = Statistic.objects.filter(runner_stat=user).first()
+            if user_stat:
+                group_users[group].append({
+                    'user': user,
+                    'total_distance': user_stat.total_distance,
+                    'total_time': user_stat.total_time,
+                    'total_average_temp': user_stat.total_average_temp,
+                    'total_days': user_stat.total_days,
+                    'total_runs': user_stat.total_runs,
+                    'total_balls': user_stat.total_balls,
+                    'is_qualificated': user_stat.is_qualificated
+                })
+
+    return render(request, 'groups.html', {'groups': groups, 'group_users': group_users})
+
+
+# class GroupsView(ListView, DataMixin):
+#     model = Group
+#     template_name = 'groups.html'
+#     context_object_name = 'data'
+#
+#     def get_queryset(self):
+#         return Group.objects.all()
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['calend'] = {x: x for x in range(1, 31)}
+#         return  context

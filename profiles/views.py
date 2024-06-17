@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.db.models.deletion import Collector
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
@@ -15,7 +15,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from tornado.gen import Runner
 
-from core.models import User, Family, Teams
+from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
 from profiles.tasks import get_best_five_summ,  calc_start
 
@@ -58,7 +58,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
-        context['exists_in_group']=Family.objects.filter(runner__username=self.kwargs['username'])
+        context['exists_in_group']=Group.objects.filter(runner__username=self.kwargs['username'])
         context['runner_status']=User.objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
@@ -242,7 +242,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
 
 class AddFamily(CreateView, LoginRequiredMixin):
-    model = Family
+    model = Group
     template_name = 'addfamily.html'
     form_class = AddFamilyForm
     success_url = reverse_lazy('profile:profile')
@@ -256,9 +256,9 @@ class AddFamily(CreateView, LoginRequiredMixin):
 
 
 def add_family(request, username):
-    families = Family.objects.all()
+    families = Group.objects.all()
 
-    if request.method == 'POST' and Family.objects.filter(runner__runner_status=1):
+    if request.method == 'POST' and Group.objects.filter(runner__runner_status=1):
         form = FamilyForm(request.POST)
         if form.is_valid():
             form.save()
@@ -273,7 +273,7 @@ def add_family(request, username):
     return render(request, 'add_family.html', {'form': form, 'families':families})
 
 def family_list(request, username):
-    families = Family.objects.all()
+    families = Group.objects.all()
 
     return render(request, 'family_list.html', {'families': families, 'username':request.user.username})
 
@@ -324,3 +324,32 @@ def show_reset(request):
 
 def show_reset_success(request):
     return render(request, 'pass_updated.html')
+
+#добавляем группу участнику если он в ней состоит
+def addRunnerToGroup(request, username):
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        group = get_object_or_404(Group, id=group_id)
+        runner = request.user.runner  # Assuming the runner is the logged-in user
+        if group.runners.filter(id=runner.id).exists():
+            messages.warning(request, f'You are already a member of {group.group_title}.')
+        else:
+            group.runners.add(runner)
+            messages.success(request, f'You have been added to {group.group_title}.')
+        return redirect('group_view', group_id=group.id)
+
+    groups = Group.objects.all()
+    return render(request, 'add_runner_to_group.html', {'groups': groups})
+
+
+
+
+#отображение участников группы в профиле
+def my_group(request, username):
+
+    data ={}
+    data['fam']=Group.objects.filter(runner__username=username)
+
+
+
+    return render(request, 'mygroup.html',context=data)

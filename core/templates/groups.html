@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
+
 {% block content %}
-
-
-{% for d in data %}
-    {{ d }}
-    {{ d.runner_set.all}}
-    {{ d.runners_family  }}
+<ul>
+    {% for group in groups %}
+        <li>{{ group.group_title }}
+            <ul>
+                {% for user in group_users %}
+                    <li>
+                        {{ user.user.username }}:
+                        <ul>
+                            <li>Total Distance: {{ user.total_distance }}</li>
+                            <li>Total Time: {{ user.total_time }}</li>
+                            <li>Total Average Temp: {{ user.total_average_temp }}</li>
+                            <li>Total Days: {{ user.total_days }}</li>
+                            <li>Total Runs: {{ user.total_runs }}</li>
+                            <li>Total Balls: {{ user.total_balls }}</li>
+                            <li>Is Qualificated: {{ user.is_qualificated }}</li>
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
     {% endfor %}
 {% endblock %}

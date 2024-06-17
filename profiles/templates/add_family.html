@@ -1,6 +1,6 @@
  {% extends 'base.html' %}
     {% block content %}
-
+<div class=" container-fluid ">
     <h1> Выберите из списка свою группу</h1>
   <ul>
     {% for family in families %}
@@ -13,5 +13,5 @@
     {{ form.as_p }}
     <button type="submit" class="btn-primary btn fill-blue-600">вступить в группу</button>
 </form>
-
+</div>
  {% endblock %}

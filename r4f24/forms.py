@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm, Form
 from django.utils import timezone
 
-from core.models import User, Family
+from core.models import User, Group
 from profiles.models import UserImport, RunnerDay, Photo
 from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
 
@@ -125,14 +125,14 @@ class RunnerDayForm(ModelForm):
 
 class AddFamilyForm(ModelForm):
     class Meta:
-        model = Family
-        fields = ['family_title']
+        model = Group
+        fields = ['group_title']
 
 
 class FamilyForm(forms.ModelForm):
     class Meta:
-        model = Family
-        fields = ('family_title', 'runner')
+        model = Group
+        fields = ('group_title', 'runner')
 
 
 class ResetForm(Form):

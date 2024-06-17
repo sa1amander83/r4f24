@@ -55,17 +55,19 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
 
-class Family(models.Model):
-    family_title = models.CharField(max_length=100, verbose_name='Название группы')
-    runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
-    runner_family = models.ManyToManyField('Family', blank=True, verbose_name='группа', related_name='runners_family')
+
+
+class Group(models.Model):
+    group_title = models.CharField(max_length=100, verbose_name='Название группы')
+    runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник', related_name='runners_groups')
+    # runners = models.ManyToManyField('Group', blank=True, verbose_name='группа', related_name='runners_group')
 
     class Meta:
         verbose_name = 'Семейное участие'
         verbose_name_plural = 'Семейное участие'
 
     def __str__(self):
-        return str(self.runner)
+        return str(self.group_title)
 
 
 class User(AbstractUser):

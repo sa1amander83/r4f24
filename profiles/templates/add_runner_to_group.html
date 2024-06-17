@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Select a Group to Join</h2>
+<ul>
+    {% for group in groups %}
+    <li>
+        <form method="post" action="{% url 'add_runner_to_group' request.user %}">
+            {% csrf_token %}
+            <input type="hidden" name="group_id" value="{{ group.id }}">
+            <button type="submit" onclick="return confirm('Do you want to add to group {{ group.name }}?')">
+                {{ group.name }}
+            </button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
