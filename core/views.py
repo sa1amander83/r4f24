@@ -1,16 +1,13 @@
-from collections import defaultdict
-
 from django.db import models
-from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window, CharField, Value, \
-    IntegerField, FloatField
-from django.db.models.functions import Cast, RowNumber, Coalesce, Round
-from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window
+
+from django.db.models.functions import Cast, RowNumber
+from django.shortcuts import render
 
 from django.views.generic import ListView
 from core.models import User, Teams, Group
 from profiles.models import Statistic, RunnerDay, BestFiveRunners
 from profiles.utils import DataMixin
-from r4f24.forms import FamilyForm
 
 
 class IndexView(DataMixin, ListView):
@@ -74,7 +71,6 @@ class RunnersCatView(DataMixin, ListView):
     context_object_name = 'stat'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        global start_age, last_age, get_age
         context = super().get_context_data(**kwargs)
         cat_selected = self.kwargs['cat']
         context['cat_selected'] = cat_selected
@@ -335,7 +331,7 @@ class OneTeamStat(DataMixin, ListView):
 #
 # вывод общей статистики по командам без учета категорий (просто общий пробег время)
 # на странице РЕЗУЛЬТАТЫ КОМАНД
-
+# TODO здесь переделать команды
 class ComandsResults(DataMixin, ListView):
     model = User
     template_name = 'total.html'
@@ -386,11 +382,11 @@ class ComandsResults(DataMixin, ListView):
         my_list = []
         for k, v in qs.items():
             new_list.append(k)
-            new_list.append(v['total_dist__sum']) if v['total_dist__sum'] != None else new_list.append(0)
+            new_list.append(v['total_dist__sum']) if v['total_dist__sum'] is not None else new_list.append(0)
             # new_list.append(v['total_dist__sum'])
-            new_list.append(v['total_time__sum']) if v['total_time__sum'] != None else new_list.append(0)
+            new_list.append(v['total_time__sum']) if v['total_time__sum'] is not None else new_list.append(0)
             # new_list.append(v['avg_time__avg'])
-            new_list.append(v['avg_time__avg']) if v['avg_time__avg'] != None else new_list.append(0)
+            new_list.append(v['avg_time__avg']) if v['avg_time__avg'] is not None else new_list.append(0)
 
         for i in range(0, len(new_list), 4):
             my_list.append(new_list[i:i + 4])
@@ -443,13 +439,11 @@ class Championat(DataMixin, ListView):
         ).values('age_group', 'team', 'runner_stat', 'total_balls', 'rank').order_by('age_group', 'team', 'rank')[:5]
 
     def get_context_data(self, *args, object_list=None, **kwargs):
-
-
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
         # TODO переделать расчет по первым 5 участникам каждой возрастной категории
 
-        context['qs']=BestFiveRunners.objects.all().values_list().order_by('-balls')
+        context['qs'] = BestFiveRunners.objects.all().values_list().order_by('-balls')
 
         # team_scores = Statistic.objects.annotate(
         #     age_group=F('runner_stat__runner_age')// 18 ,
@@ -485,8 +479,7 @@ class Championat(DataMixin, ListView):
         #     total_points=Sum('total_balls')
         # ).order_by('runner_stat__runner_team')
 
-
-        #TODO запрос работает но будет жрать много ресурсов
+        # TODO запрос работает но будет жрать много ресурсов
 
         return context
 
@@ -581,8 +574,10 @@ class StatisticView(DataMixin, ListView):
         context['runners_womens'] = User.objects.filter(runner_gender='ж').filter(not_running=False).count()
 
         context['runner_age_1'] = User.objects.filter(runner_age__lte=17).filter(not_running=False).count()
-        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(not_running=False).filter(runner_age__lte=35).count()
-        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(not_running=False).filter(runner_age__lte=49).count()
+        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(not_running=False).filter(
+            runner_age__lte=35).count()
+        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(not_running=False).filter(
+            runner_age__lte=49).count()
         context['runner_age_4'] = User.objects.filter(runner_age__gte=50).filter(not_running=False).count()
 
         context['run2022'] = User.objects.filter(zabeg22=True).filter(not_running=False).count()
@@ -648,14 +643,13 @@ class StatisticView(DataMixin, ListView):
         return context
 
 
-#отображение групп с участниками
+# отображение групп с участниками
 
 def group_list(request):
     groups = Group.objects.all()
 
     group_users = {}
     for group in groups:
-
 
         members = Statistic.objects.filter(runner_stat__runner_group=group)
 
@@ -668,7 +662,7 @@ def group_list(request):
                 user_stat = Statistic.objects.get(runner_stat_id=user.id)
 
                 group_users[group].append({
-                    'group':group.group_title,
+                    'group': group.group_title,
                     'user': user.username,
                     'total_distance': user_stat.total_distance,
                     'total_time': user_stat.total_time,
@@ -685,15 +679,62 @@ def group_list(request):
     return render(request, 'groups.html', {'groups': groups, 'group_users': group_users})
 
 
-# class GroupsView(ListView, DataMixin):
-#     model = Group
-#     template_name = 'groups.html'
-#     context_object_name = 'data'
-#
-#     def get_queryset(self):
-#         return Group.objects.all()
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['calend'] = {x: x for x in range(1, 31)}
-#         return  context
+class AllGroup(ListView):
+    template_name = 'groups.html'
+    model = Group
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        group_users={}
+        #поулчаем группу через юезра из кварг
+
+        #получаем всех пользователей с этой группой
+        # groups = Group.objects.prefetch_related('groups__runner_stat')
+        groups = Group.objects.select_related('groups__runner_stat')
+        group_users_stats = {}
+        group_list=[]
+        users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
+
+        for user in users_in_groups:
+
+            # group_list.append({user.runner_group.group_title:[user.statistic_set.all()]})
+
+            group_users_stats[user.runner_group.group_title]=user.statistic_set.all()
+            # print(f"User: {user.username} ")
+            # print(f"Group: {user.runner_group.group_title}")
+            # print(f"Statistics: {user.statistic_set.all()}")
+            # print("-" * 80)
+        # for group in groups:
+        #     group_users_stats[group] = []
+        #     for user in group.groups.all():
+        #         user_stat = Statistic.objects.filter(runner_stat=user).first()
+        #         if user_stat:
+        #             group_users_stats[group].append({
+        #                 'user': user,
+        #                 'total_distance': user_stat.total_distance,
+        #                 'total_time': user_stat.total_time,
+        #                 'total_average_temp': user_stat.total_average_temp,
+        #                 'total_days': user_stat.total_days,
+        #                 'total_runs': user_stat.total_runs,
+        #                 'total_balls': user_stat.total_balls,
+        #                 'is_qualificated': user_stat.is_qualificated
+        #             })
+        # for user in group_stat:
+        #     stats_obj=Statistic.objects.get(runner_stat_id=obj.id)
+        #     group_users[obj.runner_group].append({
+        #         'group': str(group),
+        #         'user': user.username,
+        #         'total_distance': stats_obj.total_distance,
+        #         'total_time': stats_obj.total_time,
+        #         'total_average_temp': stats_obj.total_average_temp,
+        #         'total_days': stats_obj.total_days,
+        #         'total_runs': stats_obj.total_runs,
+        #         'total_balls': stats_obj.total_balls,
+        #         'is_qualificated': stats_obj.is_qualificated
+        #     })
+        # context['qs']=group_list
+        context['qs']=group_users_stats
+
+
+
+        return context

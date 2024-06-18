@@ -4,23 +4,18 @@ from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Sum
-from django.db.models.deletion import Collector
-from django.http import HttpResponseRedirect
+
 from django.shortcuts import redirect, render, get_object_or_404
 
-from django.template.context_processors import csrf, request
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-
-from tornado.gen import Runner
 
 from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
 from profiles.tasks import get_best_five_summ,  calc_start
 
 from profiles.utils import DataMixin
-from r4f24.forms import RunnerDayForm, AddFamilyForm, RegisterUserForm, FamilyForm, ResetForm
+from r4f24.forms import RunnerDayForm, AddFamilyForm,  FamilyForm, ResetForm
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -325,6 +320,45 @@ def show_reset(request):
 def show_reset_success(request):
     return render(request, 'pass_updated.html')
 
+
+
+
+class MyGroup(ListView, DataMixin):
+    model = Group
+    template_name = 'groups.html'
+    context_object_name = 'data'
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        group_users = {}
+        # поулчаем группу через юезра из кварг
+        try:
+            obj = User.objects.get(username=self.kwargs['username'])
+            group = obj.runner_group
+
+            # получаем всех пользователей с этой группой
+            group_stat = User.objects.filter(runner_group=obj.runner_group)
+            group_users[obj.runner_group] = []
+
+            for user in group_stat:
+                stats_obj = Statistic.objects.get(runner_stat_id=obj.id)
+                group_users[obj.runner_group].append({
+                    'group': str(group),
+                    'user': user.username,
+                    'total_distance': stats_obj.total_distance,
+                    'total_time': stats_obj.total_time,
+                    'total_average_temp': stats_obj.total_average_temp,
+                    'total_days': stats_obj.total_days,
+                    'total_runs': stats_obj.total_runs,
+                    'total_balls': stats_obj.total_balls,
+                    'is_qualificated': stats_obj.is_qualificated
+                })
+            context['qs'] = group_users
+
+        except:
+            context['qs'] = None
+
+        return context
 #добавляем группу участнику если он в ней состоит
 def addRunnerToGroup(request, username):
     if request.method == 'POST':
@@ -346,42 +380,6 @@ def addRunnerToGroup(request, username):
 
 #отображение участников группы в профиле
 
-class MyGroup(ListView):
-    template_name = 'mygroup.html'
-    model = Group
-
-    def get_context_data(self, *args, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        group_users={}
-        #поулчаем группу через юезра из кварг
-        try:
-            obj= User.objects.get(username=self.kwargs['username'])
-            group= obj.runner_group
-
-        #получаем всех пользователей с этой группой
-            group_stat = User.objects.filter(runner_group=obj.runner_group)
-            group_users[obj.runner_group] = []
-
-            for user in group_stat:
-                stats_obj=Statistic.objects.get(runner_stat_id=obj.id)
-                group_users[obj.runner_group].append({
-                    'group': str(group),
-                    'user': user.username,
-                    'total_distance': stats_obj.total_distance,
-                    'total_time': stats_obj.total_time,
-                    'total_average_temp': stats_obj.total_average_temp,
-                    'total_days': stats_obj.total_days,
-                    'total_runs': stats_obj.total_runs,
-                    'total_balls': stats_obj.total_balls,
-                    'is_qualificated': stats_obj.is_qualificated
-                })
-            context['qs']=group_users
-
-        except:
-            context['qs'] = None
-
-
-        return context
 # def my_group(request, username):
 #
 #     print(data)
