@@ -687,19 +687,32 @@ class AllGroup(ListView):
         context = super().get_context_data(**kwargs)
         group_users={}
         #поулчаем группу через юезра из кварг
+        allgroups=Group.objects.all().distinct('group_title')
+
+        totals=Statistic.objects.annotate(
+            team=Cast('runner_stat__runner_group', output_field=models.IntegerField())
+        ).values( 'runner_stat__runner_group').annotate(
+            total_balls=Sum('total_balls'), total_distance=Sum('total_distance')
+        ).order_by('-total_balls').annotate(
+            rank=Window(expression=RowNumber(), order_by=[-F('total_balls')])
+        ).values('runner_stat__runner_group', 'total_balls').order_by('-total_balls')
+        print(totals)
 
         #получаем всех пользователей с этой группой
         # groups = Group.objects.prefetch_related('groups__runner_stat')
+        users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
         groups = Group.objects.select_related('groups__runner_stat')
+        # print(users_in_groups)
         group_users_stats = {}
         group_list=[]
-        users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
+        # users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
 
         for user in users_in_groups:
 
-            # group_list.append({user.runner_group.group_title:[user.statistic_set.all()]})
 
-            group_users_stats[user.runner_group.group_title]=user.statistic_set.all()
+            group_list.append(user.statistic_set.all())
+
+            group_users_stats[user.runner_group.group_title]=group_list.append(user.statistic_set.all())
             # print(f"User: {user.username} ")
             # print(f"Group: {user.runner_group.group_title}")
             # print(f"Statistics: {user.statistic_set.all()}")

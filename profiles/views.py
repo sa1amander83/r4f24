@@ -325,7 +325,7 @@ def show_reset_success(request):
 
 class MyGroup(ListView, DataMixin):
     model = Group
-    template_name = 'groups.html'
+    template_name = 'mygroup.html'
     context_object_name = 'data'
 
     def get_context_data(self, *args, object_list=None, **kwargs):
