@@ -4,7 +4,12 @@
  <div class="container-fluid">
         <h3> Группы и участники</h3>
         <br>
- {{ qs }}
+
+        {% if message %}
+        <h1> {{ message }}</h1>
+
+            <a href="{% url  'profile:addfamily' user.username%}">добавиться в группу</a>
+ {% else %}
         {% for k,v in qs.items %}
 
             <table class="table  table-striped">
@@ -54,5 +59,6 @@
 
 
         {% endfor %}
+ {% endif %}
     </div>
 {% endblock %}

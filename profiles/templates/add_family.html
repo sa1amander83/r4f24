@@ -1,17 +1,17 @@
  {% extends 'base.html' %}
     {% block content %}
 <div class=" container-fluid ">
-    <h1> Выберите из списка свою группу</h1>
+    <h1> Выберите из списка группу или создайте свою согласно заявке</h1>
   <ul>
     {% for family in families %}
-        <li ><i class="fa-solid fa-people-group"></i> {{ family.family_title }}</li>
+        <li ><i class="fa-solid fa-people-group"></i> <button type="submit" class="btn-primary btn fill-blue-600">{{ family.group_title }}</button></li>
     {% endfor %}
 </ul>
 
  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn-primary btn fill-blue-600">вступить в группу</button>
+    <button type="submit" class="btn-primary btn fill-blue-600"> создать группу</button>
 </form>
 </div>
  {% endblock %}

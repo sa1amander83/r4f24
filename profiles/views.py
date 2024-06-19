@@ -334,26 +334,33 @@ class MyGroup(ListView, DataMixin):
         # поулчаем группу через юезра из кварг
         try:
             obj = User.objects.get(username=self.kwargs['username'])
+
             group = obj.runner_group
-
+            if group is not None:
             # получаем всех пользователей с этой группой
-            group_stat = User.objects.filter(runner_group=obj.runner_group)
-            group_users[obj.runner_group] = []
+                group_stat = User.objects.filter(runner_group=obj.runner_group)
 
-            for user in group_stat:
-                stats_obj = Statistic.objects.get(runner_stat_id=obj.id)
-                group_users[obj.runner_group].append({
-                    'group': str(group),
-                    'user': user.username,
-                    'total_distance': stats_obj.total_distance,
-                    'total_time': stats_obj.total_time,
-                    'total_average_temp': stats_obj.total_average_temp,
-                    'total_days': stats_obj.total_days,
-                    'total_runs': stats_obj.total_runs,
-                    'total_balls': stats_obj.total_balls,
-                    'is_qualificated': stats_obj.is_qualificated
-                })
-            context['qs'] = group_users
+
+                group_users[obj.runner_group] = []
+
+                for user in group_stat:
+                    stats_obj = Statistic.objects.get(runner_stat_id=obj.id)
+                    group_users[obj.runner_group].append({
+                        'group': str(group),
+                        'user': user.username,
+                        'total_distance': stats_obj.total_distance,
+                        'total_time': stats_obj.total_time,
+                        'total_average_temp': stats_obj.total_average_temp,
+                        'total_days': stats_obj.total_days,
+                        'total_runs': stats_obj.total_runs,
+                        'total_balls': stats_obj.total_balls,
+                        'is_qualificated': stats_obj.is_qualificated
+                    })
+                context['qs'] = group_users
+            else:
+                context['message']='Вы не состоите в группе'
+
+
 
         except:
             context['qs'] = None
@@ -363,13 +370,13 @@ class MyGroup(ListView, DataMixin):
 def addRunnerToGroup(request, username):
     if request.method == 'POST':
         group_id = request.POST.get('group_id')
-        group = get_object_or_404(Group, id=group_id)
-        runner = request.user.runner  # Assuming the runner is the logged-in user
-        if group.runners.filter(id=runner.id).exists():
-            messages.warning(request, f'You are already a member of {group.group_title}.')
+        group = get_object_or_404(User, id=request.user.id).runner_group
+
+        if group:
+            messages.warning(request, f'Вы уже входите  в эту группу: {group}.')
         else:
-            group.runners.add(runner)
-            messages.success(request, f'You have been added to {group.group_title}.')
+            group.runner_group=group_id
+            messages.success(request, f'Вы создали и добавились в группу{group.group_title}.')
         return redirect('group_view', group_id=group.id)
 
     groups = Group.objects.all()
