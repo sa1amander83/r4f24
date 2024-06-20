@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% block content %}
+
+<div class="container-fluid">
+    <h1>Статистика группы</h1>
+    
+    {% for team, data in group_data.items %}
+        <h2>{{ team.group_title }}</h2>
+        <p>Баллы {{ data.total_results.total_balls }}</p>
+        <p>Дистанция {{ data.total_results.total_distance }}</p>
+        <p>Время {{ data.total_results.total_time|time:"H:i:s" }}</p>
+        <p>Средний темп {{ data.total_results.total_average_temp|time:"i:s" }}</p>
+        <p>Дней пробега {{ data.total_results.total_days }}</p>
+        <p>Всего пробежек {{ data.total_results.total_runs }} </p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Участник</th>
+                    <th>Баллы</th>
+                    <th>Дистанция</th>
+                    <th>Общее Время</th>
+                    <th>Темп</th>
+                    <th>Дней пробега</th>
+                    <th>Пробежки</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in data.users %}
+                    {% for stat in data.user_stats %}
+                        {% if stat.runner_stat == user %}
+
+                            <tr>
+                                <td><a href="{% url 'profile:profile' user.username %}"> {{ user.username }}</a></td>
+                                <td>{{ stat.total_balls }}</td>
+                                <td>{{ stat.total_distance }}</td>
+                                <td>{{ stat.total_time|time:"H:i:s" }}</td>
+                                <td>{{ stat.total_average_temp|time:"i:s" }}</td>
+                                <td>{{ stat.total_days }}</td>
+                                <td>{{ stat.total_runs }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+
+{% endblock %}

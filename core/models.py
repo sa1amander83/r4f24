@@ -93,7 +93,7 @@ class User(AbstractUser):
         MaxValueValidator(99),
         MinValueValidator(5)
     ])
-    runner_category = models.PositiveIntegerField(verbose_name='Заявляетесь в группу', choices=CATEGORY, default=1,
+    runner_category = models.PositiveIntegerField(verbose_name='Категория', choices=CATEGORY, default=1,
                                                   db_index=True)
     runner_group = models.ForeignKey(Group,verbose_name='группа участника', on_delete=models.CASCADE,null=True, related_name='groups')
     runner_gender = models.CharField(max_length=1, choices=GENDER, verbose_name='пол участника', default='м')

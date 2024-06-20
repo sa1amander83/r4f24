@@ -751,3 +751,42 @@ class AllGroup(ListView):
 
 
         return context
+
+
+
+def group_statistics_view(request):
+    # Get all teams
+    teams = Group.objects.all()
+
+    # Prepare a dictionary to hold the data
+    group_data = {}
+
+    for team in teams:
+        # Get all users in the current team
+        users = User.objects.filter(runner_group=team)
+
+        # Get statistics for all users in the current team
+        user_stats = Statistic.objects.filter(runner_stat__in=users)
+
+        # Calculate the total results for the team
+        total_results = user_stats.aggregate(
+            total_balls=Sum('total_balls'),
+            total_distance=Sum('total_distance'),
+            total_time=Sum('total_time'),
+            total_average_temp=Avg('total_average_temp'),
+            total_days=Sum('total_days'),
+            total_runs=Sum('total_runs')
+        )
+
+        # Store the data in the dictionary
+        group_data[team] = {
+            'users': users,
+            'total_results': total_results,
+            'user_stats': user_stats
+        }
+
+    # Pass the data to the template
+    context = {
+        'group_data': group_data
+    }
+    return render(request, 'allgroups.html', context)

@@ -1,0 +1,63 @@
+<!-- group_statistics.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% block content %}
+
+    <div class="container-fluid">
+        <h1>Стастика групп</h1>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+
+                </tr>
+
+
+                <tr>
+                    <th>Команда</th>
+                    <th>Баллы</th>
+                    <th>Дистанция</th>
+                    <th>Общее Время</th>
+                    <th>Темп</th>
+                    <th>Дней пробега</th>
+                    <th>Пробежки</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for team, data in group_data.items %}
+{#                TODO сделать  дропдаун на членов группы#}
+                      <tr>
+                          <td><a href="{% url 'groups:viewGroup' team.group_title %}">{{ team.group_title }}</a></td>
+                    <td>{{ data.total_results.total_balls }}</td>
+                    <td>{{ data.total_results.total_distance }}</td>
+                    <td>{{ data.total_results.total_time }}</td>
+                    <td>{{ data.total_results.total_average_temp|time:"i:s" }}</td>
+                    <td>{{ data.total_results.total_days }}</td>
+                    <td>{{ data.total_results.total_runs }}</td>
+                </tr>
+
+
+                {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
+                {#                {% for user in data.users %}#}
+                {#                    {% for stat in data.user_stats %}#}
+                {#                        {% if stat.runner_stat == user %}#}
+                {#                            <tr>#}
+                {#                                <td>{{ user.username }}</td>#}
+                {#                                <td>{{ stat.total_balls }}</td>#}
+                {#                                <td>{{ stat.total_distance }}</td>#}
+                {#                                <td>{{ stat.total_time|time:"H:i:s" }}</td>#}
+                {#                                <td>{{ stat.total_average_temp|time:"i:s" }}</td>#}
+                {#                                <td>{{ stat.total_days }}</td>#}
+                {#                                <td>{{ stat.total_runs }}</td>#}
+                {#                            </tr>#}
+                {#                        {% endif %}#}
+                {#                    {% endfor %}#}
+                {#                {% endfor %}#}
+                  {% endfor %}
+                </tbody>
+            </table>
+
+    </div>
+
+{% endblock %}

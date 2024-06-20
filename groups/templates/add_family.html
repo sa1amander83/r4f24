@@ -1,12 +1,15 @@
  {% extends 'base.html' %}
     {% block content %}
+
+
+
 <div class=" container-fluid ">
     <h1> Выберите из списка группу или создайте свою согласно заявке</h1>
   <ul>
 
     {% for g in group %}
 
-        <li ><i class="fa-solid fa-people-group"></i> <a href="{% url 'groups:add_runner_to_group'  user.username g.group_title %}" class="p-3"> {{ g.group_title }}</a></li>
+        <li ><i class="fa-solid fa-people-group"></i> <a href="{% url 'groups:add_runner_to_group'  user.username g.group_title %}" class="p-3"></a> {{ g.group_title }}</li>
     <br>
         <hr>
 

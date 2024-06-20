@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum, Avg
 from django.shortcuts import render, get_object_or_404, redirect
 
 
@@ -126,13 +127,23 @@ class SuccessView(View):
 
 class GroupsListView(ListView):
     model = Group
+
     template_name = 'add_family.html'
     context_object_name = 'group'
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form'] = AddFamilyForm()
         return context
+
+    def post(self, request, *args, **kwargs):
+        group=self.kwargs['group_title']
+        print(group)
+
+
     def get_queryset(self):
         return Group.objects.all()
+
+
 
 
 
@@ -166,10 +177,42 @@ def add_group(request, username):
 
     else:
         form = FamilyForm()
-    return render(request, '../groups/templates/add_family.html', {'form': form, 'families':families})
+    return render(request, 'add_family.html', {'form': form, 'families':families})
 
 def family_list(request, username):
     families = Group.objects.all()
 
-    return render(request, '../groups/templates/family_list.html', {'families': families, 'username':request.user.username})
+    return render(request, 'family_list.html', {'families': families, 'username':request.user.username})
 
+#просмотр состава выбранной группы
+def view_group(request, group):
+    group_id=Group.objects.get(group_title=group)
+    users = User.objects.filter(runner_group=group_id)
+
+    # Get statistics for all users in the current team
+    user_stats = Statistic.objects.filter(runner_stat__in=users)
+    group_data = {}
+    # Calculate the total results for the team
+    total_results = user_stats.aggregate(
+        total_balls=Sum('total_balls'),
+        total_distance=Sum('total_distance'),
+        total_time=Sum('total_time'),
+        total_average_temp=Avg('total_average_temp'),
+        total_days=Sum('total_days'),
+        total_runs=Sum('total_runs')
+    )
+
+    # Store the data in the dictionary
+    group_data[group] = {
+        'users': users,
+        'total_results': total_results,
+        'user_stats': user_stats
+    }
+
+    # Pass the data to the template
+
+
+    context = {
+        'group_data': group_data
+    }
+    return render(request, 'singlegroup.html', context)
