@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.shortcuts import redirect, render
 
@@ -9,7 +11,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from core.models import Teams
-from r4f24.forms import RegisterUserForm, LoginUserForm
+from r4f24.forms import RegisterUserForm, LoginUserForm, ResetForm
 
 
 class RegisterUser(CreateView):
@@ -122,6 +124,55 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return redirect('authorize:login')
+
+
+def show_reset(request):
+    form = ResetForm()
+    if request.method == "POST":
+        try:
+            username_form = request.POST.get("username")
+            password = request.POST.get("password1")
+            password2 = request.POST.get("password2")
+            key = request.POST.get("keyword")
+
+            getTeam = Teams.objects.get(team=username_form[:3])
+
+            keywordOfTeam = getTeam.keyword
+
+            try:
+                username = User.objects.get(username=username_form)
+            except ObjectDoesNotExist:
+                messages.error(request,
+                               'Участник с таким номером не найден')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if key != keywordOfTeam:
+                messages.error(request,
+                               'Неверно указано кодовое слово')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if password != password2:
+                messages.error(request,
+                               'Введенные пароли не совпадают')
+                render(request, 'pass_reset.html', {'form': form})
+
+            if key.lower() == keywordOfTeam and User.objects.get(username=username_form) and password == password2:
+                user = User.objects.get(username=username_form)
+                print(user)
+
+                user.set_password(password)
+                user.save()
+                return redirect('authorize:login')
+
+        except:
+            pass
+
+    return render(request, 'pass_reset.html', {'form': form})
+
+
+def show_reset_success(request):
+    return render(request, 'pass_updated.html')
+
 
 
 def page_not_found_view(request, exception=None):

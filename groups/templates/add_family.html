@@ -3,8 +3,13 @@
 <div class=" container-fluid ">
     <h1> Выберите из списка группу или создайте свою согласно заявке</h1>
   <ul>
-    {% for family in families %}
-        <li ><i class="fa-solid fa-people-group"></i> <button type="submit" class="btn-primary btn fill-blue-600">{{ family.group_title }}</button></li>
+
+    {% for g in group %}
+
+        <li ><i class="fa-solid fa-people-group"></i> <a href="{% url 'groups:add_runner_to_group'  user.username g.group_title %}" class="p-3"> {{ g.group_title }}</a></li>
+    <br>
+        <hr>
+
     {% endfor %}
 </ul>
 

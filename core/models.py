@@ -61,7 +61,7 @@ class Group(models.Model):
     group_title = models.CharField(max_length=100, verbose_name='Название группы')
     # runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник', related_name='runners_groups')
     # runners = models.ManyToManyField('Group', blank=True, verbose_name='группа', related_name='runners_group')
-
+    choice = models.BooleanField()
     class Meta:
         verbose_name = 'группа участника'
         verbose_name_plural = 'группа участника'

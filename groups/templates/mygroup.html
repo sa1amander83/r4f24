@@ -5,6 +5,12 @@
     <div class="container-fluid">
         <h3> Ваша группа и участники</h3>
         <br>
+
+        {% if message %}
+        <h1> {{ message }}</h1>
+
+            <a href="{% url  'groups:group_list' user.username%}">добавиться в группу</a>
+ {% else %}
         {% for k,v in qs.items %}
 
             <table class="table  table-striped">
@@ -54,5 +60,6 @@
 
 
         {% endfor %}
+    {% endif %}
     </div>
 {% endblock %}

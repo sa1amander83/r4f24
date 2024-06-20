@@ -133,8 +133,19 @@ class FamilyForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ('group_title',)
-
-
+# class JoinGroupForm(forms.Form):
+#     join_group = forms.BooleanField(
+#         required=True,
+#         widget=forms.widgets.B(
+#             choices=[(True, "Yes"), (False, "No")]
+#         )
+#     )
+class GroupChoiceForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['choice']
+        labels = {'choice': ''}
+        widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user','id':'id_username', 'autocomplete':'username', 'autofocus':'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
