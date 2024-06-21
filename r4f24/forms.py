@@ -140,12 +140,12 @@ class FamilyForm(forms.ModelForm):
 #             choices=[(True, "Yes"), (False, "No")]
 #         )
 #     )
-class GroupChoiceForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        fields = ['choice']
-        labels = {'choice': ''}
-        widgets = {'choice': forms.CheckboxInput()}
+# class GroupChoiceForm(forms.ModelForm):
+#     class Meta:
+#         model = Group
+#         fields = ['choice']
+#         labels = {'choice': ''}
+#         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user','id':'id_username', 'autocomplete':'username', 'autofocus':'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))

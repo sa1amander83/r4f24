@@ -9,7 +9,7 @@
 
     {% for g in group %}
 
-        <li ><i class="fa-solid fa-people-group"></i> <a href="{% url 'groups:add_runner_to_group'  user.username g.group_title %}" class="p-3"></a> {{ g.group_title }}</li>
+        <li ><i class="fa-solid fa-people-group"></i> <a href="{% url 'groups:add_user_to_group'  user.username g.id %}" class="p-3">{{ g.group_title }}</a> </li>
     <br>
         <hr>
 

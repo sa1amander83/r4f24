@@ -6,11 +6,19 @@
         <h3> Ваша группа и участники</h3>
         <br>
 
-        {% if message %}
-        <h1> {{ message }}</h1>
 
-            <a href="{% url  'groups:group_list' user.username%}">добавиться в группу</a>
+        {% for message in messages %}
+            <h2 class="alert-danger">{{ message }}</h2>
+            {% endfor %}
+
+
+    {% if message %}
+        <h1 > {{ message }}</h1>
+
+
+            <a href="{% url  'groups:group_list_and_create' user.username%}">добавиться в группу</a>
  {% else %}
+
         {% for k,v in qs.items %}
 
             <table class="table  table-striped">

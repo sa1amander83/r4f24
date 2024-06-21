@@ -61,7 +61,7 @@ class Group(models.Model):
     group_title = models.CharField(max_length=100, verbose_name='Название группы')
     # runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник', related_name='runners_groups')
     # runners = models.ManyToManyField('Group', blank=True, verbose_name='группа', related_name='runners_group')
-    choice = models.BooleanField()
+    # choice = models.BooleanField()
     class Meta:
         verbose_name = 'группа участника'
         verbose_name_plural = 'группа участника'
@@ -99,6 +99,7 @@ class User(AbstractUser):
     runner_gender = models.CharField(max_length=1, choices=GENDER, verbose_name='пол участника', default='м')
     zabeg22 = models.BooleanField(verbose_name='Участник МыZaБег 2022', default=False)
     zabeg23 = models.BooleanField(verbose_name='Участник МыZaБег 2023', default=False)
+    can_create_group = models.BooleanField(verbose_name='Старший группы', default=False, null=True)
     # family = models.ManyToManyField(to=User, verbose_name='выберите участников',
     #                                 related_name='family_users', blank=True)
 
