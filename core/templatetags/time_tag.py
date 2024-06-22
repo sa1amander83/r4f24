@@ -32,3 +32,7 @@ def smooth_timedelta(timedeltaobj):
         timetot += "0{}".format(int(secs))
 
     return timetot
+
+@register.filter(name='range')
+def filter_range(start, end):
+    return range(start, end)

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from core.views import IndexView, CatListView, RunnersCatView, ComandsResults, Championat, OneTeamStat, ComandsView, \
-    StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, AllGroup, group_statistics_view
+    StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view
 
 urlpatterns = [
 
@@ -19,5 +19,6 @@ urlpatterns = [
     path('statistic/', StatisticView.as_view(), name='statistic'),
     path('runners/', RunnersView.as_view(), name='runners'),
     path('runners/<slug:cat>/', RunnersView.as_view(), name='runners'),
+    path('runner-day-results/<int:day>/', runner_day_results_view, name='runner_day_results'),
 
 ]

@@ -790,3 +790,8 @@ def group_statistics_view(request):
         'group_data': group_data
     }
     return render(request, 'allgroups.html', context)
+
+
+def runner_day_results_view(request, day):
+    results = RunnerDay.objects.filter(day_select=day)
+    return render(request, 'runner_day_results.html', {'results': results, 'day': day})

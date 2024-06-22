@@ -1,0 +1,35 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <h1>Результаты {{ day }} сентября</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Участник</th>
+                <th>Дистанция</th>
+                <th>Время</th>
+                <th>Средний темп</th>
+                <th>Баллы</th>
+                <th>Номер пробежки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td> <a href="{% url 'profile:profile' result.runner.username %}"> {{ result.runner.username }} </a></td>
+                    <td>{{ result.day_distance }}</td>
+                    <td>{{ result.day_time }}</td>
+                    <td>{{ result.day_average_temp }}</td>
+                    <td>{{ result.ball }}</td>
+                    <td>{{ result.number_of_run }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
