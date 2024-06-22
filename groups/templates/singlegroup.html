@@ -10,8 +10,8 @@
         <h2>{{ team.group_title }}</h2>
         <p>Баллы {{ data.total_results.total_balls }}</p>
         <p>Дистанция {{ data.total_results.total_distance }}</p>
-        <p>Время {{ data.total_results.total_time|time:"H:i:s" }}</p>
-        <p>Средний темп {{ data.total_results.total_average_temp|time:"i:s" }}</p>
+        <p>Время {{ data.total_results.total_time}}</p>
+        <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
         <p>Дней пробега {{ data.total_results.total_days }}</p>
         <p>Всего пробежек {{ data.total_results.total_runs }} </p>
         <table class="table table-striped">

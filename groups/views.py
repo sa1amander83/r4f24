@@ -36,19 +36,50 @@ class MyGroup(ListView, DataMixin):
 
                 group_users[obj.runner_group] = []
 
+                users = User.objects.filter(runner_group=group)
+
+                # Get statistics for all users in the current team
+                user_stats = Statistic.objects.filter(runner_stat__in=users)
+                group_data = {}
+                # Calculate the total results for the team
+                total_results = user_stats.aggregate(
+                    total_balls=Sum('total_balls'),
+                    total_distance=Sum('total_distance'),
+                    total_time=Sum('total_time'),
+                    total_average_temp=Avg('total_average_temp'),
+                    total_days=Sum('total_days'),
+                    total_runs=Sum('total_runs')
+                )
+
+                group_data[group] = {
+                    'users': users,
+                    'total_results': total_results,
+                    'user_stats': user_stats
+                }
+
+                # Pass the data to the template
+
+                context = {
+                    'group_data': group_data
+                }
+
                 for user in group_stat:
-                    stats_obj = Statistic.objects.get(runner_stat_id=user.id)
-                    group_users[obj.runner_group].append({
-                        'group': str(group),
-                        'user': user.username,
-                        'total_distance': stats_obj.total_distance,
-                        'total_time': stats_obj.total_time,
-                        'total_average_temp': stats_obj.total_average_temp,
-                        'total_days': stats_obj.total_days,
-                        'total_runs': stats_obj.total_runs,
-                        'total_balls': stats_obj.total_balls,
-                        'is_qualificated': stats_obj.is_qualificated
-                    })
+                    try:
+                        stats_obj = Statistic.objects.get(runner_stat_id=user.id)
+
+                        group_users[obj.runner_group].append({
+                            'group': str(group),
+                            'user': user.username,
+                            'total_distance': stats_obj.total_distance,
+                            'total_time': stats_obj.total_time,
+                            'total_average_temp': stats_obj.total_average_temp,
+                            'total_days': stats_obj.total_days,
+                            'total_runs': stats_obj.total_runs,
+                            'total_balls': stats_obj.total_balls,
+                            'is_qualificated': stats_obj.is_qualificated
+                        })
+                    except:
+                        continue
                 context['qs'] = group_users
             else:
                 context['message'] = 'Вы не состоите в группе'
@@ -135,31 +166,31 @@ class GroupsListView(ListView):
     def get_queryset(self):
         return Group.objects.all()
 
-
-class AddFamily(CreateView, LoginRequiredMixin):
-    model = Group
-    template_name = 'addfamily.html'
-    form_class = AddFamilyForm
-    success_url = reverse_lazy('profile:profile')
-
-    def get_context_data(self, *args, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        return context
-
-
-def add_group(request, username):
-    families = Group.objects.all()
-
-    if request.method == 'POST' and Group.objects.filter(runner__runner_status=1):
-        form = FamilyForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('profile:family_list', request.user)
-
-    else:
-        form = FamilyForm()
-    return render(request, 'add_family.html', {'form': form, 'families': families})
+#
+# class AddFamily(CreateView, LoginRequiredMixin):
+#     model = Group
+#     template_name = 'addfamily.html'
+#     form_class = AddFamilyForm
+#     success_url = reverse_lazy('profile:profile')
+#
+#     def get_context_data(self, *args, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         return context
+#
+#
+# def add_group(request, username):
+#     families = Group.objects.all()
+#
+#     if request.method == 'POST' and Group.objects.filter(runner__runner_status=1):
+#         form = FamilyForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('profile:family_list', request.user)
+#
+#     else:
+#         form = FamilyForm()
+#     return render(request, 'add_family.html', {'form': form, 'families': families})
 
 
 def family_list(request, username):
@@ -169,8 +200,12 @@ def family_list(request, username):
 
 
 # просмотр состава выбранной группы
-def view_group(request, group):
-    group_id = Group.objects.get(group_title=group)
+def view_group(request,  group ):
+
+    print(request.path)
+
+
+    group_id = Group.objects.get(id=group)
     users = User.objects.filter(runner_group=group_id)
 
     # Get statistics for all users in the current team
@@ -247,5 +282,5 @@ def add_user_to_group(request):
     user = request.user
     user.runner_group = group
     user.save()
-    redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})  # Adjust this to your actual URL name
+    redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
     return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})

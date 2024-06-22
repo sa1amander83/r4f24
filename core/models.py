@@ -58,7 +58,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class Group(models.Model):
-    group_title = models.CharField(max_length=100, verbose_name='Название группы')
+    group_title = models.CharField(max_length=100, verbose_name='Название группы', unique=True)
     # runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник', related_name='runners_groups')
     # runners = models.ManyToManyField('Group', blank=True, verbose_name='группа', related_name='runners_group')
     # choice = models.BooleanField()

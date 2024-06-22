@@ -7,36 +7,39 @@
     <div class="container-fluid">
         <h1>Стастика групп</h1>
 
-            <table class="table table-striped">
-                <thead>
-                <tr>
+        <table class="table table-striped">
+            <thead>
+            <tr>
 
-                </tr>
+            </tr>
 
 
-                <tr>
-                    <th>Команда</th>
-                    <th>Баллы</th>
-                    <th>Дистанция</th>
-                    <th>Общее Время</th>
-                    <th>Темп</th>
-                    <th>Дней пробега</th>
-                    <th>Пробежки</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for team, data in group_data.items %}
-{#                TODO сделать  дропдаун на членов группы#}
-                      <tr>
-                          <td><a href="{% url 'groups:viewGroup' team.group_title %}">{{ team.group_title }}</a></td>
-                    <td>{{ data.total_results.total_balls }}</td>
-                    <td>{{ data.total_results.total_distance }}</td>
-                    <td>{{ data.total_results.total_time }}</td>
-                    <td>{{ data.total_results.total_average_temp|time:"i:s" }}</td>
-                    <td>{{ data.total_results.total_days }}</td>
-                    <td>{{ data.total_results.total_runs }}</td>
-                </tr>
+            <tr>
+                <th>Команда</th>
+                <th>Баллы</th>
+                <th>Дистанция</th>
+                <th>Общее Время</th>
+                <th>Темп</th>
+                <th>Дней пробега</th>
+                <th>Пробежки</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for team, data in group_data.items %}
 
+                {#                TODO сделать  дропдаун на членов группы#}
+
+                {% if  data.total_results.total_balls %}
+                    <tr>
+                        <td><a href="{% url 'groups:viewGroup' team.id %}">{{ team.group_title }}</a></td>
+                        <td>{{ data.total_results.total_balls }}</td>
+                        <td>{{ data.total_results.total_distance }}</td>
+                        <td>{{ data.total_results.total_time }}</td>
+                        <td>{{ data.total_results.total_average_temp|smooth_filter }}</td>
+                        <td>{{ data.total_results.total_days }}</td>
+                        <td>{{ data.total_results.total_runs }}</td>
+                    </tr>
+                {% endif %}
 
                 {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
                 {#                {% for user in data.users %}#}
@@ -54,9 +57,9 @@
                 {#                        {% endif %}#}
                 {#                    {% endfor %}#}
                 {#                {% endfor %}#}
-                  {% endfor %}
-                </tbody>
-            </table>
+            {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 

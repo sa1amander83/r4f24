@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-
+{% load time_tag %}
 <h1>hello</h1>
 {% block content %}
     <div class="container-fluid">
-        <h3> Ваша группа и участники</h3>
-        <br>
+
 
 
         {% for message in messages %}
@@ -18,6 +17,31 @@
 
             <a href="{% url  'groups:group_list_and_create' user.username%}">добавиться в группу</a>
  {% else %}
+ <h3> Ваша группа и участники</h3>
+
+        <br>
+
+  {% for team, data in group_data.items %}
+        <h3> Итоги по группе</h3>
+        <p>Баллы {{ data.total_results.total_balls }}</p>
+        <p>Дистанция {{ data.total_results.total_distance }}</p>
+        <p>Время {{ data.total_results.total_time }}</p>
+        <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
+        <p>Дней пробега {{ data.total_results.total_days }}</p>
+        <p>Всего пробежек {{ data.total_results.total_runs }} </p>
+
+        {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
 
         {% for k,v in qs.items %}
 

@@ -19,7 +19,7 @@
             {% endfor %}
         </ul>
         {% if can_create %}
-            <h2>Создание новой группы</h2>
+            <h2>Создать свою группу</h2>
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
