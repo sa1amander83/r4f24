@@ -8,7 +8,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.admin import display
 
-from core.models import User, Teams, Family
+from core.models import User, Teams, Group
 
 
 class TeamsAdmin(admin.ModelAdmin):
@@ -30,7 +30,7 @@ class TeamsAdmin(admin.ModelAdmin):
 #     extra = 1
 
 
-@admin.register(Family)
+@admin.register(Group)
 class FamilyAdmin(admin.ModelAdmin):
     class Meta:
         verbose_name = 'Семья'
@@ -39,7 +39,7 @@ class FamilyAdmin(admin.ModelAdmin):
         return str(self.username)
 
     # inlines = (UsersInline,)
-    list_display = ["runner"]
+    list_display = ["group_title"]
 
     # filter_horizontal = ('runner_family',)
 

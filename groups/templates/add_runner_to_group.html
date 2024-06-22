@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<h1>Добавить пользователя в группу {{ group }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {% crispy form %}
+    <button type="submit" name="yes">ДА</button>
+    <button type="submit" name="no">Нет</button>
+</form>
+{% endblock %}

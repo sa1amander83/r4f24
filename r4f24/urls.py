@@ -28,6 +28,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authorize.urls')),
     path('', include('profiles.urls')),
+    path('', include('groups.urls')),
+
     path("__debug__/", include("debug_toolbar.urls")),
 
 

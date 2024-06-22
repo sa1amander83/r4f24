@@ -55,17 +55,19 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
 
-class Family(models.Model):
-    family_title = models.CharField(max_length=100, verbose_name='Название группы')
-    runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник')
-    runner_family = models.ManyToManyField('Family', blank=True, verbose_name='группа', related_name='runners_family')
 
+
+class Group(models.Model):
+    group_title = models.CharField(max_length=100, verbose_name='Название группы', unique=True)
+    # runner = models.ForeignKey('User', on_delete=models.DO_NOTHING, verbose_name='Участник', related_name='runners_groups')
+    # runners = models.ManyToManyField('Group', blank=True, verbose_name='группа', related_name='runners_group')
+    # choice = models.BooleanField()
     class Meta:
-        verbose_name = 'Семейное участие'
-        verbose_name_plural = 'Семейное участие'
+        verbose_name = 'группа участника'
+        verbose_name_plural = 'группа участника'
 
     def __str__(self):
-        return str(self.runner)
+        return str(self.group_title)
 
 
 class User(AbstractUser):
@@ -91,11 +93,13 @@ class User(AbstractUser):
         MaxValueValidator(99),
         MinValueValidator(5)
     ])
-    runner_category = models.PositiveIntegerField(verbose_name='Заявляетесь в группу', choices=CATEGORY, default=1,
+    runner_category = models.PositiveIntegerField(verbose_name='Категория', choices=CATEGORY, default=1,
                                                   db_index=True)
+    runner_group = models.ForeignKey(Group,verbose_name='группа участника', on_delete=models.CASCADE,null=True, related_name='groups')
     runner_gender = models.CharField(max_length=1, choices=GENDER, verbose_name='пол участника', default='м')
     zabeg22 = models.BooleanField(verbose_name='Участник МыZaБег 2022', default=False)
     zabeg23 = models.BooleanField(verbose_name='Участник МыZaБег 2023', default=False)
+    can_create_group = models.BooleanField(verbose_name='Старший группы', default=False, null=True)
     # family = models.ManyToManyField(to=User, verbose_name='выберите участников',
     #                                 related_name='family_users', blank=True)
 

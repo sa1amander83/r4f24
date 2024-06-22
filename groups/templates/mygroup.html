@@ -1,9 +1,47 @@
 {% extends 'base.html' %}
-
+{% load time_tag %}
+<h1>hello</h1>
 {% block content %}
- <div class="container-fluid">
-        <h3> Группы и участники</h3>
+    <div class="container-fluid">
+
+
+
+        {% for message in messages %}
+            <h2 class="alert-danger">{{ message }}</h2>
+            {% endfor %}
+
+
+    {% if message %}
+        <h1 > {{ message }}</h1>
+
+
+            <a href="{% url  'groups:group_list_and_create' user.username%}">добавиться в группу</a>
+ {% else %}
+ <h3> Ваша группа и участники</h3>
+
         <br>
+
+  {% for team, data in group_data.items %}
+        <h3> Итоги по группе</h3>
+        <p>Баллы {{ data.total_results.total_balls }}</p>
+        <p>Дистанция {{ data.total_results.total_distance }}</p>
+        <p>Время {{ data.total_results.total_time }}</p>
+        <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
+        <p>Дней пробега {{ data.total_results.total_days }}</p>
+        <p>Всего пробежек {{ data.total_results.total_runs }} </p>
+
+        {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
 
         {% for k,v in qs.items %}
 
@@ -27,7 +65,7 @@
                     <tr class="row-cols-md-4 text-center">
 
                         <td> {{ forloop.counter }}</td>
-                        <td> {{ u }}</td>
+                        <td> {{ u.user }}</td>
                         <td> {{ u.total_balls }}</td>
                         <td> {{ u.total_distance }}</td>
                         <td> {{ u.total_time }}</td>
@@ -37,16 +75,23 @@
                         <td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
 
                     </tr>
+
                     <p>
                     <p>
                     <p>
+
+
+
+
                 {% endfor %}
+
+
                 </tbody>
             </table>
 
 
 
         {% endfor %}
-
+    {% endif %}
     </div>
 {% endblock %}
