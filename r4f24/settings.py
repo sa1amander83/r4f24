@@ -50,6 +50,8 @@ INTERNAL_IPS = [
 ]
 # Application definition
 
+TOKEN_BOT= '5703490473:AAH_SUXPK3rnLd-sdrT6TTCYCIN2fKOt2Js'
+
 INSTALLED_APPS = [
     # 'compressor',
 
@@ -68,15 +70,15 @@ INSTALLED_APPS = [
     'django_cleanup',
     'sorl.thumbnail',
     "debug_toolbar",
+    'telega',
+    'management'
     # 'tailwind',
     # 'theme',
     # 'django_browser_reload',
     # 'celery',
     # 'django_celery_results',
     # 'django_celery_beat',
-    "django_htmx",
-    'crispy_forms',
-    "crispy_bootstrap4",
+
     # 'csscompressor',
 
 ]
@@ -103,8 +105,8 @@ MIDDLEWARE = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_DIRS = []
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+# CRISPY_TEMPLATE_PACK = "bootstrap4"
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
 
@@ -137,41 +139,6 @@ DEBUG_TOOLBAR_PANELS = [
 # STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 ROOT_URLCONF = 'r4f24.urls'
-# DRAMATIQ_BROKER = {
-#     "BROKER": "dramatiq.brokers.redis.RedisBroker",
-#     "OPTIONS": {
-#         "url": "redis://localhost:6379",
-#     },
-#     "MIDDLEWARE": [
-#         "dramatiq.middleware.Prometheus",
-#         "dramatiq.middleware.AgeLimit",
-#         "dramatiq.middleware.TimeLimit",
-#         "dramatiq.middleware.Callbacks",
-#         "dramatiq.middleware.Retries",
-#         "django_dramatiq.middleware.DbConnectionsMiddleware",
-#         "django_dramatiq.middleware.AdminMiddleware",
-#     ]
-# }
-
-# Defines which database should be used to persist Task objects when the
-# AdminMiddleware is enabled.  The default value is "default".
-# DRAMATIQ_TASKS_DATABASE = "default"
-# from dramatiq.brokers.rabbitmq import RabbitmqBroker
-#
-#
-# rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
-# dramatiq.set_broker(rabbitmq_broker)
-
-
-# DRAMATIQ_RESULT_BACKEND = {
-#     "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
-#     "BACKEND_OPTIONS": {
-#         "url": "redis://localhost:6379",
-#     },
-#     "MIDDLEWARE_OPTIONS": {
-#         "result_ttl": 1000 * 60 * 10
-#     }
-# }
 
 
 NPM_BIN_PATH = which('npm')
@@ -212,8 +179,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'r4f24.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -225,8 +190,6 @@ DATABASES = {
         'PASSWORD': '123'}
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -290,7 +253,7 @@ CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Here
 MEDIA_URL = '/media/'
-
+LOG_LEVEL=DEBUG
 # LOGIN_URL = "/login/"
 #
 # LOGIN_REDIRECT_URL = "/profile/"

@@ -21,9 +21,10 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 from core.views import IndexView
+from telega.views import TelegramBotView
 
 urlpatterns = [
-
+    path('webhook/', TelegramBotView.as_view(), name='telegram_webhook'),
     path('', include('core.urls')),
     path('admin/', admin.site.urls),
     path('', include('authorize.urls')),

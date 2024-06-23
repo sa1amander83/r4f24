@@ -207,30 +207,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
-        # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-        #     Sum('day_distance'))
-        # if total_distance['day_distance__sum'] is None:
-        #     dist = 0
-        # else:
-        #     dist = total_distance['day_distance__sum']
-        #
-        # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        # if total_time['day_time__sum'] is None:
-        #     tot_time = '00:00'
-        # else:
-        #     tot_time = total_time['day_time__sum']
-        # avg_time = self.avg_temp_function(self.kwargs['username'])
-        #
-        # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_distance__gt=0).count()
-        # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_select__gt=0).distinct('day_select').count()
-        #
-        # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-        # if tot_balls['ball__sum'] is None:
-        #     balls = 0
-        # else:
-        #     balls = tot_balls['ball__sum']
+
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
         get_best_five_summ.delay()
         return redirect(success_url, success_msg)
