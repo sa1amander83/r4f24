@@ -50,7 +50,7 @@ INTERNAL_IPS = [
 ]
 # Application definition
 
-TOKEN_BOT= '5703490473:AAH_SUXPK3rnLd-sdrT6TTCYCIN2fKOt2Js'
+
 
 INSTALLED_APPS = [
     # 'compressor',
