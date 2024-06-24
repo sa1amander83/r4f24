@@ -1,0 +1,82 @@
+version: '3.10'
+
+services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Kflf2208Djdf308!
+    expose:
+      - 5432
+  redis:
+    image: redis:6-alpine
+
+  web:
+    build: .
+    command:
+      sh- c "gunicorn --bind 0.0.0.0:8000 app.wsgi"
+#      sh -c "python manage.py migrate &&
+#             python manage.py runserver 0.0.0.0:8000"
+
+
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://postgres:Kflf2208Djdf308!@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  celery:
+    build: .
+    command: celery -A your_project_name worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://postgres:Kflf2208Djdf308!@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  celery_beat:
+    build: .
+    command: celery -A your_project_name beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://Kflf2208Djdf308!:Kflf2208Djdf308!@db:5432/Kflf2208Djdf308!
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  flower:
+    build: .
+    command: celery -A your_project_name flower --port=5555 --broker=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  nginx:
+    image: nginx:1.20-alpine
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+    volumes:
+      - static_data:/var/www/html/static
+      - ./nginx-conf.d:/etc/nginx/conf.d
+
+volumes:
+  postgres_data:
+  static_data

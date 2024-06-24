@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm, Form
 from django.utils import timezone
 
-from core.models import User, Family
+from core.models import User, Group
 from profiles.models import UserImport, RunnerDay, Photo
 from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
 
@@ -125,16 +125,27 @@ class RunnerDayForm(ModelForm):
 
 class AddFamilyForm(ModelForm):
     class Meta:
-        model = Family
-        fields = ['family_title']
+        model = Group
+        fields = ['group_title']
 
 
 class FamilyForm(forms.ModelForm):
     class Meta:
-        model = Family
-        fields = ('family_title', 'runner')
-
-
+        model = Group
+        fields = ('group_title',)
+# class JoinGroupForm(forms.Form):
+#     join_group = forms.BooleanField(
+#         required=True,
+#         widget=forms.widgets.B(
+#             choices=[(True, "Yes"), (False, "No")]
+#         )
+#     )
+# class GroupChoiceForm(forms.ModelForm):
+#     class Meta:
+#         model = Group
+#         fields = ['choice']
+#         labels = {'choice': ''}
+#         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user','id':'id_username', 'autocomplete':'username', 'autofocus':'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))

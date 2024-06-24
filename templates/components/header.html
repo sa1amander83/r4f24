@@ -1,88 +1,99 @@
 {% load static %}
 
-
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
-<ul class="navbar-nav profile-user ">
-
-
-
-        {% if request.user.is_authenticated %}
-            <div class="container-user-profile">
-            <div class="col-lg-auto user-profile">
-
-                           </div>
-            <div class=" dropdown">
-                <a class="btn btn-primary dropdown-toggle  " href="{% url 'profile:profile' username=user.username %}" role="button" id="dropdownMenuLink"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 {{ user.username }}
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                     <a class="dropdown-item text-center" href="{% url 'profile:profile' username=user.username %}">Моя страница</a>
-                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-center" href="{% url 'profile:addfamily' username=user.username %}">Группа</a>
-                    <div class="dropdown-divider"></div>
-
-                       <a class="dropdown-item text-center" href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
-                    <div class="dropdown-divider"></div>
-                     <a  class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i class="fa-brands fa-telegram "></i> Telegram </a>
-                    <div class="dropdown-divider"></div>
+{% load time_tag %}
+<div class="container-fluid">
+    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
+        <ul class="navbar-nav profile-user ">
 
 
-                    <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
-                     <div class="dropdown-divider"></div>
+            {% if request.user.is_authenticated %}
+                <div class="container-user-profile">
+                <div class="col-lg-auto user-profile">
+
+                </div>
+                <div class=" dropdown">
+                    <a class="btn btn-primary dropdown-toggle  "
+                       href="{% url 'profile:profile' username=user.username %}" role="button" id="dropdownMenuLink"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item text-center" href="{% url 'profile:profile' username=user.username %}">Моя
+                            страница</a>
+                        <div class="dropdown-divider"></div>
+
+
+                        <a class="dropdown-item text-center"
+                           href="{% url 'groups:mygroup' username=user.username %}">Группа</a>
+                        <div class="dropdown-divider"></div>
+
+
+                        <a class="dropdown-item text-center"
+                           href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i
+                                class="fa-brands fa-telegram "></i> Telegram </a>
+                        <div class="dropdown-divider"></div>
+
+
+                        <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
+                        <div class="dropdown-divider"></div>
+
+                    </div>
+
 
                 </div>
 
-
-            </div>
-
-        {% else %}
-            <li class="col-lg-auto user-profile"><a href="{% url 'authorize:register' %}"> Регистрация </a></li>
-            <div class="topbar-divider d-none d-sm-block"></div>
-            <li class="col-lg-auto user-profile"><a href="{% url 'authorize:login' %}"> Вход </a></li>
-            <div class="topbar-divider d-none d-sm-block"></div>
+            {% else %}
+                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:register' %}"> Регистрация </a></li>
+                <div class="topbar-divider d-none d-sm-block"></div>
+                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:login' %}"> Вход </a></li>
+                <div class="topbar-divider d-none d-sm-block"></div>
 
 
-        {% endif %}
-
-
-        <div class="topbar-divider"></div>
-        {% for i in user_detail %}
-            {% if i.is_superuser %}
-                <div class="col-lg-auto user-profile"><a href="{% url 'exportcsv' %}"> экспорт csv </a></div>
             {% endif %}
 
-        {% endfor %}
 
-{#        {% if request.user.is_authenticated %}#}
-{##}
-{##}
-{##}
-{#        {% endif %}#}
+            <div class="topbar-divider"></div>
+            {% for i in user_detail %}
+                {% if i.is_superuser %}
+                    <div class="col-lg-auto user-profile"><a href="{% url 'exportcsv' %}"> экспорт csv </a></div>
+                {% endif %}
+
+            {% endfor %}
+
+            {#        {% if request.user.is_authenticated %}#}
+            {##}
+            {##}
+            {##}
+            {#        {% endif %}#}
+            </div>
+
+            <!-- Sidebar Toggle (Topbar) -->
+            {#    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">#}
+            {#        <i class="fa fa-bars"></i>#}
+            {#    </button>#}
+
+        </ul>
+
+        <a href="{% url 'index' %}"> Главная</a>
+        <a href="{% url 'runners' %}"> Участники</a>
+        <a href="{% url 'championat' %}"> Чемпионат</a>
+        <a href="{% url 'comandsview' %}"> Команды</a>
+        <a href="{% url 'groupsview' %}"> Группы</a>
+        <a href="{% url 'statistic' %}"> Статистика</a>
+
+
+
+    </nav>
+    <div class="flex justify-content-between">
+        {% for day in 1|range:31 %}
+            <a href="{% url 'runner_day_results' day %}">{{ day }}</a>
+        {% endfor %}
     </div>
 
-    <!-- Sidebar Toggle (Topbar) -->
-{#    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">#}
-{#        <i class="fa fa-bars"></i>#}
-{#    </button>#}
 
-</ul>
-
-    <a href="{% url 'index' %}"> Главная</a>
-    <a href="{% url 'runners' %}"> Участники</a>
-    <a href="{% url 'championat' %}"> Чемпионат</a>
-    <a href="{% url 'comandsview' %}"> Команды</a>
-    <a href="{% url 'groupsview' %}"> Группы</a>
-    <a href="{% url 'statistic' %}"> Статистика</a>
-
-    <a href="{% url 'index' %}"> Календарь</a>
-
-</nav>
-
-
-
-
+</div>
 
 

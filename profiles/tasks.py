@@ -8,7 +8,6 @@ from core.models import Teams, User
 from profiles.models import Statistic, BestFiveRunners, RunnerDay
 
 
-# TODO  эту функцию через селери запускать после каждого внесения данных о пробежке
 # функция обновляет сведения в модели каждые по сумме 5 участников к каждой возрастной категории
 # @receiver(pre_save, sender=RunnerDay)
 # def my_signal_handler(instance, **kwargs):
