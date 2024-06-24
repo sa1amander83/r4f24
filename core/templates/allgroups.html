@@ -5,17 +5,17 @@
 {% block content %}
 
     <div class="container-fluid">
-        <h1>Стастика групп</h1>
+        {% if flag %}
+            <h1>Статистика групп</h1>
+        {% else %}
+            Статистика команд
+        {% endif %}
 
         <table class="table table-striped">
             <thead>
+           <tr>            </tr>
             <tr>
-
-            </tr>
-
-
-            <tr>
-                <th>Команда</th>
+                <th> {% if flag %}Группа{% else %} Комада {% endif %}</th>
                 <th>Баллы</th>
                 <th>Дистанция</th>
                 <th>Общее Время</th>
@@ -31,11 +31,15 @@
 
                 {% if  data.total_results.total_balls %}
                     <tr>
+                    {% if flag %}
                         <td><a href="{% url 'groups:viewGroup' team.id %}">{{ team.group_title }}</a></td>
+                        {% else %}
+                        <td><a href="{% url 'oneteamstat' team.team %}">{{ team.team }}</a></td>
+                        {% endif %}
                         <td>{{ data.total_results.total_balls }}</td>
                         <td>{{ data.total_results.total_distance }}</td>
-                        <td>{{ data.total_results.total_time }}</td>
-                        <td>{{ data.total_results.total_average_temp|smooth_filter }}</td>
+                        <td>{{ data.total_results.total_times }}</td>
+                        <td>{{ data.total_results.avg_temp|smooth_filter }}</td>
                         <td>{{ data.total_results.total_days }}</td>
                         <td>{{ data.total_results.total_runs }}</td>
                     </tr>

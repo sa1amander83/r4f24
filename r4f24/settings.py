@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     # 'celery',
     # 'django_celery_results',
     # 'django_celery_beat',
-    "django_htmx",
+
     'crispy_forms',
     "crispy_bootstrap4",
     # 'csscompressor',
@@ -93,7 +93,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
+
     # "django.middleware.cache.UpdateCacheMiddleware",
     # "django.middleware.common.CommonMiddleware",
     # "django.middleware.cache.FetchFromCacheMiddleware",
