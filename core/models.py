@@ -88,7 +88,7 @@ class User(AbstractUser):
     first_name = False
     # user= models.CharField( max_length=12,verbose_name='Номер участника', unique=True)
     # runner_team = models.ForeignKey(Teams, on_delete=models.DO_NOTHING, verbose_name='команда', db_index=True)
-    runner_team = models.PositiveIntegerField(verbose_name='команда', db_index=True)
+    runner_team = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда', db_index=True)
     runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True, validators=[
         MaxValueValidator(99),
         MinValueValidator(5)

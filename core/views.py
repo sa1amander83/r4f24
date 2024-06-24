@@ -808,12 +808,14 @@ class AllGroup(ListView):
 
 def group_statistics_view(request):
 
-    if request.path.__contains__('groups'):
+    if 'groups' in request.path_info:
         groups = Group.objects.all()
-        flag= True
+        flag = True
+        param='group'
     else:
         groups = Teams.objects.all()
-        flag=False
+        flag = False
+        param='team'
     group_data = {}
 
     for group in groups:
@@ -841,7 +843,7 @@ def group_statistics_view(request):
         }
 
     context = {
-        'group_data': group_data, 'flag':flag
+        'group_data': group_data, 'flag': flag
     }
     return render(request, 'allgroups.html', context)
 
