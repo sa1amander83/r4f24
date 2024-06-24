@@ -17,6 +17,8 @@ from profiles.utils import DataMixin
 from r4f24.forms import FamilyForm, AddFamilyForm
 
 #просмотр группы участников
+
+
 class MyGroup(ListView, DataMixin):
     model = Group
     template_name = 'mygroup.html'
@@ -41,7 +43,7 @@ class MyGroup(ListView, DataMixin):
                 # Get statistics for all users in the current team
                 user_stats = Statistic.objects.filter(runner_stat__in=users)
                 group_data = {}
-                # Calculate the total results for the team
+                #TODO  кусок кода повторяется с просмотром страницы группы и команды
                 total_results = user_stats.aggregate(
                     total_balls=Sum('total_balls'),
                     total_distance=Sum('total_distance'),

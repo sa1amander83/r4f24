@@ -807,20 +807,19 @@ class AllGroup(ListView):
 
 
 def group_statistics_view(request):
-
     if 'groups' in request.path_info:
         groups = Group.objects.all()
         flag = True
-        param='group'
+
     else:
         groups = Teams.objects.all()
         flag = False
-        param='team'
+
     group_data = {}
 
     for group in groups:
-        # Get all users in the current group
-        if request.path.__contains__('groups'):
+
+        if 'groups' in request.path_info:
             users = User.objects.filter(runner_group=group)
         else:
             users = User.objects.filter(runner_team=group)
