@@ -12,7 +12,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView
 
-from core.models import Group, User
+from core.models import Group, User, Teams
 from profiles.models import Statistic
 from profiles.utils import DataMixin
 from r4f24.forms import FamilyForm, AddFamilyForm
@@ -206,17 +206,25 @@ def family_list(request, username):
 @cache_page(60*1)
 #TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
 def view_group(request,  group ):
+    print(request.path_info)
+    if 'groups' in request.path_info:
+        # groups = Group.objects.filter(group_title=group)
+        group_id = Group.objects.get(group_title=group)
+        users = User.objects.filter(runner_group=group_id)
+        flag = True
 
-    print(request.path)
+    else:
+
+        group_id = Teams.objects.get(team=group)
+        users = User.objects.filter(runner_team=group_id)
+        flag = False
 
 
-    group_id = Group.objects.get(id=group)
-    users = User.objects.filter(runner_group=group_id)
 
-    # Get statistics for all users in the current team
+
     user_stats = Statistic.objects.filter(runner_stat__in=users)
     group_data = {}
-    # Calculate the total results for the team
+
     total_results = user_stats.aggregate(
         total_balls=Sum('total_balls'),
         total_distance=Sum('total_distance'),
@@ -226,7 +234,7 @@ def view_group(request,  group ):
         total_runs=Sum('total_runs')
     )
 
-    # Store the data in the dictionary
+
     group_data[group] = {
         'users': users,
         'total_results': total_results,
@@ -236,7 +244,7 @@ def view_group(request,  group ):
     # Pass the data to the template
 
     context = {
-        'group_data': group_data
+        'group_data': group_data, 'flag':flag
     }
     return render(request, 'singlegroup.html', context)
 

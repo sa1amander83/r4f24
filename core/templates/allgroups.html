@@ -33,7 +33,7 @@
                 {% if  data.total_results.total_balls %}
                     <tr>
                     {% if flag %}
-                        <td><a href="{% url 'viewGroup' team.id %}">{{ team.group_title }}</a></td>
+                        <td><a href="{% url 'viewGroup' team.group_title %}">{{ team.group_title }}</a></td>
                         {% else %}
                         <td><a href="{% url 'oneteamstat' team.team %}">{{ team.team }}</a></td>
                         {% endif %}

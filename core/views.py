@@ -740,6 +740,7 @@ def group_list(request):
 
 # @cache_page(timeout=60 * 30)
 def group_statistics_view(request):
+    print(request.path_info)
     if 'groups' in request.path_info:
         groups = Group.objects.all()
         flag = True

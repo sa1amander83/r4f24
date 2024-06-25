@@ -4,10 +4,12 @@
 {% block content %}
 
 <div class="container-fluid">
-    <h1>Статистика группы</h1>
-    
+
+
     {% for team, data in group_data.items %}
-        <h2>{{ team.group_title }}</h2>
+
+        <h1>Статистика  {% if flag %}  группы  <b>{{ team }} </b>{% else %}  команды  <b>{{ team }}</b>{% endif %}</h1>
+
         <p>Баллы {{ data.total_results.total_balls }}</p>
         <p>Дистанция {{ data.total_results.total_distance }}</p>
         <p>Время {{ data.total_results.total_time}}</p>
