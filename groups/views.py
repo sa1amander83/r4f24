@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, Avg
+from django.db.models import Sum, Avg, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -28,7 +28,7 @@ class MyGroup(ListView, DataMixin):
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         group_users = {}
-        # поулчаем группу через юезра из кварг
+
         try:
             obj = User.objects.get(username=self.kwargs['username'])
 
@@ -40,8 +40,6 @@ class MyGroup(ListView, DataMixin):
                 group_users[obj.runner_group] = []
 
                 users = User.objects.filter(runner_group=group)
-
-                # Get statistics for all users in the current team
                 user_stats = Statistic.objects.filter(runner_stat__in=users)
                 group_data = {}
                 #TODO  кусок кода повторяется с просмотром страницы группы и команды
@@ -203,24 +201,21 @@ def family_list(request, username):
 
 
 # просмотр состава выбранной группы
-@cache_page(60*1)
+# @cache_page(60*1)
 #TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
-def view_group(request,  group ):
-    print(request.path_info)
+def view_group(request,  group):
+
     if 'groups' in request.path_info:
         # groups = Group.objects.filter(group_title=group)
-        group_id = Group.objects.get(group_title=group)
+        group_id = Group.objects.get(id=group)
+        group=group_id.group_title
         users = User.objects.filter(runner_group=group_id)
         flag = True
 
     else:
-
         group_id = Teams.objects.get(team=group)
         users = User.objects.filter(runner_team=group_id)
         flag = False
-
-
-
 
     user_stats = Statistic.objects.filter(runner_stat__in=users)
     group_data = {}
@@ -231,9 +226,10 @@ def view_group(request,  group ):
         total_time=Sum('total_time'),
         total_average_temp=Avg('total_average_temp'),
         total_days=Sum('total_days'),
-        total_runs=Sum('total_runs')
-    )
+        total_runs=Sum('total_runs'),
+        tot_users=Count('runner_stat__username')
 
+    )
 
     group_data[group] = {
         'users': users,

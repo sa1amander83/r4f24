@@ -13,9 +13,9 @@
 
         <table class="table table-striped">
             <thead>
-           <tr>            </tr>
+            <tr></tr>
             <tr>
-                <th> {% if flag %}Группа{% else %} Комада {% endif %}</th>
+                <th> {% if flag %}Группа{% else %} Команда {% endif %}</th>
                 <th>Участники</th>
                 <th>Баллы</th>
                 <th>Дистанция</th>
@@ -32,11 +32,11 @@
 
                 {% if  data.total_results.total_balls %}
                     <tr>
-                    {% if flag %}
-                        <td><a href="{% url 'viewGroup' team.group_title %}">{{ team.group_title }}</a></td>
-                        {% else %}
-                        <td><a href="{% url 'oneteamstat' team.team %}">{{ team.team }}</a></td>
-                        {% endif %}
+
+
+                            <td> {% if flag %} <a href="{% url 'viewGroup' team.id  %}"> {% else %}
+                            <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
+                        </td>
                         <td>{{ data.total_results.tot_users }}</td>
                         <td>{{ data.total_results.total_balls }}</td>
                         <td>{{ data.total_results.total_distance }}</td>
