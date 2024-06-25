@@ -313,11 +313,13 @@ AUTH_USER_MODEL = 'core.user'
 #         }
 #     }
 # }
-
+#
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379",
+        "KEY_PREFIX": "r4f",
+        "TIMEOUT": 60 * 15,
     }
 }
 

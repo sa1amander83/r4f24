@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from django.urls import reverse_lazy, reverse
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView
 
@@ -202,6 +203,8 @@ def family_list(request, username):
 
 
 # просмотр состава выбранной группы
+@cache_page(60*1)
+#TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
 def view_group(request,  group ):
 
     print(request.path)

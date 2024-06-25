@@ -16,6 +16,7 @@
            <tr>            </tr>
             <tr>
                 <th> {% if flag %}Группа{% else %} Комада {% endif %}</th>
+                <th>Участники</th>
                 <th>Баллы</th>
                 <th>Дистанция</th>
                 <th>Общее Время</th>
@@ -32,10 +33,11 @@
                 {% if  data.total_results.total_balls %}
                     <tr>
                     {% if flag %}
-                        <td><a href="{% url 'groups:viewGroup' team.id %}">{{ team.group_title }}</a></td>
+                        <td><a href="{% url 'viewGroup' team.id %}">{{ team.group_title }}</a></td>
                         {% else %}
                         <td><a href="{% url 'oneteamstat' team.team %}">{{ team.team }}</a></td>
                         {% endif %}
+                        <td>{{ data.total_results.tot_users }}</td>
                         <td>{{ data.total_results.total_balls }}</td>
                         <td>{{ data.total_results.total_distance }}</td>
                         <td>{{ data.total_results.total_time }}</td>

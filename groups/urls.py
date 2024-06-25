@@ -10,7 +10,7 @@ urlpatterns = [
     # path('profile/<slug:username>/select_group/', GroupsListView.as_view(), name='group_list'),
     # path('profile/<slug:username>/addgroup/<slug:group>/', GroupsListView.as_view(), name='group_list'),
     # path('profile/<slug:username>/addgroup/<int:group_id>/', add_user_to_group, name='add_user_to_group'),
-    path('group/<int:group>/', view_group, name='viewGroup'),
+
     path('profile/<slug:username>/groups/', group_list_and_create_view, name='group_list_and_create'),
     path('add-user-to-group/', add_user_to_group, name='add_user_to_group'),
 ]

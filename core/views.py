@@ -3,6 +3,7 @@ from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg
 
 from django.db.models.functions import Cast, RowNumber
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
 from django.views.generic import ListView
 from core.models import User, Teams, Group
@@ -364,24 +365,23 @@ class OneTeamStat(DataMixin, ListView):
 
         comand_number = self.kwargs['comanda']
         context['comand_number'] = comand_number
-
-        context['team_count'] = User.objects.filter(runner_team=comand_number).filter(not_running=False).count()
-
-        context['res'] = Statistic.objects.filter(runner_stat__runner_team=comand_number).values(
-            'runner_stat__username', 'runner_stat__runner_category', ).annotate(
+        users = User.objects.filter(runner_team__team=comand_number)
+        context['team_count'] = users.count()
+        user_stats = Statistic.objects.filter(runner_stat__in=users)
+        # Общая статистика группы
+        context['res'] = user_stats.aggregate(
             tot_time=Sum('total_time'),
+            tot_balls=Sum('total_balls'),
             tot_avg_temp=Sum('total_average_temp'),
             tot_distance=Sum('total_distance'),
             tot_runs=Sum('total_runs'),
-            day_count=Count(Q(total_days__gt=0)),
-            avg_time=ExpressionWrapper(
-                F('tot_avg_temp') / F('total_runs'),
-                output_field=TimeField())). \
-            aggregate(Sum('tot_distance'), Sum('tot_time'), Avg('avg_time'), Sum('tot_runs'))
+            day_count=Sum('total_days'),
+            avg_time=Avg('total_average_temp'))
 
-        context['qs'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
-            runner_stat__runner_team=comand_number). \
-            values('runner_stat__runner_team', 'runner_stat__username', 'runner_stat__runner_category',
+        # статистика каждого участника
+        context['qs'] = Statistic.objects.filter(
+            runner_stat__runner_team__team=comand_number). \
+            values('runner_stat__username', 'runner_stat__runner_category',
                    'runner_stat__runner_age',
                    'total_time', 'total_distance', 'total_days', 'total_runs', 'total_balls',
                    'total_average_temp').order_by('-total_balls')
@@ -736,76 +736,9 @@ def group_list(request):
     return render(request, 'groups.html', {'groups': groups, 'group_users': group_users})
 
 
-class AllGroup(ListView):
-    template_name = 'groups.html'
-    model = Group
-
-    def get_context_data(self, *args, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        group_users = {}
-        # поулчаем группу через юезра из кварг
-        allgroups = Group.objects.all().distinct('group_title')
-
-        totals = Statistic.objects.annotate(
-            team=Cast('runner_stat__runner_group', output_field=models.IntegerField())
-        ).values('runner_stat__runner_group').annotate(
-            total_balls=Sum('total_balls'), total_distance=Sum('total_distance')
-        ).order_by('-total_balls').annotate(
-            rank=Window(expression=RowNumber(), order_by=[-F('total_balls')])
-        ).values('runner_stat__runner_group', 'total_balls').order_by('-total_balls')
-        print(totals)
-
-        # получаем всех пользователей с этой группой
-        # groups = Group.objects.prefetch_related('groups__runner_stat')
-        users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
-        groups = Group.objects.select_related('groups__runner_stat')
-        # print(users_in_groups)
-        group_users_stats = {}
-        group_list = []
-        # users_in_groups = User.objects.filter(runner_group__isnull=False).select_related('runner_group')
-
-        for user in users_in_groups:
-            group_list.append(user.statistic_set.all())
-
-            group_users_stats[user.runner_group.group_title] = group_list.append(user.statistic_set.all())
-            # print(f"User: {user.username} ")
-            # print(f"Group: {user.runner_group.group_title}")
-            # print(f"Statistics: {user.statistic_set.all()}")
-            # print("-" * 80)
-        # for group in groups:
-        #     group_users_stats[group] = []
-        #     for user in group.groups.all():
-        #         user_stat = Statistic.objects.filter(runner_stat=user).first()
-        #         if user_stat:
-        #             group_users_stats[group].append({
-        #                 'user': user,
-        #                 'total_distance': user_stat.total_distance,
-        #                 'total_time': user_stat.total_time,
-        #                 'total_average_temp': user_stat.total_average_temp,
-        #                 'total_days': user_stat.total_days,
-        #                 'total_runs': user_stat.total_runs,
-        #                 'total_balls': user_stat.total_balls,
-        #                 'is_qualificated': user_stat.is_qualificated
-        #             })
-        # for user in group_stat:
-        #     stats_obj=Statistic.objects.get(runner_stat_id=obj.id)
-        #     group_users[obj.runner_group].append({
-        #         'group': str(group),
-        #         'user': user.username,
-        #         'total_distance': stats_obj.total_distance,
-        #         'total_time': stats_obj.total_time,
-        #         'total_average_temp': stats_obj.total_average_temp,
-        #         'total_days': stats_obj.total_days,
-        #         'total_runs': stats_obj.total_runs,
-        #         'total_balls': stats_obj.total_balls,
-        #         'is_qualificated': stats_obj.is_qualificated
-        #     })
-        # context['qs']=group_list
-        context['qs'] = group_users_stats
-
-        return context
 
 
+# @cache_page(timeout=60 * 30)
 def group_statistics_view(request):
     if 'groups' in request.path_info:
         groups = Group.objects.all()
@@ -821,18 +754,21 @@ def group_statistics_view(request):
 
         if 'groups' in request.path_info:
             users = User.objects.filter(runner_group=group)
+
         else:
             users = User.objects.filter(runner_team=group)
 
         user_stats = Statistic.objects.filter(runner_stat__in=users)
 
         total_results = user_stats.aggregate(
+
             total_balls=Sum('total_balls'),
             total_distance=Sum('total_distance'),
             total_time=Sum('total_time'),
             total_average_temp=Avg('total_average_temp'),
             total_days=Sum('total_days'),
-            total_runs=Sum('total_runs')
+            total_runs=Sum('total_runs'),
+            tot_users=Count('runner_stat__username')
         )
 
         group_data[group] = {
@@ -842,7 +778,7 @@ def group_statistics_view(request):
         }
 
     context = {
-        'group_data': group_data, 'flag': flag
+        'group_data': group_data, 'flag': flag,
     }
     return render(request, 'allgroups.html', context)
 
