@@ -738,7 +738,7 @@ def group_list(request):
 
 
 
-# @cache_page(timeout=60 * 30)
+
 def group_statistics_view(request):
 
 

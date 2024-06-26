@@ -316,12 +316,21 @@ AUTH_USER_MODEL = 'core.user'
 #
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
-        "KEY_PREFIX": "r4f",
-        "TIMEOUT": 60 * 15,
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR/ 'cache',
+        "TIMEOUT": 60,
+        "OPTIONS": {"MAX_ENTRIES": 1000},
     }
 }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#         "KEY_PREFIX": "r4f",
+#         "TIMEOUT": 60 * 15,
+#     }
+# }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"

@@ -13,8 +13,8 @@ class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(
         attrs={'class': 'form-control form-control-user', 'id': 'username'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
-    runner_team = forms.CharField(label='Команда',
-                                  widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'team'}))
+    runner_team__team = forms.CharField(label='Команда',
+                                  widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'team'}))
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.TextInput(attrs={'class': 'form-control form-control-user'}))
     # runner_status = forms.ChoiceField(widget=forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'}))
@@ -30,7 +30,7 @@ class RegisterUserForm(UserCreationForm):
         'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
         }
         fields = (
-        'username', 'runner_status', 'runner_team', 'keyword', 'runner_age', 'runner_gender', 'runner_category',
+        'username', 'runner_status', 'runner_team__team', 'keyword', 'runner_age', 'runner_gender', 'runner_category',
         'password1','password2', 'zabeg22', 'zabeg23')
 
 class LoginUserForm(AuthenticationForm):

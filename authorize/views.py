@@ -18,7 +18,7 @@ class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'register.html'
     success_url = reverse_lazy('authorize:login')
-    model = get_user_model()
+    # model = get_user_model()
 
     # def get_context_data(self, *, object_list=None, **kwargs):
     #     context = super().get_context_data(**kwargs)
@@ -63,25 +63,26 @@ class RegisterUser(CreateView):
     #     return redirect('register')
 
     def form_valid(self, form, **kwargs):
-        get_team = Teams.objects.filter(team=form.cleaned_data['runner_team'])
+        print(form.cleaned_data)
+        get_team = Teams.objects.filter(team=form.cleaned_data['runner_team__team'])
         keyword_of_team = get_team[0].keyword
         if form.cleaned_data['keyword'].lower() == keyword_of_team:
+
             user = form.save()
 
 
+            user.runner_team_id=(form.cleaned_data['runner_team__team']).id
+            user.save()
             return redirect('authorize:login')
         else:
             messages.error(self.request, 'Неверно указано кодовое слово')
-        return redirect('authorize:register')
-    #
+
     # def get_user_context(self, title):
     #     pass
 
 
 class LoginUser(LoginView):
     authentication_form = LoginUserForm
-    # form_class = LoginUserForm
-    template_name = 'login.html'
 
     def get_success_url(self):
         return reverse_lazy("profile:profile", kwargs={'username': self.request.user})

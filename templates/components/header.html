@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load cache %}
 {% load time_tag %}
 <div class="container-fluid">
     <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
@@ -76,13 +76,13 @@
             {#    </button>#}
 
         </ul>
-
-        <a href="{% url 'index' %}"> Главная</a>
-        <a href="{% url 'runners' %}"> Участники</a>
-        <a href="{% url 'championat' %}"> Чемпионат</a>
-        <a href="{% url 'allComandsView' %}"> Команды</a>
-        <a href="{% url 'allGroupsView' %}"> Группы</a>
-        <a href="{% url 'statistic' %}"> Статистика</a>
+        {% cache 600 header %}
+            <a href="{% url 'index' %}"> Главная</a>
+            <a href="{% url 'runners' %}"> Участники</a>
+            <a href="{% url 'championat' %}"> Чемпионат</a>
+            <a href="{% url 'allComandsView' %}"> Команды</a>
+            <a href="{% url 'allGroupsView' %}"> Группы</a>
+            <a href="{% url 'statistic' %}"> Статистика</a>
 
 
 
@@ -92,7 +92,7 @@
             <a href="{% url 'runner_day_results' day %}">{{ day }}</a>
         {% endfor %}
     </div>
-
+      {% endcache %}
 
 </div>
 

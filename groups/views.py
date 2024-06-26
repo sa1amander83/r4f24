@@ -201,7 +201,6 @@ def family_list(request, username):
 
 
 # просмотр состава выбранной группы
-# @cache_page(60*1)
 #TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
 def view_group(request,  group):
 
