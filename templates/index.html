@@ -144,3 +144,16 @@
 
     </div>
 {% endblock %}
+
+{% block extrascripts %}
+
+    <script>
+
+var table = new DataTable('#myTable', {
+    language: {
+        url: 'http://cdn.datatables.net/plug-ins/2.0.8/i18n/ru.json',
+    },
+});
+
+    </script>
+{% endblock %}

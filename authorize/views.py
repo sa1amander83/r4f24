@@ -83,6 +83,7 @@ class RegisterUser(CreateView):
 
 class LoginUser(LoginView):
     authentication_form = LoginUserForm
+    template_name = 'login.html'
 
     def get_success_url(self):
         return reverse_lazy("profile:profile", kwargs={'username': self.request.user})

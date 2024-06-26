@@ -16,7 +16,7 @@
         <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
         <p>Дней пробега {{ data.total_results.total_days }}</p>
         <p>Всего пробежек {{ data.total_results.total_runs }} </p>
-        <table class="table table-striped">
+        <table class="table table-striped" id="singlegroup">
             <thead>
                 <tr>
                     <th>Участник</th>
@@ -50,4 +50,14 @@
     {% endfor %}
 </div>
 
+{% endblock %}
+
+
+{% block extrascripts %}
+
+    <script>
+
+new DataTable('#singlegroup');
+
+    </script>
 {% endblock %}

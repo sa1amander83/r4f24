@@ -76,7 +76,7 @@
             {#    </button>#}
 
         </ul>
-        {% cache 600 header %}
+{#        {% cache 600 header %}#}
             <a href="{% url 'index' %}"> Главная</a>
             <a href="{% url 'runners' %}"> Участники</a>
             <a href="{% url 'championat' %}"> Чемпионат</a>
@@ -86,13 +86,17 @@
 
 
 
+
+
     </nav>
     <div class="flex justify-content-between">
+    {% now 'j' as today %}
+
         {% for day in 1|range:31 %}
-            <a href="{% url 'runner_day_results' day %}">{{ day }}</a>
+            <a href="{% url 'runner_day_results' day %}" style="width: 50px; height: 50px; border-radius: 50%; background: skyblue; text-align: center; display: block">  <span class="text-lg-center">{{ day }}</span></a>
         {% endfor %}
     </div>
-      {% endcache %}
+{#      {% endcache %}#}
 
 </div>
 

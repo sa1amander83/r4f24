@@ -68,21 +68,12 @@ INSTALLED_APPS = [
     'django_cleanup',
     'sorl.thumbnail',
     "debug_toolbar",
-    # 'tailwind',
-    # 'theme',
-    # 'django_browser_reload',
-    # 'celery',
-    # 'django_celery_results',
-    # 'django_celery_beat',
 
-    'crispy_forms',
-    "crispy_bootstrap4",
-    # 'csscompressor',
 
 ]
 DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
 CORS_ORIGIN_ALLOW_ALL = True
-TAILWIND_APP_NAME = 'theme'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,8 +94,7 @@ MIDDLEWARE = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_DIRS = []
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
 
