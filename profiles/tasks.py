@@ -21,29 +21,27 @@ from profiles.models import Statistic, BestFiveRunners, RunnerDay
 @shared_task
 def get_best_five_summ():
     teams = Teams.objects.values_list('team', flat=True)
-    my_list = []
-    my_dict = {}
-    d = dict()
     age_categories = [
-        # (f'до {age} лет', age) for age in range(18, 80, 17)
-        ('cat1', 5, 17), ("cat2", 18, 35), ("cat3", 36, 49), ("cat4", 50, 99)
+        ('cat1', 5, 17), ('cat2', 18, 35), ('cat3', 36, 49), ('cat4', 50, 99)
     ]
     from django.db.models import Sum, Q, Window, F
     from django.db.models.functions import RowNumber
     from profiles.models import Statistic
     for team in teams:
         team_results = {}
-        grand_total = 0  # Initialize a variable to keep track of the grand total across all categories for the current team
+        grand_total = 0
 
         for category_name, age_start, age_end in age_categories:
-            # Filter participants within the age range and belonging to the current team
             filtered_stats = Statistic.objects.filter(
-                runner_stat__runner_team=team,
+                runner_stat__runner_team__team=team,
                 runner_stat__runner_age__gte=age_start,
                 runner_stat__runner_age__lte=age_end
             )
 
-            # Annotate each participant with a rank based on total_balls in descending order
+            if not filtered_stats.exists():
+                team_results[category_name] = 0
+                continue
+
             ranked_stats = filtered_stats.annotate(
                 rank=Window(
                     expression=RowNumber(),
@@ -51,30 +49,26 @@ def get_best_five_summ():
                 )
             )
 
-            # Filter to get only the top 5 participants
             top_five_stats = ranked_stats.filter(rank__lte=5)
-
-            # Aggregate the total balls of the top five participants
+            print(top_five_stats)
             total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
-
-            # Store the results in a dictionary
-            total_balls_sum = total_balls['total_balls_sum'] if total_balls['total_balls_sum'] is not None else 0
+            print(total_balls)
+            total_balls_sum = total_balls.get('total_balls_sum')
             team_results[category_name] = total_balls_sum
-
-            # Add to the grand total
+            print(team_results)
             grand_total += total_balls_sum
 
-        # Update or create in BestFiveRunners
-        best_five, created = BestFiveRunners.objects.update_or_create(
-            team=team,  # Use the team ID as the unique identifier
-            defaults={
-                'age18': team_results.get('cat1', 0),
-                'age35': team_results.get('cat2', 0),
-                'age49': team_results.get('cat3', 0),
-                'ageover50': team_results.get('cat4', 0),
-                'balls': grand_total
-            }
-        )
+        try:
+            best_five, created = BestFiveRunners.objects.update_or_create(
+                team=team,
+                age18= team_results.get('cat1'),
+            age35= team_results.get('cat2'),
+            age49= team_results.get('cat3'),
+            ageover50= team_results.get('cat4'),
+            balls= grand_total)
+            print('aaaaaaaaaaaaa')
+        except IntegrityError:
+            continue
     return "success"
 
 
@@ -123,15 +117,15 @@ def calc_start(runner_id, username):
     is_qual = True if dist >= 30 else False
 
     try:
-        obj=Statistic.objects.get(runner_stat_id=runner_id)
+        obj = Statistic.objects.get(runner_stat_id=runner_id)
         Statistic.objects.filter(id=obj.pk).update(
-        total_distance=dist,
-        total_time=':'.join(str(tot_time).split(':')),
-        total_average_temp=':'.join(str(avg_time).split(':')),
-        total_days=tot_days,
-        total_runs=tot_runs,
-        total_balls=balls,
-        is_qualificated=is_qual)
+            total_distance=dist,
+            total_time=':'.join(str(tot_time).split(':')),
+            total_average_temp=':'.join(str(avg_time).split(':')),
+            total_days=tot_days,
+            total_runs=tot_runs,
+            total_balls=balls,
+            is_qualificated=is_qual)
 
 
     except:
@@ -145,4 +139,5 @@ def calc_start(runner_id, username):
             total_balls=balls,
             is_qualificated=is_qual)
 
+    get_best_five_summ.delay()
     return "success"

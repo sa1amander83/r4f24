@@ -71,8 +71,23 @@ INSTALLED_APPS = [
 
 
 ]
+
+# from django.core.files.storage import get_storage_class
+
+from django_hashedfilenamestorage.storage import HashedFilenameMetaStorage
+
+# HashedFilenameMyStorage = HashedFilenameMetaStorage(
+#     storage_class=get_storage_class('core.MyStorage'),
+# )
+
+
 DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
+
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -272,8 +287,8 @@ LOGGING = {
 # CELERY_BROKER_URL = 'redis://redis:6379'
 # CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 # CELERY_RESULT_EXTENDED = True
 # CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
