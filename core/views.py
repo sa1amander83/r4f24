@@ -474,20 +474,10 @@ class Championat(DataMixin, ListView):
     template_name = 'championat.html'
     context_object_name = 'best_runners'
 
-    # def get_queryset(self):
-    #     return Statistic.objects.annotate(
-    #         age_group=Cast('runner_stat__runner_age', output_field=models.IntegerField())
-    #     ).filter(
-    #         Q(runner_stat__runner_age__lt=17) | Q(runner_stat__runner_age__range=(18, 35)) | Q(
-    #             runner_stat__runner_age__range=(36, 50)) | Q(runner_stat__runner_age__gt=50)
-    #     ).values('age_group', 'runner_stat').annotate(
-    #         total_balls=Sum('total_balls')
-    #     ).annotate(rank=Window(expression=RowNumber(), order_by=[-F('total_balls')]
-    #     )).values('age_group', 'runner_stat__username', 'total_balls', 'rank').order_by('age_group','rank')[:5]
     def get_queryset(self):
         return Statistic.objects.annotate(
             age_group=Cast('runner_stat__runner_age', output_field=models.IntegerField())
-        ).annotate(
+        ).filter(runner_stat__isnull=False).annotate(
             team=Cast('runner_stat__runner_team', output_field=models.IntegerField())
         ).values('age_group', 'team', 'runner_stat').annotate(
             total_balls=Sum('total_balls')
@@ -498,9 +488,11 @@ class Championat(DataMixin, ListView):
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
-        # TODO переделать расчет по первым 5 участникам каждой возрастной категории
-
-        context['qs'] = BestFiveRunners.objects.all().values_list().order_by('-balls')
+        try:
+            context['qs'] = BestFiveRunners.objects.all().values_list().order_by('-balls')
+        except BestFiveRunners.DoesNotExist:
+            context['qs'] = []
+        return context
 
         # team_scores = Statistic.objects.annotate(
         #     age_group=F('runner_stat__runner_age')// 18 ,

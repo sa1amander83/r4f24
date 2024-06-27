@@ -14,22 +14,19 @@
     <div class=" container-fluid ">
 
     {#   шапка личного кабинета с описанием участника#}
-
+<br>
 {% if request.user.is_authenticated and request.user == run_user %}
 
 
             <div class="button">
 
-            <a href='{% url 'profile:addrunday' runner_stat %}'>
-                <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"
-                     style="text-align: center; width: 150px "></i>Внести
-                    сведения
-                </div>
+            <a href='{% url 'profile:addrunday' runner_stat %}' class="button rounded 3 bg-blue-600 text-5xl text-stone-50">
+              Внести сведения
             </a>
         </div>
     {% endif %}
-
-
+<br>
+{% comment %} 
 <div class="button">
     {##}
     {#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
@@ -38,7 +35,7 @@
     {#                            </div>#}
     {#                        </a>#}
     {#                    </div>#}
-</div>
+</div> {% endcomment %}
 
 <h1> Статистика по участнику № {{ runner_stat }}  </h1>
 <div class="statistic-user flex justify-content-around">

@@ -12,7 +12,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
-from profiles.tasks import get_best_five_summ,  calc_start
+from profiles.tasks import calculate_best_five_sums,  calc_start
 
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm,  FamilyForm, ResetForm
@@ -126,12 +126,12 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
 
             calc_start.delay(self.request.user.pk, self.kwargs['username'])
-            get_best_five_summ.delay()
+            calculate_best_five_sums.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, обновите сведения по одной из пробежек')
             # calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-            get_best_five_summ.delay()
+            calculate_best_five_sums.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
 
 
@@ -182,7 +182,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        get_best_five_summ.delay()
+        calculate_best_five_sums.delay()
         return redirect('profile:profile', username=self.request.user)
 
 
@@ -232,6 +232,6 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         # else:
         #     balls = tot_balls['ball__sum']
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        get_best_five_summ.delay()
+        calculate_best_five_sums.delay()
         return redirect(success_url, success_msg)
 

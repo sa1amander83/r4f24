@@ -19,63 +19,76 @@ from profiles.models import Statistic, BestFiveRunners, RunnerDay
 #     get_best_five_summ()
 
 @shared_task
-def get_best_five_summ():
+def calculate_best_five_sums():
     teams = Teams.objects.values_list('team', flat=True)
-    my_list = []
-    my_dict = {}
-    d = dict()
-    age_categories = [
-        # (f'до {age} лет', age) for age in range(18, 80, 17)
-        ('cat1', 5, 17), ("cat2", 18, 35), ("cat3", 36, 49), ("cat4", 50, 99)
-    ]
-    from django.db.models import Sum, Q, Window, F
-    from django.db.models.functions import RowNumber
-    from profiles.models import Statistic
+
     for team in teams:
-        team_results = {}
-        grand_total = 0  # Initialize a variable to keep track of the grand total across all categories for the current team
+        team_results = calculate_team_results(team)
+        update_best_five_runners(team, team_results)
 
-        for category_name, age_start, age_end in age_categories:
-            # Filter participants within the age range and belonging to the current team
-            filtered_stats = Statistic.objects.filter(
-                runner_stat__runner_team=team,
-                runner_stat__runner_age__gte=age_start,
-                runner_stat__runner_age__lte=age_end
-            )
-
-            # Annotate each participant with a rank based on total_balls in descending order
-            ranked_stats = filtered_stats.annotate(
-                rank=Window(
-                    expression=RowNumber(),
-                    order_by=F('total_balls').desc()
-                )
-            )
-
-            # Filter to get only the top 5 participants
-            top_five_stats = ranked_stats.filter(rank__lte=5)
-
-            # Aggregate the total balls of the top five participants
-            total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
-
-            # Store the results in a dictionary
-            total_balls_sum = total_balls['total_balls_sum'] if total_balls['total_balls_sum'] is not None else 0
-            team_results[category_name] = total_balls_sum
-
-            # Add to the grand total
-            grand_total += total_balls_sum
-
-        # Update or create in BestFiveRunners
-        best_five, created = BestFiveRunners.objects.update_or_create(
-            team=team,  # Use the team ID as the unique identifier
-            defaults={
-                'age18': team_results.get('cat1', 0),
-                'age35': team_results.get('cat2', 0),
-                'age49': team_results.get('cat3', 0),
-                'ageover50': team_results.get('cat4', 0),
-                'balls': grand_total
-            }
-        )
     return "success"
+
+
+def calculate_team_results(team):
+    team_results = {}
+    grand_total = 0
+
+    age_categories = [
+        ('cat1', 5, 17),
+        ("cat2", 18, 35),
+        ("cat3", 36, 49),
+        ("cat4", 50, 99)
+    ]
+
+    for category_name, age_start, age_end in age_categories:
+        filtered_stats = get_filtered_stats(team, age_start, age_end)
+        ranked_stats = rank_stats(filtered_stats)
+        top_five_stats = get_top_five_stats(ranked_stats)
+        total_balls_sum = get_total_balls_sum(top_five_stats)
+
+        team_results[category_name] = total_balls_sum
+        grand_total += total_balls_sum
+
+    return {"team_results": team_results, "grand_total": grand_total}
+
+
+def get_filtered_stats(team, age_start, age_end):
+    return Statistic.objects.filter(
+        runner_stat__runner_team=team,
+        runner_stat__runner_age__gte=age_start,
+        runner_stat__runner_age__lte=age_end
+    )
+
+
+def rank_stats(stats):
+    from django.db.models import Window, F, RowNumber
+    return stats.annotate(
+        rank=Window(expression=RowNumber(), order_by=F('total_balls').desc())
+    )
+
+
+def get_top_five_stats(stats):
+    return stats.filter(rank__lte=5)
+
+
+def get_total_balls_sum(stats):
+    return stats.aggregate(total_balls_sum=Sum('total_balls'))['total_balls_sum'] or 0
+
+
+def update_best_five_runners(team, team_results):
+    from django.db.models import Sum, Q
+    from profiles.models import BestFiveRunners
+
+    BestFiveRunners.objects.update_or_create(
+        team=team,
+        defaults={
+            'age18': team_results['team_results'].get('cat1', 0),
+            'age35': team_results['team_results'].get('cat2', 0),
+            'age49': team_results['team_results'].get('cat3', 0),
+            'ageover50': team_results['team_results'].get('cat4', 0),
+            'balls': team_results['grand_total']
+        }
+    )
 
 
 # @receiver(post_save,sender=RunnerDay)
