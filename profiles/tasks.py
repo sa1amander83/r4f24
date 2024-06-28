@@ -1,10 +1,10 @@
 from celery import shared_task
 from django.db import IntegrityError
-from django.db.models import Sum, Q, Avg
+from django.db.models import Sum, Q, Avg, Count
 from django.db.models.signals import post_save, post_delete, pre_delete, pre_save
 from django.dispatch import receiver, Signal
 
-from core.models import Teams, User
+from core.models import Teams, User, ComandsResult, GroupsResult, Group
 from profiles.models import Statistic, BestFiveRunners, RunnerDay
 
 
@@ -18,8 +18,8 @@ from profiles.models import Statistic, BestFiveRunners, RunnerDay
 # def my_signal_handler(instance, **kwargs):
 #     get_best_five_summ()
 
-@shared_task
-def calculate_best_five_sums():
+
+def get_best_five_summ():
     teams = Teams.objects.values_list('team', flat=True)
     age_categories = [
         ('cat1', 5, 17), ('cat2', 18, 35), ('cat3', 36, 49), ('cat4', 50, 99)
@@ -50,40 +50,64 @@ def calculate_best_five_sums():
             )
 
             top_five_stats = ranked_stats.filter(rank__lte=5)
-            print(top_five_stats)
             total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
-            print(total_balls)
             total_balls_sum = total_balls.get('total_balls_sum')
             team_results[category_name] = total_balls_sum
-            print(team_results)
             grand_total += total_balls_sum
+        try:
+            BestFiveRunners.objects.filter(team=team).update(
+                team=team,
+                age18=team_results.get('cat1'),
+                age35=team_results.get('cat2'),
+                age49=team_results.get('cat3'),
+                ageover50=team_results.get('cat4'),
+                balls=grand_total)
+        except:
+            BestFiveRunners.objects.create(
+                team=team,
+                age18=team_results.get('cat1'),
+                age35=team_results.get('cat2'),
+                age49=team_results.get('cat3'),
+                ageover50=team_results.get('cat4'),
+                balls=grand_total)
+
+    return 'success'
+
+
+def calc_comands(username):
+    obj = User.objects.get(username=username)
+    print(obj)
+    if obj:
+        team_id = obj.runner_team.id
+        users = User.objects.filter(runner_team_id=team_id)
+        user_stats = Statistic.objects.filter(runner_stat__in=users)
+        total_comand_results = user_stats.aggregate(
+
+            total_balls=Sum('total_balls'),
+            total_distance=Sum('total_distance'),
+            total_time=Sum('total_time'),
+            total_average_temp=Avg('total_average_temp'),
+            total_days=Sum('total_days'),
+            total_runs=Sum('total_runs'),
+            tot_members=Count('runner_stat__username')
+        )
 
         try:
-            best_five, created = BestFiveRunners.objects.update_or_create(
-                team=team,
-                age18= team_results.get('cat1'),
-            age35= team_results.get('cat2'),
-            age49= team_results.get('cat3'),
-            ageover50= team_results.get('cat4'),
-            balls= grand_total)
-            print('aaaaaaaaaaaaa')
+            ComandsResult.objects.filter(comand_id=team_id).update_or_create(
+
+                comand_total_balls=total_comand_results.get('total_balls'),
+                comand_total_distance=total_comand_results.get('total_distance'),
+                comand_total_time=total_comand_results.get('total_time'),
+                comand_average_temp=total_comand_results.get('total_average_temp'),
+                comand_total_runs=total_comand_results.get('total_runs'),
+                comands_total_members=total_comand_results.get('tot_users'),
+
+            )
         except IntegrityError:
-            continue
-    return "success"
+            pass
 
 
-# @receiver(post_save,sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     calc_start.delay(instance.runner.id, instance.runner.username)
-#     print(123)
-#
-# @receiver(post_delete,sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     calc_start.delay(instance.runner.id, instance.runner.username)
-#     print(321)
-
-
-@shared_task()
+# @shared_task()
 def calc_start(runner_id, username):
     total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
         Sum('day_distance'))
@@ -139,5 +163,6 @@ def calc_start(runner_id, username):
             total_balls=balls,
             is_qualificated=is_qual)
 
-    get_best_five_summ.delay()
+    get_best_five_summ()
+    calc_comands(username)
     return "success"

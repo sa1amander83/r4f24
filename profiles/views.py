@@ -12,10 +12,10 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
-from profiles.tasks import calculate_best_five_sums,  calc_start
+from profiles.tasks import calc_start
 
 from profiles.utils import DataMixin
-from r4f24.forms import RunnerDayForm, AddFamilyForm,  FamilyForm, ResetForm
+from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
 
 
 class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
@@ -26,7 +26,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
     def get_object(self, queryset=None):
         return self.request.user
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,8 +52,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
-
-        context['runner_status']=User.objects.filter(runner_status__gt=0)
+        context['runner_status'] = User.objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
             return dict(list(context.items()) + list(c_def.items()))
@@ -80,7 +78,6 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
-
     form_class = RunnerDayForm
     template_name = 'day.html'
     success_url = reverse_lazy('profile:profile')
@@ -91,7 +88,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         dayselected = form.cleaned_data['day_select']
         first_run = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
             day_select=dayselected).count()
-
 
         if first_run <= 1:
             cd = form.cleaned_data
@@ -123,17 +119,16 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             )
 
-
-
             calc_start.delay(self.request.user.pk, self.kwargs['username'])
             # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
-            messages.error(self.request, 'В день учитываются только две пробежки, обновите сведения по одной из пробежек')
-            calc_start.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+            messages.error(self.request, 'В день учитываются только две пробежки, '
+                                         'обновите сведения по одной из пробежек')
+            calc_start(self.request.user.pk, self.kwargs['username'])
+            # calc_start.delay(self.request.user.pk, self.kwargs['username'])
             # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
-
 
 
 class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
@@ -152,7 +147,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         return reverse_lazy('profile:profile', kwargs={'runner': self.object})
 
     def form_valid(self, form):
-        self.object=self.get_object()
+        self.object = self.get_object()
         cd = form.cleaned_data
         new_item = form.save(commit=False)
         userid = User.objects.get(id=self.request.user.id)
@@ -175,13 +170,10 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
                                  number_of_run=runs,
                                  photo=each)
 
-
         new_item.save()
 
-
-
-
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+        calc_start(self.request.user.pk, self.kwargs['username'])
+        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
         # get_best_five_summ.delay()
         return redirect('profile:profile', username=self.request.user)
 
@@ -193,7 +185,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
     context_object_name = 'runday'
 
     def form_valid(self, form):
-        self.object=self.get_object()
+        self.object = self.get_object()
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
         get_number_run = self.object.number_of_run
         self.object.delete()
@@ -231,7 +223,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         #     balls = 0
         # else:
         #     balls = tot_balls['ball__sum']
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+        calc_start(self.request.user.pk, self.kwargs['username'])
+        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
         # get_best_five_summ.delay()
         return redirect(success_url, success_msg)
-

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window
 
 from django.db.models.functions import Cast, RowNumber
@@ -722,18 +722,13 @@ def group_list(request):
                     'is_qualificated': user_stat.is_qualificated
                 })
                 print(group_users[group])
-            except:
+            except IntegrityError:
                 pass
 
     return render(request, 'groups.html', {'groups': groups, 'group_users': group_users})
 
 
-
-
-
 def group_statistics_view(request):
-
-
     if 'groups' in request.path_info:
         groups = Group.objects.all()
         flag = True

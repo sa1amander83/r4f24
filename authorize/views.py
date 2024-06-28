@@ -14,33 +14,34 @@ from core.models import Teams
 from r4f24.forms import RegisterUserForm, LoginUserForm, ResetForm
 
 
-
 class RegisterUser(CreateView):
-     form_class = RegisterUserForm
-     template_name = 'register.html'
-     success_url = reverse_lazy('authorize:login')
-     def form_valid(self, form, **kwargs):
-         runner_team = form.cleaned_data.get('runner_team__team')
-         if runner_team is not None:
-             try:
-                 get_team = Teams.objects.get(team=runner_team)
-                 keyword_of_team = get_team.keyword
-                 if form.cleaned_data['keyword'].lower() == keyword_of_team:
-                        user = form.save(commit=False)  
-                        user.runner_team_id = get_team.id  
-                        user.save()
-                        
-                        return redirect('authorize:login')
-                 else:
-                     messages.error(
-                         self.request, 'Неверно указано кодовое слово')
-                     return redirect('authorize:register', )
-             except ObjectDoesNotExist:
-                 messages.error(self.request, 'Неверная команда')
-                 return redirect('authorize:register')
-         else:
-             messages.error(self.request, 'Неверная команда')
-             return redirect('authorize:register')
+    form_class = RegisterUserForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('authorize:login')
+
+    def form_valid(self, form, **kwargs):
+        runner_team = form.cleaned_data.get('runner_team__team')
+        if runner_team is not None:
+            try:
+                get_team = Teams.objects.get(team=runner_team)
+                keyword_of_team = get_team.keyword
+                if form.cleaned_data['keyword'].lower() == keyword_of_team:
+                    user = form.save(commit=False)
+                    user.runner_team_id = get_team.id
+                    user.save()
+
+                    return redirect('authorize:login')
+                else:
+                    messages.error(
+                        self.request, 'Неверно указано кодовое слово')
+                    return redirect('authorize:register', )
+            except ObjectDoesNotExist:
+                messages.error(self.request, 'Неверная команда')
+                return redirect('authorize:register')
+        else:
+            messages.error(self.request, 'Неверная команда')
+            return redirect('authorize:register')
+
 
 class LoginUser(LoginView):
     authentication_form = LoginUserForm
@@ -52,7 +53,6 @@ class LoginUser(LoginView):
     class Meta:
         model = get_user_model()
         fields = ['username', 'password']
-  
 
 
 def logout_user(request):
@@ -97,7 +97,6 @@ def show_reset(request):
                 user.set_password(password)
                 user.save()
                 return redirect('authorize:login')
-
         except:
             pass
 
@@ -106,7 +105,6 @@ def show_reset(request):
 
 def show_reset_success(request):
     return render(request, 'pass_updated.html')
-
 
 
 def page_not_found_view(request, exception=None):

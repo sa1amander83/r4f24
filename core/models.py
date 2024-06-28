@@ -23,16 +23,37 @@ class Teams(models.Model):
         return str(self.team)
 
 
-# class KeyWordClass(models.Model):
-#     kwteam = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
-#     keyword = models.CharField(verbose_name='кодовое слово')
-#
-#     def __str__(self):
-#         return str(self.keyword)
-#
-#     class Meta:
-#         verbose_name = "Ключевые слова"
-#         verbose_name_plural = "Ключевые слова"
+class ComandsResult(models.Model):
+    comand = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда')
+    comands_total_members = models.PositiveIntegerField(verbose_name='общее число участников', default=0)
+    comand_total_distance = models.PositiveIntegerField(verbose_name='общее расстояние', default=0)
+    comand_total_time = models.TimeField(verbose_name='общее время', default=0)
+    comand_total_balls = models.PositiveIntegerField(verbose_name='общее количество баллов', default=0)
+    comand_average_temp=models.TimeField(verbose_name='среднее время команды', default=0)
+    comand_total_runs=models.PositiveIntegerField(verbose_name='общее количество пробежек', default=0)
+    def __str__(self):
+        return str(self.comand)
+
+    class Meta:
+        verbose_name = "Общие результаты команд"
+        verbose_name_plural = " Общие результаты команд"
+
+
+class GroupsResult(models.Model):
+    group = models.ForeignKey('Group', on_delete=models.CASCADE, verbose_name='группа')
+    group_total_members = models.PositiveIntegerField(verbose_name='общее число участников', default=0)
+    group_total_time = models.TimeField(verbose_name='общее время', default=0)
+    group_total_balls = models.PositiveIntegerField(verbose_name='общее количество баллов', default=0)
+    group_total_distance = models.PositiveIntegerField(verbose_name='общее расстояние', default=0)
+    group_average_temp=models.TimeField(verbose_name='среднее время группы', default=0)
+    group_total_runs=models.PositiveIntegerField(verbose_name='общее количество пробежек', default=0)
+    def __str__(self):
+        return str(self.group)
+
+    class Meta:
+        verbose_name = "Общие результаты групп"
+        verbose_name_plural = " Общие результаты групп"
+
 
 
 class CustomUserManager(BaseUserManager):
