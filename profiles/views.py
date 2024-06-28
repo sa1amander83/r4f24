@@ -90,7 +90,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
         dayselected = form.cleaned_data['day_select']
         first_run = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-            day_select=dayselected).filter(number_of_run=1).count()
+            day_select=dayselected).count()
 
 
         if first_run <= 1:
@@ -126,12 +126,12 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
 
             calc_start.delay(self.request.user.pk, self.kwargs['username'])
-            calculate_best_five_sums.delay()
+            # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, обновите сведения по одной из пробежек')
-            # calc_stat(runner_id=self.request.user.pk, username=self.kwargs['username'])
-            calculate_best_five_sums.delay()
+            calc_start.delay(runner_id=self.request.user.pk, username=self.kwargs['username'])
+            # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
 
 
@@ -182,7 +182,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        calculate_best_five_sums.delay()
+        # get_best_five_summ.delay()
         return redirect('profile:profile', username=self.request.user)
 
 
@@ -232,6 +232,6 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         # else:
         #     balls = tot_balls['ball__sum']
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        calculate_best_five_sums.delay()
+        # get_best_five_summ.delay()
         return redirect(success_url, success_msg)
 

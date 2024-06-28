@@ -103,11 +103,12 @@
     <thead class="table-dark text-center">
     <tr class="bg">
         <td> день</td>
-        <td> пробежка</td>
+         <td> баллы</td>
+       
         <td> дистанция</td>
         <td> время</td>
         <td> темп</td>
-        <td> баллы</td>
+        <td> пробежка</td>
         <td> фото</td>
         <td></td>
     </tr>
@@ -139,11 +140,12 @@
                 <td> {{ p.day_select }} сентября</td>
             {% endif %}
             {#                  {% endfor %}#}
-            <td> {{ p.number_of_run}}</td>
+            <td> {{ p.ball }} </td>
+           
             <td> {{ p.day_distance|floatformat:3 }}</td>
             <td> {{ p.day_time|time:'H:i:s' }}</td>
             <td> {{ p.day_average_temp|time:'i:s' }}</td>
-            <td> {{ p.ball }} </td>
+            <td> {{ p.number_of_run}}</td>
 
             <td style="width: max-content; display: flex">
                 {% for image in images %}
