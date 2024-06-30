@@ -14,6 +14,7 @@ from django.views.generic import ListView, CreateView
 
 from core.models import Group, User, Teams
 from profiles.models import Statistic
+from profiles.tasks import calc_start, calc_comands
 from profiles.utils import DataMixin
 from r4f24.forms import FamilyForm, AddFamilyForm
 
@@ -111,8 +112,10 @@ def addRunnerToGroup(request, username, group):
         grp = group
 
     groups = Group.objects.all()
+
+    calc_comands.delay(username)
     return render(request, 'add_runner_to_group.html',
-                  {'groups': groups, 'group': grp, 'usernmae': username, 'form': form})
+                  {'groups': groups, 'group': grp, 'username': username, 'form': form})
 
 
 # def join_group_view(request):
@@ -138,13 +141,14 @@ class SuccessView(View):
         return render(request, 'mygroup.html')
 
 
-@login_required
-def add_user_to_group(request, username, group_id):
-    group = Group.objects.get(id=group_id)
-    user = request.user
-    user.runner_group = group
-    user.save()
-    return redirect('groups:mygroup', username=username)
+# @login_required
+# def add_user_to_group(request, username, group_id):
+#     group = Group.objects.get(id=group_id)
+#     user = request.user
+#     user.runner_group = group
+#     user.save()
+#     calc_comands.delay(username)
+#     return redirect('groups:mygroup', username=username)
 
 
 class GroupsListView(ListView):
@@ -261,6 +265,7 @@ def group_list_and_create_view(request, username):
 
                 user.runner_group = group
                 user.save()
+
             except:
                 form.save()
                 group = Group.objects.get(group_title=form.cleaned_data['group_title'])
@@ -269,6 +274,7 @@ def group_list_and_create_view(request, username):
                 user.runner_group = group
                 user.save()
 
+            calc_comands.delay(username)
 
             messages.success(request, 'Group created successfully!')
             return redirect('groups:mygroup', username)
@@ -290,5 +296,6 @@ def add_user_to_group(request):
     user = request.user
     user.runner_group = group
     user.save()
+    calc_comands.delay(user.username)
     redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
     return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})

@@ -12,7 +12,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
-from profiles.tasks import calc_start
+from profiles.tasks import calc_start, get_best_five_summ, calc_comands
 
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
@@ -120,14 +120,16 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             )
 
             calc_start(self.request.user.pk, self.kwargs['username'])
-            # get_best_five_summ.delay()
+            get_best_five_summ.delay()
+            calc_comands.delay(self.kwargs['username'])
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, '
                                          'обновите сведения по одной из пробежек')
             # calc_start(self.request.user.pk, self.kwargs['username'])
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
-            # get_best_five_summ.delay()
+            calc_start(self.request.user.pk, self.kwargs['username'])
+            get_best_five_summ.delay()
+            calc_comands.delay(self.kwargs['username'])
             return redirect('profile:profile', username=self.kwargs['username'])
 
 
@@ -147,15 +149,14 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         return reverse_lazy('profile:profile', kwargs={'runner': self.object})
 
     def form_valid(self, form):
-        self.object = self.get_object()
+        self.obj = self.get_object()
         cd = form.cleaned_data
         new_item = form.save(commit=False)
         userid = User.objects.get(id=self.request.user.id)
 
         new_item.runner_id = userid.id
-        dayselected = self.object.day_select
-        runs = self.object.number_of_run
-
+        dayselected = self.obj.day_select
+        runs = self.obj.number_of_run
         old_image = Photo.objects.filter(day_select=dayselected).filter(
             number_of_run=runs)
 
@@ -173,8 +174,9 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         new_item.save()
 
         # calc_start(self.request.user.pk, self.kwargs['username'])
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        # get_best_five_summ.delay()
+        calc_start(self.request.user.pk, self.kwargs['username'])
+        get_best_five_summ.delay()
+        calc_comands.delay(self.kwargs['username'])
         return redirect('profile:profile', username=self.request.user)
 
 
@@ -225,7 +227,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         #     balls = 0
         # else:
         #     balls = tot_balls['ball__sum']
+
         calc_start(self.request.user.pk, self.kwargs['username'])
 
-        # get_best_five_summ.delay()
         return redirect(success_url, success_msg)

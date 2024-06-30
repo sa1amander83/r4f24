@@ -9,7 +9,7 @@ from django.urls import reverse, path
 from django.utils.safestring import mark_safe
 
 from core.models import User
-from profiles.models import RunnerDay, Statistic, BestFiveRunners
+from profiles.models import RunnerDay, Statistic, Championat
 from r4f24.forms import UserImportForm
 
 
@@ -230,4 +230,4 @@ class BestFiveAdmin(admin.ModelAdmin):
 admin.site.register(RunnerDay, RunnerDayAdmin)
 admin.site.register(User, RunnerAdmin)
 admin.site.register(Statistic, StatisticAdmin)
-admin.site.register(BestFiveRunners, BestFiveAdmin)
+admin.site.register(Championat, BestFiveAdmin)

@@ -7,7 +7,7 @@ from django.views.decorators.cache import cache_page
 
 from django.views.generic import ListView
 from core.models import User, Teams, Group
-from profiles.models import Statistic, RunnerDay, BestFiveRunners
+from profiles.models import Statistic, RunnerDay, Championat
 from profiles.utils import DataMixin
 
 
@@ -469,7 +469,7 @@ class ComandsResults(DataMixin, ListView):
         return context
 
 
-class Championat(DataMixin, ListView):
+class Championate(DataMixin, ListView):
     model = User
     template_name = 'championat.html'
     context_object_name = 'best_runners'
@@ -489,8 +489,8 @@ class Championat(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
         try:
-            context['qs'] = BestFiveRunners.objects.all().values_list().order_by('-balls')
-        except BestFiveRunners.DoesNotExist:
+            context['qs'] = Championat.objects.all().values_list().order_by('-balls')
+        except:
             context['qs'] = []
         return context
 
@@ -530,7 +530,7 @@ class Championat(DataMixin, ListView):
 
         # TODO запрос работает но будет жрать много ресурсов
 
-        return context
+
 
         #
         #

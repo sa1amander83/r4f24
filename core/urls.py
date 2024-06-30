@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.views import IndexView, CatListView, RunnersCatView, Championat,  \
+from core.views import IndexView, CatListView, RunnersCatView, Championate,  \
     StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view
 from groups.views import view_group
 
@@ -11,7 +11,7 @@ urlpatterns = [
     path('runner_category/<int:cat>/', RunnersCatView.as_view(), name='runner_category'),
     path('runner_category/<int:cat>/<int:age>/', RunnersCatAgeView.as_view(), name='runner_category_age'),
     path('runner_category/woman/<int:age>', RunnersCatGenderView.as_view(), name='runner_category_age_female'),
-    path('championat/', Championat.as_view(), name='championat'),
+    path('championat/', Championate.as_view(), name='championat'),
     path('comands/<int:group>/', view_group, name='oneTeamView'),
     path('comands/', group_statistics_view, name='allComandsView'),
     path('groups/', group_statistics_view, name='allGroupsView'),
