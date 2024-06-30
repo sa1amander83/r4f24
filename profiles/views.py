@@ -119,14 +119,14 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             )
 
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            calc_start(self.request.user.pk, self.kwargs['username'])
             # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, '
                                          'обновите сведения по одной из пробежек')
-            calc_start(self.request.user.pk, self.kwargs['username'])
-            # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            # calc_start(self.request.user.pk, self.kwargs['username'])
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
             # get_best_five_summ.delay()
             return redirect('profile:profile', username=self.kwargs['username'])
 
@@ -172,8 +172,8 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
         new_item.save()
 
-        calc_start(self.request.user.pk, self.kwargs['username'])
-        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+        # calc_start(self.request.user.pk, self.kwargs['username'])
+        calc_start.delay(self.request.user.pk, self.kwargs['username'])
         # get_best_five_summ.delay()
         return redirect('profile:profile', username=self.request.user)
 
@@ -199,6 +199,8 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
+        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
         # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
         #     Sum('day_distance'))
         # if total_distance['day_distance__sum'] is None:
@@ -224,6 +226,6 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         # else:
         #     balls = tot_balls['ball__sum']
         calc_start(self.request.user.pk, self.kwargs['username'])
-        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
         # get_best_five_summ.delay()
         return redirect(success_url, success_msg)

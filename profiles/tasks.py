@@ -75,10 +75,35 @@ def get_best_five_summ():
 
 
 def calc_comands(username):
+    user_group_stas={}
     obj = User.objects.get(username=username)
-    print(obj)
     if obj:
         team_id = obj.runner_team.id
+        try:
+            group_id = obj.runner_group.id
+            users_group = User.objects.filter(runner_group_id=group_id)
+            user_group_stas = Statistic.objects.filter(runner_stat__in=users_group)
+            total_group_results = user_group_stas.aggregate(
+
+                total_balls=Sum('total_balls'),
+                total_distance=Sum('total_distance'),
+                total_time=Sum('total_time'),
+                total_average_temp=Avg('total_average_temp'),
+                total_days=Sum('total_days'),
+                total_runs=Sum('total_runs'),
+                tot_members=Count('runner_stat__username')
+
+            )
+
+            group_obj = GroupsResult.objects.filter(group_id=group_id).update(
+                group_total_balls=total_group_results.get('total_balls'),
+                group_total_distance=total_group_results.get('total_distance'),
+                group_total_time=str(total_group_results.get('total_time')),
+                group_average_temp=str(total_group_results.get('total_average_temp')),
+                group_total_runs=total_group_results.get('total_runs'),
+                group_total_members=total_group_results.get('tot_members'))
+        except:
+            pass
         users = User.objects.filter(runner_team_id=team_id)
         user_stats = Statistic.objects.filter(runner_stat__in=users)
         total_comand_results = user_stats.aggregate(
@@ -92,22 +117,20 @@ def calc_comands(username):
             tot_members=Count('runner_stat__username')
         )
 
-        try:
-            ComandsResult.objects.filter(comand_id=team_id).update_or_create(
-
-                comand_total_balls=total_comand_results.get('total_balls'),
-                comand_total_distance=total_comand_results.get('total_distance'),
-                comand_total_time=total_comand_results.get('total_time'),
-                comand_average_temp=total_comand_results.get('total_average_temp'),
-                comand_total_runs=total_comand_results.get('total_runs'),
-                comands_total_members=total_comand_results.get('tot_users'),
-
-            )
-        except IntegrityError:
-            pass
 
 
-# @shared_task()
+        comands_obj = ComandsResult.objects.filter(comand_id=team_id).update(
+            comands_total_members=total_comand_results.get('tot_members'),
+            comand_total_distance=total_comand_results.get('total_distance'),
+            comand_total_balls=total_comand_results.get('total_balls'),
+            comand_total_time=str(total_comand_results.get('total_time')),
+            comand_average_temp=str(total_comand_results.get('total_average_temp')),
+            comand_total_runs=total_comand_results.get('total_runs'))
+
+    get_best_five_summ()
+
+
+@shared_task()
 def calc_start(runner_id, username):
     total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
         Sum('day_distance'))
@@ -163,6 +186,7 @@ def calc_start(runner_id, username):
             total_balls=balls,
             is_qualificated=is_qual)
 
-    get_best_five_summ()
-    calc_comands(username)
+    user = username
+    calc_comands(user)
+
     return "success"
