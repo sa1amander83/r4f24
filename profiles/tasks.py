@@ -23,66 +23,6 @@ from profiles.models import Statistic, Championat, RunnerDay
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
-def get_best_five_summ(self):
-    try:
-        teams = Teams.objects.values_list('team', flat=True)
-        age_categories = [
-            ('cat1', 5, 17), ('cat2', 18, 35), ('cat3', 36, 49), ('cat4', 50, 99)
-        ]
-        from django.db.models import Sum, Q, Window, F
-        from django.db.models.functions import RowNumber
-        from profiles.models import Statistic
-        for team in teams:
-            team_results = {}
-            grand_total = 0
-
-            for category_name, age_start, age_end in age_categories:
-                filtered_stats = Statistic.objects.filter(
-                    runner_stat__runner_team__team=team,
-                    runner_stat__runner_age__gte=age_start,
-                    runner_stat__runner_age__lte=age_end
-                )
-
-                if not filtered_stats.exists():
-                    team_results[category_name] = 0
-                    continue
-
-                ranked_stats = filtered_stats.annotate(
-                    rank=Window(
-                        expression=RowNumber(),
-                        order_by=F('total_balls').desc()
-                    )
-                )
-
-                top_five_stats = ranked_stats.filter(rank__lte=5)
-                total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
-                total_balls_sum = total_balls.get('total_balls_sum')
-                team_results[category_name] = total_balls_sum
-                grand_total += total_balls_sum
-            try:
-               new_rec= Championat.objects.filter(team=team).update(
-
-                    age18=team_results.get('cat1'),
-                    age35=team_results.get('cat2'),
-                    age49=team_results.get('cat3'),
-                    ageover50=team_results.get('cat4'),
-                    balls=grand_total)
-            except:
-                new_rec=Championat.objects.create(
-                    team=team,
-                    age18=team_results.get('cat1'),
-                    age35=team_results.get('cat2'),
-                    age49=team_results.get('cat3'),
-                    ageover50=team_results.get('cat4'),
-                    balls=grand_total)
-        get_best_five_summ.delay()
-        calc_comands.delay(self.kwargs['username'])
-    except Exception:
-        raise Exception()
-
-
-
-@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
 def calc_comands(self, username):
     try:
         obj = User.objects.get(username=username)
@@ -134,10 +74,72 @@ def calc_comands(self, username):
                 comand_total_time=str(total_comand_results.get('total_time')),
                 comand_average_temp=str(total_comand_results.get('total_average_temp')),
                 comand_total_runs=total_comand_results.get('total_runs'))
+
     except Exception:
         raise Exception()
 
-    # get_best_five_summ()
+
+@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+def get_best_five_summ(self, username):
+    try:
+        teams = Teams.objects.filter().values_list('team', flat=True)
+        team_id=Teams.objects.get(user__username=username)
+        print(team_id)
+        age_categories = [
+            ('cat1', 5, 17), ('cat2', 18, 35), ('cat3', 36, 49), ('cat4', 50, 99)
+        ]
+        from django.db.models import Sum, Q, Window, F
+        from django.db.models.functions import RowNumber
+        from profiles.models import Statistic
+        for team in teams:
+            team_results = {}
+            grand_total = 0
+
+            for category_name, age_start, age_end in age_categories:
+                filtered_stats = Statistic.objects.filter(
+                    runner_stat__runner_team__team=team,
+                    runner_stat__runner_age__gte=age_start,
+                    runner_stat__runner_age__lte=age_end
+                )
+
+                if not filtered_stats.exists():
+                    team_results[category_name] = 0
+                    continue
+
+                ranked_stats = filtered_stats.annotate(
+                    rank=Window(
+                        expression=RowNumber(),
+                        order_by=F('total_balls').desc()
+                    )
+                )
+
+                top_five_stats = ranked_stats.filter(rank__lte=5)
+                total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
+                total_balls_sum = total_balls.get('total_balls_sum')
+                team_results[category_name] = total_balls_sum
+                grand_total += total_balls_sum
+            try:
+               new_rec= Championat.objects.filter(team=team).update(
+
+                    age18=team_results.get('cat1'),
+                    age35=team_results.get('cat2'),
+                    age49=team_results.get('cat3'),
+                    ageover50=team_results.get('cat4'),
+                    balls=grand_total)
+            except:
+                new_rec=Championat.objects.create(
+                    team=team,
+                    age18=team_results.get('cat1'),
+                    age35=team_results.get('cat2'),
+                    age49=team_results.get('cat3'),
+                    ageover50=team_results.get('cat4'),
+                    balls=grand_total)
+        calc_comands.delay(username)
+    except Exception:
+        raise Exception()
+
+
+
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
@@ -196,9 +198,27 @@ def calc_start(self, runner_id, username):
                 total_runs=tot_runs,
                 total_balls=balls,
                 is_qualificated=is_qual)
+        user = username
+        get_best_five_summ.delay(username)
     except Exception:
         raise Exception()
-    # user = username
-    # calc_comands(user)
 
     return "success"
+
+
+# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+# def calc_comands(self, username):
+#     try:
+#         obj = User.objects.select_related('runner_team', 'runner_group').get(username=username)
+#         if obj:
+#             team_id = obj.runner_team.id
+#             group_id = obj.runner_group.id if obj.runner_group else None
+#             users_group = User.objects.filter(runner_group_id=group_id)
+#             user_group_stats = Statistic.objects.filter(runner_stat__in=users_group).values('runner_stat__age_category').annotate(total_time=Sum('runner_stat__time'), total_distance=Sum('runner_stat__distance'))
+#             get_best_five_summ(team_id, user_group_stats)
+#     except User.DoesNotExist:
+#         pass
+#
+# def get_best_five_summ(team_id, user_group_stats):
+#     # Your code to calculate the best five participants in each age category
+#     pass
