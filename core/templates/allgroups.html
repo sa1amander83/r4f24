@@ -12,8 +12,8 @@
         {% endif %}
 
         <table class="table table-striped" id="comanda">
-            <thead>
-            <tr></tr>
+                <thead class="table-dark text-center">
+
             <tr>
                 <th> {% if flag %}Группа{% else %} Команда {% endif %}</th>
                 <th>Участники</th>
@@ -26,10 +26,14 @@
             </tr>
             </thead>
             <tbody>
+
+
+{{ group_data }}
+
             {% for team, data in group_data.items %}
-
+{##}        {{ data }}
                 {#                TODO сделать  дропдаун на членов группы#}
-
+{##}
                 {% if  data.total_results.total_balls %}
                     <tr>
 
@@ -46,7 +50,7 @@
                         <td>{{ data.total_results.total_runs }}</td>
                     </tr>
                 {% endif %}
-
+{##}
                 {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
                 {#                {% for user in data.users %}#}
                 {#                    {% for stat in data.user_stats %}#}
@@ -73,17 +77,47 @@
 
 {% block extrascripts %}
 
-     <script>
+    <script>
 
         new DataTable('#comanda', {
-            columnDefs: [
 
-                {orderable: false, targets: [0,6,7,8]}
-            ],
-            ordering: true,
-            bLengthChange: false,
-            info: false,
-            searching: false
-        });
+                columnDefs: [
+                    {
+
+                        className: 'dt-center'
+                    }
+                ],
+                pageLength: 50,
+                ordering: true,
+                bLengthChange: true,
+                info: true,
+                searching: true,
+
+                layout: {
+                    topStart: 'info',
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
+            }
+        );
     </script>
-{% endblock %}
+{% endblock %}%}

@@ -110,17 +110,17 @@
 
 
         <div class="container-fluid">
-            <table id="myTable" class="table  table-striped text-center">
+            <table id="category" class="table  table-striped text-center">
 
                 <thead class="table-dark text-center">
-                <td> №п/п</td>
-                <td>Номер участника</td>
-                <td> Команда</td>
-                <td> Баллы</td>
-                <td> пробег</td>
-                <td> время</td>
-                <td> средний темп</td>
-                <td> пробежки</td>
+                <th> №п/п</th>
+                <th>Номер участника</th>
+                <th> Команда</th>
+                <th> Баллы</th>
+                <th> пробег</th>
+                <th> время</th>
+                <th> средний темп</th>
+                <th> пробежки</th>
 
                 </thead>
                 <tbody class="text-center">
@@ -164,3 +164,19 @@
 
     </div>
 {% endblock %}
+{% block extrascripts %}
+
+      <script>
+
+        new DataTable('#category', {
+            columnDefs: [
+                {type: 'natural', target: 1},
+                {#{orderable: false, targets: [0,6,7,8]}#}
+            ],
+            ordering: true,
+            bLengthChange: false,
+            info: false,
+            searching: false
+        });
+    </script>
+{% endblock  %}

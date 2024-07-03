@@ -3,6 +3,9 @@
 {% load cat_tag %}
 
 {% block content %}
+
+
+
     {% csrf_token %}
     <div class="container-fluid">
 
@@ -29,7 +32,7 @@
             <h2>выбор категории:</h2>
 
             <a class=" text-center text-warning"
-               href="{% url 'runners'  %}"> Все </a>
+               href="{% url 'runners' %}"> Все </a>
 
             <a class=" text-center text-warning"
                href="{% url 'runners' 1 %}">Новичок</a>
@@ -52,22 +55,22 @@
 
         <hr>
 
-        <table class="table  table-striped footer" id="catstable">
+        <table class="table table-striped dt-center" id="runners">
             <thead class="table-dark text-center">
             <tr>
-                <td>№ п/п</td>
-                <td> номер участника</td>
-                <td> категория</td>
-                <td> возраст</td>
-                <td> пол</td>
+                <th class="text-lg-center">№ п/п</th>
+                <th class="text-lg-center"> номер участника</th>
+                <th class="text-lg-center"> категория</th>
+                <th class="text-lg-center"> возраст</th>
+                <th class="text-lg-center"> пол</th>
 
             </tr>
             </thead>
 
 
-            <tbody class="">
+            <tbody class="dt-body-center">
             {% for p in profile %}
-                <tr class="row-cols-md-4 text-center">
+                <tr class="text-center ">
                     <td>{{ forloop.counter }}</td>
                     <td><a href="/profile/{{ p.username }}"> {{ p.username }}</a></td>
                     <td> {{ p.runner_category|cat_tag }}</td>
@@ -90,4 +93,51 @@
 
 
 
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script>
+
+        new DataTable('#runners', {
+
+                columnDefs: [
+                    {
+
+                        className: 'dt-center'
+                    }
+                ],
+                pageLength: 50,
+                ordering: true,
+                bLengthChange: true,
+                info: true,
+                searching: true,
+
+                layout: {
+                    topStart: 'info',
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
+            }
+        );
+    </script>
 {% endblock %}
