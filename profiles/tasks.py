@@ -1,9 +1,8 @@
 from celery import shared_task
 from django.contrib.sessions.backends.base import CreateError
 from django.db.models import Sum, Q, Avg, Count
-from core.models import  User, ComandsResult, GroupsResult
+from core.models import User, ComandsResult, GroupsResult
 from profiles.models import Statistic, Championat, RunnerDay
-
 
 
 def calc_comands(username):
@@ -58,6 +57,7 @@ def calc_comands(username):
                 comand_average_temp=str(total_comand_results.get('total_average_temp')),
                 comand_total_runs=total_comand_results.get('total_runs'))
         get_best_five_summ(team_id)
+        return "success"
     except Exception:
         raise Exception()
 
@@ -116,7 +116,7 @@ def get_best_five_summ(team_id):
                 age49=team_results.get('cat3'),
                 ageover50=team_results.get('cat4'),
                 balls=grand_total)
-        # calc_comands.delay(username)
+        return "success"
     except Exception:
         raise Exception()
 
@@ -183,3 +183,4 @@ def calc_start(self, runner_id, username):
         raise Exception()
 
     return "success"
+

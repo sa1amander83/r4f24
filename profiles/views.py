@@ -1,5 +1,6 @@
 import os
 
+from asgiref.sync import sync_to_async
 from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -67,7 +68,7 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     template_name = 'editprofile.html'
 
     def get_success_url(self):
-        return reverse_lazy('profile:profile', kwargs={'username': self.object})
+        return reverse_lazy('profile:profile', kwargs={'username': self.object.username})
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -81,6 +82,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('profile:profile')
     model = RunnerDay
 
+    sync_to_async()
     def form_valid(self, form):
 
         dayselected = form.cleaned_data['day_select']
@@ -169,7 +171,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         return redirect('profile:profile', username=self.request.user)
 
 
-class DeleteRunnerDayData(DeleteView, DataMixin):
+class DeleteRunnerDayData(LoginRequiredMixin, DeleteView, DataMixin):
     model = RunnerDay
     template_name = 'deleteday.html'
 
