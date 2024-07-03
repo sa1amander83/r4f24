@@ -126,7 +126,7 @@ class Statistic(models.Model):
 
 
 class Championat(models.Model):
-    team = models.IntegerField(verbose_name='команда', null=True, unique=True, db_index=True)
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда', null=True,  db_index=True)
     age18 = models.IntegerField(verbose_name='возраст до 18', null=True, db_index=True)
     age35 = models.IntegerField(verbose_name='возраст 18-35', null=True, db_index=True)
     age49 = models.IntegerField(verbose_name='возраст 36-49', db_index=True)

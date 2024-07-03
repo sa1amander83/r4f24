@@ -34,8 +34,6 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         context['run_user'] = User.objects.get(username=self.kwargs['username'])
 
-        # photo = run_user.photos.filter(day_select=)
-
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select', 'number_of_run')
 
@@ -90,7 +88,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             day_select=dayselected).count()
 
         if first_run <= 1:
-            cd = form.cleaned_data
+
             new_item = form.save(commit=False)
 
             userid = User.objects.get(username=self.kwargs['username'])
@@ -98,10 +96,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             number_of_run = 2 if first_run == 1 else 1
             for each in form.cleaned_data['photo']:
                 runner_id = userid.id
-                dayselected = dayselected
-
-                filename = each.name
-                filepath = os.path.join('media', str(userid.username), str(dayselected), str(number_of_run), filename)
 
                 Photo.objects.create(runner_id=runner_id,
                                      number_of_run=number_of_run,
@@ -119,17 +113,15 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             )
 
-            calc_start(self.request.user.pk, self.kwargs['username'])
-            # get_best_five_summ.delay()
-            # calc_comands.delay(self.kwargs['username'])
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки, '
                                          'обновите сведения по одной из пробежек')
-            # calc_start(self.request.user.pk, self.kwargs['username'])
-            calc_start(self.request.user.pk, self.kwargs['username'])
-            # get_best_five_summ.delay()
-            # calc_comands.delay(self.kwargs['username'])
+
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
             return redirect('profile:profile', username=self.kwargs['username'])
 
 
@@ -150,7 +142,6 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
     def form_valid(self, form):
         self.obj = self.get_object()
-        cd = form.cleaned_data
         new_item = form.save(commit=False)
         userid = User.objects.get(id=self.request.user.id)
 
@@ -173,10 +164,8 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
         new_item.save()
 
-        # calc_start(self.request.user.pk, self.kwargs['username'])
-        calc_start(self.request.user.pk, self.kwargs['username'])
-        # get_best_five_summ.delay()
-        # calc_comands.delay(self.kwargs['username'])
+        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
         return redirect('profile:profile', username=self.request.user)
 
 
@@ -191,7 +180,6 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
         get_number_run = self.object.number_of_run
         self.object.delete()
-        photos = Photo.objects.filter(runner__username=self.kwargs['username'])
         old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)
 
         for im in old_image:
@@ -201,34 +189,7 @@ class DeleteRunnerDayData(DeleteView, DataMixin):
 
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
-        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
-        # total_distance = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(
-        #     Sum('day_distance'))
-        # if total_distance['day_distance__sum'] is None:
-        #     dist = 0
-        # else:
-        #     dist = total_distance['day_distance__sum']
-        #
-        # total_time = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('day_time'))
-        # if total_time['day_time__sum'] is None:
-        #     tot_time = '00:00'
-        # else:
-        #     tot_time = total_time['day_time__sum']
-        # avg_time = self.avg_temp_function(self.kwargs['username'])
-        #
-        # tot_runs = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_distance__gt=0).count()
-        # tot_days = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
-        #     day_select__gt=0).distinct('day_select').count()
-        #
-        # tot_balls = RunnerDay.objects.filter(runner__username=self.kwargs['username']).aggregate(Sum('ball'))
-        # if tot_balls['ball__sum'] is None:
-        #     balls = 0
-        # else:
-        #     balls = tot_balls['ball__sum']
+        calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
-        calc_start(self.request.user.pk, self.kwargs['username'])
-        # get_best_five_summ.delay()
-        # calc_comands.delay(self.kwargs['username'])
         return redirect(success_url, success_msg)

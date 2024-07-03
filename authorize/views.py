@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import login, get_user_model, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.contrib.sessions.backends.base import CreateError
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.shortcuts import redirect, render
@@ -97,7 +98,7 @@ def show_reset(request):
                 user.set_password(password)
                 user.save()
                 return redirect('authorize:login')
-        except:
+        except CreateError:
             pass
 
     return render(request, 'pass_reset.html', {'form': form})
