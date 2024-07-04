@@ -732,11 +732,11 @@ class StatisticView(DataMixin, ListView):
 
 def group_statistics_view(request):
     if 'groups' in request.path_info:
-        groups = GroupsResult.objects.all().values_list('group__group_title').order_by('-group_total_balls')
+        groups = GroupsResult.objects.all().order_by('-group_total_balls')
         flag = True
 
     else:
-        groups = ComandsResult.objects.all().values_list('comand__team').order_by('-comand_total_balls')
+        groups = ComandsResult.objects.all(). order_by('-comand_total_balls')
         flag = False
 
     # group_data = {}

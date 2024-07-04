@@ -23,15 +23,20 @@
                             страница</a>
                         <div class="dropdown-divider"></div>
 
+                        <a class="dropdown-item text-center"
+                           href="{% url 'groups:myteam' username=user.username %}">Моя команда</a>
+                        <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item text-center"
-                           href="{% url 'groups:mygroup' username=user.username %}">Группа</a>
+                           href="{% url 'groups:mygroup' username=user.username %}">Моя группа</a>
                         <div class="dropdown-divider"></div>
+
 
 
                         <a class="dropdown-item text-center"
                            href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
                         <div class="dropdown-divider"></div>
+
                         <a class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i
                                 class="fa-brands fa-telegram "></i> Telegram </a>
                         <div class="dropdown-divider"></div>
