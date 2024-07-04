@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
@@ -28,7 +30,7 @@ SECRET_KEY = 'django-insecure-f=p0evvriyhde@nmw9ltz13-*@tr@j9cqs!f9cqduyq$odg@l1
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+load_dotenv()
 ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
@@ -69,7 +71,6 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     "debug_toolbar",
 
-
 ]
 
 # from django.core.files.storage import get_storage_class
@@ -84,10 +85,6 @@ from django_hashedfilenamestorage.storage import HashedFilenameMetaStorage
 DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -216,18 +213,23 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'r4f24.wsgi.application'
+print(os.getenv('DB_HOST'))
+print(os.getenv('DATABASE'))
+print(os.getenv('DB_USER'))
+print(os.getenv('DB_PORT'))
+print(os.getenv('DB_PASSWORD'))
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
-        'HOST': 'localhost',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PORT': '5432',
-        'PASSWORD': '123'}
+        'ENGINE':'django.db.backends.postgresql',
+        'HOST': os.getenv('DB_HOST'),
+        'NAME': os.getenv('DATABASE'),
+        'USER': os.getenv('DB_USER'),
+        'PORT': os.getenv('DB_PORT'),
+        'PASSWORD': os.getenv('DB_PASSWORD')}
 }
 
 # sqlite
@@ -292,9 +294,8 @@ LOGGING = {
     # }
 }
 
-
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_RESULT_EXTENDED = True
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
@@ -327,8 +328,9 @@ AUTH_USER_MODEL = 'core.user'
 #
 CACHES = {
     "default": {
+
         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": BASE_DIR/ 'cache',
+        "LOCATION": BASE_DIR / 'cache',
         "TIMEOUT": 60,
         "OPTIONS": {"MAX_ENTRIES": 1000},
     }

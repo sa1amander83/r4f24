@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.base import CreateError
 from django.db.models import Sum, Q, Avg, Count
 from core.models import User, ComandsResult, GroupsResult
@@ -7,13 +8,13 @@ from profiles.models import Statistic, Championat, RunnerDay
 
 def calc_comands(username):
     try:
-        obj = User.objects.get(username=username)
+        obj =  get_user_model().objects.get(username=username)
         if obj:
 
             team_id = obj.runner_team.id
             try:
                 group_id = obj.runner_group.id
-                users_group = User.objects.filter(runner_group_id=group_id)
+                users_group =  get_user_model().objects.filter(runner_group_id=group_id)
                 user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
                 total_group_results = user_group_stats.aggregate(
 
@@ -36,7 +37,7 @@ def calc_comands(username):
                     group_total_members=total_group_results.get('tot_members'))
             except:
                 pass
-            users = User.objects.filter(runner_team_id=team_id)
+            users =  get_user_model().objects.filter(runner_team_id=team_id)
             user_stats = Statistic.objects.filter(runner_stat__in=users)
             total_comand_results = user_stats.aggregate(
 

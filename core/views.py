@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models, IntegrityError
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window
 
@@ -19,10 +20,10 @@ class IndexView(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['user_detail'] = User.objects.filter(id=self.request.user.id)
+        context['user_detail'] = get_user_model().objects.filter(id=self.request.user.id)
         context['cat_selected'] = 0
         context['age'] = 0
-        context['count_of_runners'] = User.objects.exclude(not_running=True).count()
+        context['count_of_runners'] = get_user_model.objects.exclude(not_running=True).count()
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).order_by('-total_balls')
 
         return context
@@ -45,7 +46,7 @@ class CatListView(DataMixin, ListView):
 
         if category_selected:
             all_teams = Teams.objects.all().values_list('team', flat=True)
-            all_runners = User.objects.all()
+            all_runners = get_user_model.objects.all()
 
             comand_list = dict()
             # TODO сделать модель статистики команд???? наподобие участника
@@ -202,14 +203,14 @@ class RunnersView(DataMixin, ListView):
             cat_selected = self.kwargs['cat']
             context['cat_selected'] = cat_selected
             if cat_selected != 'f':
-                context['profile'] = User.objects.filter(runner_category=cat_selected).values('username',
+                context['profile'] = get_user_model().objects.filter(runner_category=cat_selected).values('username',
                                                                                               'runner_category',
                                                                                               'runner_age',
                                                                                               'runner_gender')
-                context['count_of_runners'] = User.objects.filter(runner_category=cat_selected).count()
+                context['count_of_runners'] = get_user_model().objects.filter(runner_category=cat_selected).count()
 
             else:
-                context['profile'] = User.objects.filter(runner_gender='ж').values('username',
+                context['profile'] = get_user_model().objects.filter(runner_gender='ж').values('username',
                                                                                    'runner_category',
                                                                                    'runner_age',
                                                                                    'runner_gender')
@@ -219,8 +220,8 @@ class RunnersView(DataMixin, ListView):
 
 
         else:
-            context['count_of_runners'] = User.objects.all().count()
-            context['profile'] = User.objects.all().filter(not_running=False).values('username', 'runner_category',
+            context['count_of_runners'] = get_user_model().objects.all().count()
+            context['profile'] = get_user_model().objects.all().filter(not_running=False).values('username', 'runner_category',
                                                                                      'runner_age',
                                                                                      'runner_gender')
             return context
@@ -246,7 +247,7 @@ class Tables(DataMixin, ListView):
         #     annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
         #              avg_time=Avg('day_average_temp')).order_by('-total_dist')
         #
-        # context['data'] = User.objects.filter(user__username=self.kwargs['runner'])
+        # context['data'] = get_user_model().objects.filter(user__username=self.kwargs['runner'])
         #
         # context['tot_dist'] = result
         return context
@@ -310,37 +311,37 @@ class ComandsView(DataMixin, ListView):
                 'avg_time__avg': item[3],
                 'total_ball__sum': item[4],
 
-                'count_runners': User.objects.filter(runner_team__team=item[0]).count()
+                'count_runners': get_user_model().objects.filter(runner_team__team=item[0]).count()
             }
-            # my_dict[item[0]]['count_runners']= User.objects.filter(runner_team_id=item[0]).count()
+            # my_dict[item[0]]['count_runners']= get_user_model().objects.filter(runner_team_id=item[0]).count()
 
         context['qs'] = my_dict
         context['comset'] = teams
 
-        context['number_runner'] = User.objects.filter(not_running=False).values('username').order_by(
+        context['number_runner'] = get_user_model().objects.filter(not_running=False).values('username').order_by(
             'username')
         # def get_context_data(self, *, object_list=None, **kwargs):
         #     context = super().get_context_data(**kwargs)
         #     context['calend'] = {x: x for x in range(1, 31)}
         #
         #     c = Teams.objects.all()
-        #     runner_list = User.objects.all().order_by('runner_team')
+        #     runner_list = get_user_model().objects.all().order_by('runner_team')
         #     context['runset'] = set(runner_list)
         #
         #     com_list = {}
         #
         #     for x in c:
-        #         num_of_runners = User.objects.filter(runner_team=x.team).count()
+        #         num_of_runners = get_user_model().objects.filter(runner_team=x.team).count()
         #         com_list[x] = num_of_runners
         #
         #
         #     context['comset'] = com_list
         #
-        #     runers_count = User.objects.filter(id__gt=1).filter(not_running=False).values('username')
+        #     runers_count = get_user_model().objects.filter(id__gt=1).filter(not_running=False).values('username')
         #
-        #     # runer = User.objects.get('username')
+        #     # runer = get_user_model().objects.get('username')
         #
-        #     context['number_runner'] = User.objects.filter(id__gt=1).filter(not_running=False).values('username').order_by(
+        #     context['number_runner'] = get_user_model().objects.filter(id__gt=1).filter(not_running=False).values('username').order_by(
         #         'username')
 
         # result = RunnerDay.objects.filter(runner__user__username=self.kwargs['runner']). \
@@ -348,7 +349,7 @@ class ComandsView(DataMixin, ListView):
         #     annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
         #              avg_time=Avg('day_average_temp')).order_by('-total_dist')
         #
-        # context['data'] = User.objects.filter(user__username=self.kwargs['runner'])
+        # context['data'] = get_user_model().objects.filter(user__username=self.kwargs['runner'])
 
         # context['tot_dist'] = result
         return context
@@ -365,7 +366,7 @@ class OneTeamStat(DataMixin, ListView):
 
         comand_number = self.kwargs['comanda']
         context['comand_number'] = comand_number
-        users = User.objects.filter(runner_team__team=comand_number)
+        users = get_user_model().objects.filter(runner_team__team=comand_number)
         context['team_count'] = users.count()
         user_stats = Statistic.objects.filter(runner_stat__in=users)
         # Общая статистика группы
@@ -456,14 +457,14 @@ class OneTeamStat(DataMixin, ListView):
 #                 'avg_time__avg': item[3],
 #                 'total_ball__sum': item[4],
 #
-#                 'count_runners': User.objects.filter(runner_team__team=item[0]).count()
+#                 'count_runners': get_user_model().objects.filter(runner_team__team=item[0]).count()
 #             }
-#             # my_dict[item[0]]['count_runners']= User.objects.filter(runner_team_id=item[0]).count()
+#             # my_dict[item[0]]['count_runners']= get_user_model().objects.filter(runner_team_id=item[0]).count()
 #
 #         context['qs'] = my_dict
 #         context['comset'] = teams
 #
-#         context['number_runner'] = User.objects.filter(not_running=False).values('username').order_by(
+#         context['number_runner'] = get_user_model().objects.filter(not_running=False).values('username').order_by(
 #             'username')
 #
 #         return context
@@ -620,19 +621,19 @@ class StatisticView(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
 
-        context['total_runners'] = User.objects.all().filter(not_running=False).count()
-        context['runners_mens'] = User.objects.filter(runner_gender='м').filter(not_running=False).count()
-        context['runners_womens'] = User.objects.filter(runner_gender='ж').filter(not_running=False).count()
+        context['total_runners'] = get_user_model().objects.all().filter(not_running=False).count()
+        context['runners_mens'] = get_user_model().objects.filter(runner_gender='м').filter(not_running=False).count()
+        context['runners_womens'] = get_user_model().objects.filter(runner_gender='ж').filter(not_running=False).count()
 
-        context['runner_age_1'] = User.objects.filter(runner_age__lte=17).filter(not_running=False).count()
-        context['runner_age_2'] = User.objects.filter(runner_age__gte=18).filter(not_running=False).filter(
+        context['runner_age_1'] = get_user_model().objects.filter(runner_age__lte=17).filter(not_running=False).count()
+        context['runner_age_2'] = get_user_model().objects.filter(runner_age__gte=18).filter(not_running=False).filter(
             runner_age__lte=35).count()
-        context['runner_age_3'] = User.objects.filter(runner_age__gte=36).filter(not_running=False).filter(
+        context['runner_age_3'] = get_user_model().objects.filter(runner_age__gte=36).filter(not_running=False).filter(
             runner_age__lte=49).count()
-        context['runner_age_4'] = User.objects.filter(runner_age__gte=50).filter(not_running=False).count()
+        context['runner_age_4'] = get_user_model().objects.filter(runner_age__gte=50).filter(not_running=False).count()
 
-        context['run2022'] = User.objects.filter(zabeg22=True).filter(not_running=False).count()
-        context['run2023'] = User.objects.filter(zabeg23=True).filter(not_running=False).count()
+        context['run2022'] = get_user_model().objects.filter(zabeg22=True).filter(not_running=False).count()
+        context['run2023'] = get_user_model().objects.filter(zabeg23=True).filter(not_running=False).count()
         # context['run30'] = RunnerDay.objects.annotate(day_count=Count(
         #     (Q(day_average_temp__lte="00:08:00") & Q(
         #         day_distance__gt=0)) |
@@ -687,9 +688,9 @@ class StatisticView(DataMixin, ListView):
         #                                        total_average_temp=Sum('day_average_temp')).filter(
         #     total_dist__gte=50).count()
 
-        context['runners_cat1'] = User.objects.filter(runner_category=1).filter(not_running=False).count()
-        context['runners_cat2'] = User.objects.filter(runner_category=2).filter(not_running=False).count()
-        context['runners_cat3'] = User.objects.filter(runner_category=3).filter(not_running=False).count()
+        context['runners_cat1'] = get_user_model().objects.filter(runner_category=1).filter(not_running=False).count()
+        context['runners_cat2'] = get_user_model().objects.filter(runner_category=2).filter(not_running=False).count()
+        context['runners_cat3'] = get_user_model().objects.filter(runner_category=3).filter(not_running=False).count()
 
         return context
 
@@ -704,7 +705,7 @@ class StatisticView(DataMixin, ListView):
 #     #
 #     #     members = Statistic.objects.filter(runner_stat__runner_group=group)
 #     #
-#     #     mygroup = User.objects.filter(runner_group=group)
+#     #     mygroup = get_user_model().objects.filter(runner_group=group)
 #     #
 #     #     group_users[group] = []
 #     #     for user in mygroup:
@@ -744,10 +745,10 @@ def group_statistics_view(request):
     # for group in groups:
     #
     #     if 'groups' in request.path_info:
-    #         users = User.objects.filter(runner_group=group)
+    #         users = get_user_model().objects.filter(runner_group=group)
     #
     #     else:
-    #         users = User.objects.filter(runner_team=group)
+    #         users = get_user_model().objects.filter(runner_team=group)
     #
     #     user_stats = Statistic.objects.filter(runner_stat__in=users)
     #
