@@ -75,7 +75,7 @@ def show_reset(request):
             keywordOfTeam = getTeam.keyword
 
             try:
-                username = User.objects.get(username=username_form)
+                username = get_user_model().objects.get(username=username_form)
             except ObjectDoesNotExist:
                 messages.error(request,
                                'Участник с таким номером не найден')
@@ -91,8 +91,8 @@ def show_reset(request):
                                'Введенные пароли не совпадают')
                 render(request, 'pass_reset.html', {'form': form})
 
-            if key.lower() == keywordOfTeam and User.objects.get(username=username_form) and password == password2:
-                user = User.objects.get(username=username_form)
+            if key.lower() == keywordOfTeam and get_user_model().objects.get(username=username_form) and password == password2:
+                user = get_user_model().objects.get(username=username_form)
                 print(user)
 
                 user.set_password(password)
