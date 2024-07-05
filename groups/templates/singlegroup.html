@@ -3,21 +3,22 @@
 {% load time_tag %}
 {% block content %}
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
 
-    {% for team, data in group_data.items %}
+        {% for team, data in group_data.items %}
 
-        <h1>Статистика  {% if flag %}  группы  <b>{{ team }} </b>{% else %}  команды  <b>{{ team }}</b>{% endif %}</h1>
-        <p>Участники -  {{ data.total_results.tot_users }}</p>
-        <p>Баллы {{ data.total_results.total_balls }}</p>
-        <p>Дистанция {{ data.total_results.total_distance }}</p>
-        <p>Время {{ data.total_results.total_time}}</p>
-        <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
-        <p>Дней пробега {{ data.total_results.total_days }}</p>
-        <p>Всего пробежек {{ data.total_results.total_runs }} </p>
-        <table class="table table-striped" id="singlegroup">
-            <thead>
+            <h1>Статистика  {% if flag %}  группы  <b>{{ team }} </b>{% else %}  команды  <b>{{ team }}</b>{% endif %}
+            </h1>
+            <p>Участники - {{ data.total_results.tot_users }}</p>
+            <p>Баллы {{ data.total_results.total_balls }}</p>
+            <p>Дистанция {{ data.total_results.total_distance }}</p>
+            <p>Время {{ data.total_results.total_time }}</p>
+            <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
+            <p>Дней пробега {{ data.total_results.total_days }}</p>
+            <p>Всего пробежек {{ data.total_results.total_runs }} </p>
+            <table class="table table-striped" id="singlegroup">
+                <thead class="table-dark text-center">
                 <tr>
                     <th>Участник</th>
                     <th>Баллы</th>
@@ -27,8 +28,8 @@
                     <th>Дней пробега</th>
                     <th>Пробежки</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for user in data.users %}
                     {% for stat in data.user_stats %}
                         {% if stat.runner_stat == user %}
@@ -45,10 +46,10 @@
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
-            </tbody>
-        </table>
-    {% endfor %}
-</div>
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
 
 {% endblock %}
 
@@ -57,7 +58,13 @@
 
     <script>
 
-new DataTable('#singlegroup');
+        new DataTable('#singlegroup', {
+
+                order:[1,'desc']
+
+
+
+        });
 
     </script>
 {% endblock %}

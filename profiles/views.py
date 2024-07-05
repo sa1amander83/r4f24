@@ -2,6 +2,7 @@ import os
 
 from asgiref.sync import sync_to_async
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -31,14 +32,14 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
-        context['user_data'] = User.objects.filter(username=self.kwargs['username'])
+        context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
 
-        context['run_user'] = User.objects.get(username=self.kwargs['username'])
+        context['run_user'] = get_user_model().objects.get(username=self.kwargs['username'])
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select', 'number_of_run')
 
-        photos = User.objects.get(username=self.kwargs['username'])
+        photos = get_user_model().objects.get(username=self.kwargs['username'])
         context['images'] = photos.photos.all()
 
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
@@ -51,13 +52,13 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
-        context['runner_status'] = User.objects.filter(runner_status__gt=0)
+        context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
             return dict(list(context.items()) + list(c_def.items()))
 
         else:
-            context['user_data'] = User.objects.filter(username=self.kwargs['username'])
+            context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
             context['tot_dist'] = {}
 
             return dict(list(context.items()) + list(c_def.items()))
@@ -93,7 +94,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             new_item = form.save(commit=False)
 
-            userid = User.objects.get(username=self.kwargs['username'])
+            userid = get_user_model().objects.get(username=self.kwargs['username'])
             new_item.runner_id = userid.id
             number_of_run = 2 if first_run == 1 else 1
             for each in form.cleaned_data['photo']:
@@ -115,7 +116,8 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             )
 
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            calc_start(self.request.user.pk, self.kwargs['username'])
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
@@ -145,7 +147,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
     def form_valid(self, form):
         self.obj = self.get_object()
         new_item = form.save(commit=False)
-        userid = User.objects.get(id=self.request.user.id)
+        userid = get_user_model().objects.get(id=self.request.user.id)
 
         new_item.runner_id = userid.id
         dayselected = self.obj.day_select

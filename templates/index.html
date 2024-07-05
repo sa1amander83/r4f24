@@ -92,19 +92,19 @@
 
 
         <div class="container-fluid">
-            <table id="myTable" class="table  table-striped text-center">
+            <table id="index" class="table  table-striped text-center">
 
                 <thead class="table-dark text-center">
 
-                <td>Место</td>
+                <th>Место</th>
 
-                <td>Номер участника</td>
-                <td> Баллы</td>
-                <td> пробег</td>
-                <td> общее время</td>
-                <td> средний темп мин/км</td>
-                <td> Дней забега</td>
-                <td> Количество пробежек</td>
+                <th>Номер участника</th>
+                <th> Баллы</th>
+                <th> пробег</th>
+                <th> общее время</th>
+                <th> средний темп мин/км</th>
+                <th> Дней забега</th>
+                <th> Количество пробежек</th>
                 </thead>
                 <tbody class="text-center">
 
@@ -112,7 +112,7 @@
                 {% for s in tot_dist %}
 
 
-                    <tr class="row-cols-md-4 c">
+                    <tr class="">
 
 
                         <td>{{ forloop.counter }}</td>
@@ -149,10 +149,25 @@
 
     <script>
 
-var table = new DataTable('#myTable', {
-    language: {
-        url: 'http://cdn.datatables.net/plug-ins/2.0.8/i18n/ru.json',
-    },
+var table = new DataTable('#index', {
+       language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
 });
 
     </script>

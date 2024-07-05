@@ -120,6 +120,7 @@
               />
             </svg>
 
+
             Вход
           </a>
         </div>
@@ -246,6 +247,53 @@
 
                 Вход
               </a>
+                        <a class="dropdown-item text-center"
+                           href="{% url 'groups:myteam' username=user.username %}">Моя команда</a>
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item text-center"
+                           href="{% url 'groups:mygroup' username=user.username %}">Моя группа</a>
+                        <div class="dropdown-divider"></div>
+
+
+
+                        <a class="dropdown-item text-center"
+                           href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i
+                                class="fa-brands fa-telegram "></i> Telegram </a>
+                        <div class="dropdown-divider"></div>
+
+
+                        <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
+                        <div class="dropdown-divider"></div>
+
+                    </div>
+
+
+                </div>
+
+            {% else %}
+                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:register' %}"> Регистрация </a></li>
+                <div class="topbar-divider d-none d-sm-block"></div>
+                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:login' %}"> Вход </a></li>
+                <div class="topbar-divider d-none d-sm-block"></div>
+
+
+            {% endif %}
+
+
+            <div class="topbar-divider"></div>
+            {% for i in user_detail %}
+                {% if i.is_superuser %}
+                    <div class="col-lg-auto user-profile"><a href="{% url 'exportcsv' %}"> экспорт csv </a></div>
+                {% endif %}
+
+            {% endfor %}
+
+        
+
             </div>
           </li>
         </ul>

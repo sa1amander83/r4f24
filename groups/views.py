@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Avg, Count
@@ -31,19 +32,28 @@ class MyGroup(ListView, DataMixin):
         group_users = {}
 
         try:
-            obj = User.objects.get(username=self.kwargs['username'])
+            obj = get_user_model().objects.get(username=self.kwargs['username'])
+            if 'mygroup' in self.request.path_info:
+                group = obj.runner_group
+                users = get_user_model().objects.filter(runner_group=group)
+                group_stat = get_user_model().objects.filter(runner_group=obj.runner_group)
+                flag=True
 
-            group = obj.runner_group
+            else:
+                group=obj.runner_team
+                users = get_user_model().objects.filter(runner_team=group)
+                group_stat = get_user_model().objects.filter(runner_team=obj.runner_team)
+                flag=False
+
             if group is not None:
-                # получаем всех пользователей с этой группой
-                group_stat = User.objects.filter(runner_group=obj.runner_group)
+                # получаем всех пользователей с этой группой или командой
+                group_users[group] = []
 
-                group_users[obj.runner_group] = []
 
-                users = User.objects.filter(runner_group=group)
+
+
                 user_stats = Statistic.objects.filter(runner_stat__in=users)
                 group_data = {}
-                #TODO  кусок кода повторяется с просмотром страницы группы и команды
                 total_results = user_stats.aggregate(
                     total_balls=Sum('total_balls'),
                     total_distance=Sum('total_distance'),
@@ -62,6 +72,7 @@ class MyGroup(ListView, DataMixin):
                 # Pass the data to the template
 
                 context = {
+                    'flag':flag,
                     'group_data': group_data
                 }
 
@@ -69,7 +80,7 @@ class MyGroup(ListView, DataMixin):
                     try:
                         stats_obj = Statistic.objects.get(runner_stat_id=user.id)
 
-                        group_users[obj.runner_group].append({
+                        group_users[group].append({
                             'group': str(group),
                             'user': user.username,
                             'total_distance': stats_obj.total_distance,
@@ -198,11 +209,6 @@ class GroupsListView(ListView):
 #     return render(request, 'add_family.html', {'form': form, 'families': families})
 
 
-def family_list(request, username):
-    families = Group.objects.all()
-
-    return render(request, 'family_list.html', {'families': families, 'username': request.user.username})
-
 
 # просмотр состава выбранной группы
 #TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
@@ -212,12 +218,12 @@ def view_group(request,  group):
         # groups = Group.objects.filter(group_title=group)
         group_id = Group.objects.get(id=group)
         group=group_id.group_title
-        users = User.objects.filter(runner_group=group_id)
+        users = get_user_model().objects.filter(runner_group=group_id)
         flag = True
 
     else:
         group_id = Teams.objects.get(team=group)
-        users = User.objects.filter(runner_team=group_id)
+        users = get_user_model().objects.filter(runner_team=group_id)
         flag = False
 
     user_stats = Statistic.objects.filter(runner_stat__in=users)
@@ -274,12 +280,12 @@ def group_list_and_create_view(request, username):
                 user.runner_group = group
                 user.save()
 
-            calc_comands.delay(username)
+            calc_start.delay(username)
 
             messages.success(request, 'Group created successfully!')
             return redirect('groups:mygroup', username)
     else:
-        user= User.objects.get(username=username)
+        user= get_user_model().objects.get(username=username)
         if user.can_create_group:
             can_create=True
         form=AddFamilyForm()
@@ -296,6 +302,6 @@ def add_user_to_group(request):
     user = request.user
     user.runner_group = group
     user.save()
-    calc_comands.delay(user.username)
+    calc_start.delay(user.username)
     redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
     return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})

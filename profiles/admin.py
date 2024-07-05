@@ -3,6 +3,7 @@ import csv
 from django.contrib import admin, messages
 
 # Register your models here.
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, path
@@ -81,7 +82,7 @@ class RunnerAdmin(admin.ModelAdmin):
                         # )
 
                         #
-                        userid = User.objects.get(username=row[2])
+                        userid = get_user_model().objects.get(username=row[2])
                         # teamlist = Teams.objects.all()
                         # teamst = Teams.objects.filter(team__in=teamlist)
                         # if Teams.objects.get(team=row[0]):
@@ -119,7 +120,7 @@ class RunnerAdmin(admin.ModelAdmin):
                         # lst.insert(0, usernumber)
                         # print(lst)
                         # userinbase= Runner.objects.get(user__username=row[0])
-                        userid = User.objects.get(username=row[2])
+                        userid =  get_user_model().objects.get(username=row[2])
 
                         for x in lst:
 

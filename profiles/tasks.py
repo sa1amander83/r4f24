@@ -1,65 +1,10 @@
 from celery import shared_task
+from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.base import CreateError
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Q, Avg, Count
 from core.models import User, ComandsResult, GroupsResult
 from profiles.models import Statistic, Championat, RunnerDay
-
-
-def calc_comands(username):
-    try:
-        obj = User.objects.get(username=username)
-        if obj:
-
-            team_id = obj.runner_team.id
-            try:
-                group_id = obj.runner_group.id
-                users_group = User.objects.filter(runner_group_id=group_id)
-                user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
-                total_group_results = user_group_stats.aggregate(
-
-                    total_balls=Sum('total_balls'),
-                    total_distance=Sum('total_distance'),
-                    total_time=Sum('total_time'),
-                    total_average_temp=Avg('total_average_temp'),
-                    total_days=Sum('total_days'),
-                    total_runs=Sum('total_runs'),
-                    tot_members=Count('runner_stat__username')
-
-                )
-
-                group_obj = GroupsResult.objects.filter(group_id=group_id).update(
-                    group_total_balls=total_group_results.get('total_balls'),
-                    group_total_distance=total_group_results.get('total_distance'),
-                    group_total_time=str(total_group_results.get('total_time')),
-                    group_average_temp=str(total_group_results.get('total_average_temp')),
-                    group_total_runs=total_group_results.get('total_runs'),
-                    group_total_members=total_group_results.get('tot_members'))
-            except:
-                pass
-            users = User.objects.filter(runner_team_id=team_id)
-            user_stats = Statistic.objects.filter(runner_stat__in=users)
-            total_comand_results = user_stats.aggregate(
-
-                total_balls=Sum('total_balls'),
-                total_distance=Sum('total_distance'),
-                total_time=Sum('total_time'),
-                total_average_temp=Avg('total_average_temp'),
-                total_days=Sum('total_days'),
-                total_runs=Sum('total_runs'),
-                tot_members=Count('runner_stat__username')
-            )
-
-            comands_obj = ComandsResult.objects.filter(comand_id=team_id).update(
-                comands_total_members=total_comand_results.get('tot_members'),
-                comand_total_distance=total_comand_results.get('total_distance'),
-                comand_total_balls=total_comand_results.get('total_balls'),
-                comand_total_time=str(total_comand_results.get('total_time')),
-                comand_average_temp=str(total_comand_results.get('total_average_temp')),
-                comand_total_runs=total_comand_results.get('total_runs'))
-        get_best_five_summ(team_id)
-        return "success"
-    except Exception:
-        raise Exception()
 
 
 # @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
@@ -108,7 +53,7 @@ def get_best_five_summ(team_id):
                 age49=team_results.get('cat3'),
                 ageover50=team_results.get('cat4'),
                 balls=grand_total)
-        except:
+        except ObjectDoesNotExist:
             new_rec = Championat.objects.create(
                 team_id=team_id,
                 age18=team_results.get('cat1'),
@@ -119,6 +64,81 @@ def get_best_five_summ(team_id):
         return "success"
     except Exception:
         raise Exception()
+
+
+def calc_comands(username):
+    obj = get_user_model().objects.get(username=username)
+
+    if obj.runner_group is not None:
+        group_id = obj.runner_group.id
+        users_group = get_user_model().objects.filter(runner_group_id=group_id)
+        user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
+        total_group_results = user_group_stats.aggregate(
+            total_balls=Sum('total_balls'),
+            total_distance=Sum('total_distance'),
+            total_time=Sum('total_time'),
+            total_average_temp=Avg('total_average_temp'),
+            total_days=Sum('total_days'),
+            total_runs=Sum('total_runs'),
+            tot_members=Count('runner_stat__username')
+
+        )
+        try:
+
+            obj = GroupsResult.objects.get(group_id=group_id)
+            GroupsResult.objects.filter(id=obj.pk).update(
+                group_total_balls=total_group_results.get('total_balls'),
+                group_total_distance=total_group_results.get('total_distance'),
+                group_total_time=str(total_group_results.get('total_time')),
+                group_average_temp=str(total_group_results.get('total_average_temp')),
+                group_total_runs=total_group_results.get('total_runs'),
+                group_total_members=total_group_results.get('tot_members'))
+
+        except ObjectDoesNotExist:
+            GroupsResult.objects.create(
+                group_id=group_id,
+                group_total_balls=total_group_results.get('total_balls'),
+                group_total_distance=total_group_results.get('total_distance'),
+                group_total_time=str(total_group_results.get('total_time')),
+                group_average_temp=str(total_group_results.get('total_average_temp')),
+                group_total_runs=total_group_results.get('total_runs'),
+                group_total_members=total_group_results.get('tot_members'))
+
+    team_id = obj.runner_team.id
+
+    users = get_user_model().objects.filter(runner_team_id=team_id)
+    user_stats = Statistic.objects.filter(runner_stat__in=users)
+    total_comand_results = user_stats.aggregate(
+
+        total_balls=Sum('total_balls'),
+        total_distance=Sum('total_distance'),
+        total_time=Sum('total_time'),
+        total_average_temp=Avg('total_average_temp'),
+        total_days=Sum('total_days'),
+        total_runs=Sum('total_runs'),
+        tot_members=Count('runner_stat__username')
+    )
+    try:
+        obj = ComandsResult.objects.get(comand_id=team_id)
+
+        ComandsResult.objects.filter(id=obj.pk).update(
+            comands_total_members=total_comand_results.get('tot_members'),
+            comand_total_distance=total_comand_results.get('total_distance'),
+            comand_total_balls=total_comand_results.get('total_balls'),
+            comand_total_time=str(total_comand_results.get('total_time')),
+            comand_average_temp=str(total_comand_results.get('total_average_temp')),
+            comand_total_runs=total_comand_results.get('total_runs'))
+
+    except ObjectDoesNotExist:
+        ComandsResult.objects.create(
+            comand_id=team_id,
+            comands_total_members=total_comand_results.get('tot_members'),
+            comand_total_distance=total_comand_results.get('total_distance'),
+            comand_total_balls=total_comand_results.get('total_balls'),
+            comand_total_time=str(total_comand_results.get('total_time')),
+            comand_average_temp=str(total_comand_results.get('total_average_temp')),
+            comand_total_runs=total_comand_results.get('total_runs'))
+    get_best_five_summ(team_id)
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
@@ -166,8 +186,7 @@ def calc_start(self, runner_id, username):
                 total_balls=balls,
                 is_qualificated=is_qual)
 
-
-        except:
+        except ObjectDoesNotExist:
             Statistic.objects.create(
                 runner_stat_id=runner_id,
                 total_distance=dist,
@@ -178,9 +197,7 @@ def calc_start(self, runner_id, username):
                 total_balls=balls,
                 is_qualificated=is_qual)
 
-        calc_comands(username)
     except CreateError:
         raise Exception()
 
-    return "success"
-
+    calc_comands(username)

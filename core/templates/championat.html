@@ -38,14 +38,15 @@
 
                 <thead class="table-dark text-center">
 
-                <td>Место</td>
-                <td>Номер команды</td>
-                <td> до 18 лет</td>
-                <td> 18-35 лет</td>
-                <td> 36-49 лет</td>
-                <td> 50+ лет</td>
+                <th>Место</th>
+                <th>Номер команды</th>
+                 <th> Всего баллов</th>
+                <th> до 18 лет</th>
+                <th> 18-35 лет</th>
+                <th> 36-49 лет</th>
+                <th> 50+ лет</th>
 
-                <td> Всего</td>
+
                 </thead>
                 <tbody class="text-center">
 
@@ -56,15 +57,14 @@
                     <tr>
 
                         <td>{{ forloop.counter }}</td>
-                        {% if  k.6 != 0 %}
-                            <td><a href="/comands/{{ k.1 }}">{{ k.1}} </a></td>
-
-
+                        {% if  k.1 != 0 %}
+                            <td><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
+                            <td> {{ k.1 }}</td>
                             <td> {{ k.2 }} </td>
                             <td> {{ k.3 }} </td>
                             <td> {{ k.4 }} </td>
                             <td> {{ k.5 }} </td>
-                            <td> {{ k.6 }}</td>
+
 
                         {% else %}
 
@@ -100,5 +100,52 @@
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
         </a>
+    </ul>
+{% endblock %}
 
+{% block extrascripts %}
+
+    <script>
+
+        new DataTable('#champ', {
+
+                columnDefs: [
+                    {
+
+                        className: 'dt-center'
+                    }
+                ],
+                pageLength: 50,
+                ordering: true,
+                bLengthChange: true,
+                info: true,
+                searching: true,
+
+                layout: {
+                    topStart: 'info',
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
+            }
+        );
+    </script>
 {% endblock %}
