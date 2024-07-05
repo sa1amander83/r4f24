@@ -23,7 +23,7 @@ class IndexView(DataMixin, ListView):
         context['user_detail'] = get_user_model().objects.filter(id=self.request.user.id)
         context['cat_selected'] = 0
         context['age'] = 0
-        context['count_of_runners'] = get_user_model.objects.exclude(not_running=True).count()
+        context['count_of_runners'] = get_user_model().objects.exclude(not_running=True).count()
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).order_by('-total_balls')
 
         return context
@@ -733,11 +733,11 @@ class StatisticView(DataMixin, ListView):
 
 def group_statistics_view(request):
     if 'groups' in request.path_info:
-        groups = GroupsResult.objects.all().order_by('-group_total_balls')
+        groups = GroupsResult.objects.all()
         flag = True
 
     else:
-        groups = ComandsResult.objects.all(). order_by('-comand_total_balls')
+        groups = ComandsResult.objects.all()
         flag = False
 
     # group_data = {}

@@ -116,7 +116,8 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
             )
 
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            calc_start(self.request.user.pk, self.kwargs['username'])
 
             return redirect('profile:profile', username=self.kwargs['username'])
         else:
