@@ -40,12 +40,13 @@
 
                 <th>Место</th>
                 <th>Номер команды</th>
+                 <th> Всего баллов</th>
                 <th> до 18 лет</th>
                 <th> 18-35 лет</th>
                 <th> 36-49 лет</th>
                 <th> 50+ лет</th>
 
-                <th> Всего</th>
+
                 </thead>
                 <tbody class="text-center">
 
@@ -56,15 +57,14 @@
                     <tr>
 
                         <td>{{ forloop.counter }}</td>
-                        {% if  k.6 != 0 %}
-                            <td><a href="/comands/{{ k.1 }}">{{ k.1}} </a></td>
-
-
+                        {% if  k.1 != 0 %}
+                            <td><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
+                            <td> {{ k.1 }}</td>
                             <td> {{ k.2 }} </td>
                             <td> {{ k.3 }} </td>
                             <td> {{ k.4 }} </td>
                             <td> {{ k.5 }} </td>
-                            <td> {{ k.6 }}</td>
+
 
                         {% else %}
 

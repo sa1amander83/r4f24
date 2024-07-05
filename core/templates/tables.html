@@ -20,7 +20,7 @@
 
             <tbody class="">
             {% for key,value in comset.items %}
-                <tr class="row-cols-md-4 text-center">
+                <tr class="text-center">
                    <td>{{forloop.counter}}</td>
                     <td><a href="{% url "oneteamstat" key %}">{{ key }}</a></td>
                     <td> {{ value }}</td>

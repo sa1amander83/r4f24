@@ -40,7 +40,7 @@
                     <tr class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary">
                         <td colspan="9"> {{ k }}</td>
                     </tr>
-                    <tr class="row-cols-md-4 text-center table-warning">
+                    <tr class="text-center table-warning">
                         <td>№п/п</td>
                         <td>Участник</td>
                         <td>баллы</td>
@@ -52,7 +52,7 @@
                         <td>квалификация</td>
                     </tr>
                     {% for u in v %}
-                        <tr class="row-cols-md-4 text-center">
+                        <tr class="text-center">
 
                             <td> {{ forloop.counter }}</td>
                             <td> {{ u.user }}</td>

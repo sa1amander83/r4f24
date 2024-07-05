@@ -46,7 +46,7 @@ class CatListView(DataMixin, ListView):
 
         if category_selected:
             all_teams = Teams.objects.all().values_list('team', flat=True)
-            all_runners = get_user_model.objects.all()
+            all_runners = get_user_model().objects.all()
 
             comand_list = dict()
             # TODO сделать модель статистики команд???? наподобие участника
@@ -204,16 +204,16 @@ class RunnersView(DataMixin, ListView):
             context['cat_selected'] = cat_selected
             if cat_selected != 'f':
                 context['profile'] = get_user_model().objects.filter(runner_category=cat_selected).values('username',
-                                                                                              'runner_category',
-                                                                                              'runner_age',
-                                                                                              'runner_gender')
+                                                                                                          'runner_category',
+                                                                                                          'runner_age',
+                                                                                                          'runner_gender')
                 context['count_of_runners'] = get_user_model().objects.filter(runner_category=cat_selected).count()
 
             else:
                 context['profile'] = get_user_model().objects.filter(runner_gender='ж').values('username',
-                                                                                   'runner_category',
-                                                                                   'runner_age',
-                                                                                   'runner_gender')
+                                                                                               'runner_category',
+                                                                                               'runner_age',
+                                                                                               'runner_gender')
 
             return context
 
@@ -221,9 +221,10 @@ class RunnersView(DataMixin, ListView):
 
         else:
             context['count_of_runners'] = get_user_model().objects.all().count()
-            context['profile'] = get_user_model().objects.all().filter(not_running=False).values('username', 'runner_category',
-                                                                                     'runner_age',
-                                                                                     'runner_gender')
+            context['profile'] = get_user_model().objects.all().filter(not_running=False).values('username',
+                                                                                                 'runner_category',
+                                                                                                 'runner_age',
+                                                                                                 'runner_gender')
             return context
 
 
@@ -477,22 +478,22 @@ class Championate(DataMixin, ListView):
 
     # def get_queryset(self):
 
-
-        # return Statistic.objects.annotate(
-        #     age_group=Cast('runner_stat__runner_age', output_field=models.IntegerField())
-        # ).filter(runner_stat__isnull=False).annotate(
-        #     team=Cast('runner_stat__runner_team', output_field=models.IntegerField())
-        # ).values('age_group', 'team', 'runner_stat').annotate(
-        #     total_balls=Sum('total_balls')
-        # ).order_by('-total_balls').annotate(
-        #     rank=Window(expression=RowNumber(), order_by=[-F('total_balls')])
-        # ).values('age_group', 'team', 'runner_stat', 'total_balls', 'rank').order_by('age_group', 'team', 'rank')[:5]
+    # return Statistic.objects.annotate(
+    #     age_group=Cast('runner_stat__runner_age', output_field=models.IntegerField())
+    # ).filter(runner_stat__isnull=False).annotate(
+    #     team=Cast('runner_stat__runner_team', output_field=models.IntegerField())
+    # ).values('age_group', 'team', 'runner_stat').annotate(
+    #     total_balls=Sum('total_balls')
+    # ).order_by('-total_balls').annotate(
+    #     rank=Window(expression=RowNumber(), order_by=[-F('total_balls')])
+    # ).values('age_group', 'team', 'runner_stat', 'total_balls', 'rank').order_by('age_group', 'team', 'rank')[:5]
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
         try:
-            context['qs'] = Championat.objects.all().values_list().order_by('-balls')
+            context['qs'] = Championat.objects.all().values_list('team_id__team', 'balls', 'age18', 'age35', 'age49',
+                                                                 'ageover50').order_by('-balls')
         except:
             context['qs'] = []
         return context
@@ -532,8 +533,6 @@ class Championate(DataMixin, ListView):
         # ).order_by('runner_stat__runner_team')
 
         # TODO запрос работает но будет жрать много ресурсов
-
-
 
         #
         #
@@ -733,11 +732,11 @@ class StatisticView(DataMixin, ListView):
 
 def group_statistics_view(request):
     if 'groups' in request.path_info:
-        groups = GroupsResult.objects.all()
+        groups = GroupsResult.objects.all().order_by('-group_total_balls')
         flag = True
 
     else:
-        groups = ComandsResult.objects.all()
+        groups = ComandsResult.objects.all().order_by('-comand_total_balls')
         flag = False
 
     # group_data = {}

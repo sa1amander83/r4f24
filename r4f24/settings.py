@@ -213,11 +213,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'r4f24.wsgi.application'
-print(os.getenv('DB_HOST'))
-print(os.getenv('DATABASE'))
-print(os.getenv('DB_USER'))
-print(os.getenv('DB_PORT'))
-print(os.getenv('DB_PASSWORD'))
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

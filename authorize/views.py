@@ -93,7 +93,12 @@ def show_reset(request):
 
             if key.lower() == keywordOfTeam and get_user_model().objects.get(username=username_form) and password == password2:
                 user = get_user_model().objects.get(username=username_form)
-                print(user)
+                try:
+                    username = get_user_model().objects.get(username=username_form)
+                except ObjectDoesNotExist:
+                    messages.error(request,
+                                   'Участник с таким номером не найден')
+                    render(request, 'pass_reset.html', {'form': form})
 
                 user.set_password(password)
                 user.save()

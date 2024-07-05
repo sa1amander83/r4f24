@@ -209,11 +209,6 @@ class GroupsListView(ListView):
 #     return render(request, 'add_family.html', {'form': form, 'families': families})
 
 
-def family_list(request, username):
-    families = Group.objects.all()
-
-    return render(request, 'family_list.html', {'families': families, 'username': request.user.username})
-
 
 # просмотр состава выбранной группы
 #TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
@@ -285,7 +280,7 @@ def group_list_and_create_view(request, username):
                 user.runner_group = group
                 user.save()
 
-            calc_comands.delay(username)
+            calc_start.delay(username)
 
             messages.success(request, 'Group created successfully!')
             return redirect('groups:mygroup', username)
@@ -307,6 +302,6 @@ def add_user_to_group(request):
     user = request.user
     user.runner_group = group
     user.save()
-    calc_comands.delay(user.username)
+    calc_start.delay(user.username)
     redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
     return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})

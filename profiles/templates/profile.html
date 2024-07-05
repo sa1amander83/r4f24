@@ -120,7 +120,7 @@
 
             {% for p in runner_day %}
 
-                <tr class="row-cols-md-4 text-center">
+                <tr class="text-center">
 
 
                     {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
@@ -128,6 +128,7 @@
                             <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
                                 <i class="fas fa-pen fa-lg"></i> </a>
                         </td>
+                        {% else %} <td></td>
                     {% endif %}
                     <td>{{ p.day_select }} </td>
                     <td> {{ p.ball }} </td>

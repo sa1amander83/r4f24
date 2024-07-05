@@ -12,7 +12,7 @@
         {% endif %}
 
         <table class="table table-striped" id="comanda">
-                <thead class="table-dark text-center">
+            <thead class="table-dark text-center">
 
             <tr>
                 <th> {% if flag %}Группа{% else %} Команда {% endif %}</th>
@@ -21,36 +21,41 @@
                 <th>Дистанция</th>
                 <th>Общее Время</th>
                 <th>Темп</th>
-                <th>Дней пробега</th>
                 <th>Пробежки</th>
             </tr>
             </thead>
             <tbody>
 
+            {% for team in group_data %}
 
-{{ group_data }}
-
-            {% for team, data in group_data.items %}
-{##}        {{ data }}
+                {##}
                 {#                TODO сделать  дропдаун на членов группы#}
-{##}
-                {% if  data.total_results.total_balls %}
-                    <tr>
+                {##}
+                <tr>
+                    <td> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
+                        <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
+                    </td>
+                    {% if flag %}
+                        <td>{{ team.group_total_members }}</td>
+                        <td>{{ team.group_total_balls }}</td>
+                        <td>{{ team.group_total_distance }}</td>
+                        <td>{{ team.group_total_time }}</td>
+                        <td>{{ team.group_average_temp|time:"i:s" }}</td>
+                        <td>{{ team.group_total_runs }}</td>
+
+                    {% else %}
+                        <td>{{ team.comands_total_members }}</td>
+                        <td>{{ team.comand_total_balls }}</td>
+                        <td>{{ team.comand_total_distance }}</td>
+                        <td>{{ team.comand_total_time }}</td>
+                        <td>{{ team.comand_average_temp|time:"i:s" }}</td>
+                        <td>{{ team.comand_total_runs }}</td>
 
 
-                            <td> {% if flag %} <a href="{% url 'viewGroup' team.id  %}"> {% else %}
-                            <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
-                        </td>
-                        <td>{{ data.total_results.tot_users }}</td>
-                        <td>{{ data.total_results.total_balls }}</td>
-                        <td>{{ data.total_results.total_distance }}</td>
-                        <td>{{ data.total_results.total_time }}</td>
-                        <td>{{ data.total_results.total_average_temp|smooth_filter }}</td>
-                        <td>{{ data.total_results.total_days }}</td>
-                        <td>{{ data.total_results.total_runs }}</td>
-                    </tr>
-                {% endif %}
-{##}
+                    {% endif %}
+                </tr>
+
+                {##}
                 {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
                 {#                {% for user in data.users %}#}
                 {#                    {% for stat in data.user_stats %}#}
