@@ -93,14 +93,14 @@ class Group(models.Model):
 
 class User(AbstractUser):
     GENDER = [
-        ('м', "м"), ("ж", "ж")
+        ('м', "Мужской"), ("ж", "Женский")
     ]
     CATEGORY = [
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
     ]
 
     STATUS = [
-        (1, 'Участник'), (2, 'член семьи участника')
+        (1, 'Участник'), (2, 'Член группы')
     ]
 
     runner_status = models.IntegerField(choices=STATUS, verbose_name='Ваш статус', default=1)
