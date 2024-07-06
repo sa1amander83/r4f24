@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from shutil import which
@@ -28,7 +30,7 @@ SECRET_KEY = 'django-insecure-f=p0evvriyhde@nmw9ltz13-*@tr@j9cqs!f9cqduyq$odg@l1
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+load_dotenv()
 ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
@@ -50,8 +52,6 @@ INTERNAL_IPS = [
 ]
 # Application definition
 
-
-
 INSTALLED_APPS = [
     # 'compressor',
 
@@ -69,22 +69,24 @@ INSTALLED_APPS = [
     'groups',
     'django_cleanup',
     'sorl.thumbnail',
-    "debug_toolbar",
-    'telega',
-    'management'
-    # 'tailwind',
-    # 'theme',
-    # 'django_browser_reload',
-    # 'celery',
-    # 'django_celery_results',
-    # 'django_celery_beat',
-
-    # 'csscompressor',
+    # "debug_toolbar",
+    'crispy_forms',
 
 ]
+
+# from django.core.files.storage import get_storage_class
+
+from django_hashedfilenamestorage.storage import HashedFilenameMetaStorage
+
+# HashedFilenameMyStorage = HashedFilenameMetaStorage(
+#     storage_class=get_storage_class('core.MyStorage'),
+# )
+
+
 DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
+
 CORS_ORIGIN_ALLOW_ALL = True
-TAILWIND_APP_NAME = 'theme'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,8 +96,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
+
     # "django.middleware.cache.UpdateCacheMiddleware",
     # "django.middleware.common.CommonMiddleware",
     # "django.middleware.cache.FetchFromCacheMiddleware",
@@ -105,8 +107,7 @@ MIDDLEWARE = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_DIRS = []
-# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-# CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
 
@@ -139,6 +140,41 @@ DEBUG_TOOLBAR_PANELS = [
 # STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 ROOT_URLCONF = 'r4f24.urls'
+# DRAMATIQ_BROKER = {
+#     "BROKER": "dramatiq.brokers.redis.RedisBroker",
+#     "OPTIONS": {
+#         "url": "redis://localhost:6379",
+#     },
+#     "MIDDLEWARE": [
+#         "dramatiq.middleware.Prometheus",
+#         "dramatiq.middleware.AgeLimit",
+#         "dramatiq.middleware.TimeLimit",
+#         "dramatiq.middleware.Callbacks",
+#         "dramatiq.middleware.Retries",
+#         "django_dramatiq.middleware.DbConnectionsMiddleware",
+#         "django_dramatiq.middleware.AdminMiddleware",
+#     ]
+# }
+
+# Defines which database should be used to persist Task objects when the
+# AdminMiddleware is enabled.  The default value is "default".
+# DRAMATIQ_TASKS_DATABASE = "default"
+# from dramatiq.brokers.rabbitmq import RabbitmqBroker
+#
+#
+# rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
+# dramatiq.set_broker(rabbitmq_broker)
+
+
+# DRAMATIQ_RESULT_BACKEND = {
+#     "BACKEND": "dramatiq.results.backends.redis.RedisBackend",
+#     "BACKEND_OPTIONS": {
+#         "url": "redis://localhost:6379",
+#     },
+#     "MIDDLEWARE_OPTIONS": {
+#         "result_ttl": 1000 * 60 * 10
+#     }
+# }
 
 
 NPM_BIN_PATH = which('npm')
@@ -180,16 +216,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'r4f24.wsgi.application'
 
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
-        'HOST': 'localhost',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PORT': '5432',
-        'PASSWORD': '123'}
+        'ENGINE':'django.db.backends.postgresql',
+        'HOST': os.getenv('DB_HOST'),
+        'NAME': os.getenv('DATABASE'),
+        'USER': os.getenv('DB_USER'),
+        'PORT': os.getenv('DB_PORT'),
+        'PASSWORD': os.getenv('DB_PASSWORD')}
 }
 
+# sqlite
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# Password validation
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -241,19 +290,16 @@ LOGGING = {
     #     }
     # }
 }
-#
-# CELERY_BROKER_URL = 'redis://redis:6379'
-# CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
-# CELERY_RESULT_EXTENDED = True
-# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_RESULT_EXTENDED = True
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Here
 MEDIA_URL = '/media/'
-LOG_LEVEL=DEBUG
+
 # LOGIN_URL = "/login/"
 #
 # LOGIN_REDIRECT_URL = "/profile/"
@@ -276,13 +322,25 @@ AUTH_USER_MODEL = 'core.user'
 #         }
 #     }
 # }
-
+#
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / 'cache',
+        "TIMEOUT": 60,
+        "OPTIONS": {"MAX_ENTRIES": 1000},
     }
 }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#         "KEY_PREFIX": "r4f",
+#         "TIMEOUT": 60 * 15,
+#     }
+# }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"

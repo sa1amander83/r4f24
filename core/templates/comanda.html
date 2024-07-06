@@ -15,19 +15,19 @@
 
             <hr>
             <div class="statistic-team">
-                <p class="col-form-label">  {{ team_count|okon4 }} </p>
-                <p class="col-form-label"> общий пробег команды - {{ res.tot_distance__sum|floatformat:3 }} км</p>
-                {% if res.tot_time__sum %}
-                    <p class="col-form-label">общее время пробега - {{ res.tot_time__sum }}</p>
+                <p class="col-form-label"> Зарегистрировано {{ team_count|okon4 }} </p>
+                <p class="col-form-label"> общий пробег команды - {{ res.tot_distance|floatformat:3 }} км</p>
+                {% if res.tot_time %}
+                    <p class="col-form-label">общее время пробега - {{ res.tot_time}}</p>
                 {% else %}
                     <p class="col-form-label">общее время пробега - км</p>
                 {% endif %}
-                 {% if res.avg_time__avg %}
-                  <p class="col-form-label"> средний темп команды - {{ res.avg_time__avg|smooth_filter}} мин/км</p>
+                 {% if res.avg_time %}
+                  <p class="col-form-label"> средний темп команды - {{ res.avg_time}} мин/км</p>
                 {% else %}
                     <p class="col-form-label"> средний темп команды - мин/км</p>
                 {% endif %}
-                    <p class="col-form-label"> всего пробежек -{{ res.tot_runs__sum }} </p>
+                    <p class="col-form-label"> всего пробежек -{{ res.tot_runs }} </p>
 
             </div>
 
@@ -52,9 +52,11 @@
             </thead>
             <tbody class="">
 
+
+
             {% for  c in qs %}
 
-                <tr class="row-cols-md-4 text-center">
+                <tr class=" text-center">
                     <td>{{ forloop.counter }}</td>
 
                     <td><a href="/profile/{{ c.runner_stat__username }}"> {{ c.runner_stat__username }}</a></td>

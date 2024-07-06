@@ -1,49 +1,33 @@
 from celery import shared_task
-from django.db import IntegrityError
-from django.db.models import Sum, Q, Avg
-from django.db.models.signals import post_save, post_delete, pre_delete, pre_save
-from django.dispatch import receiver, Signal
+from django.contrib.auth import get_user_model
+from django.contrib.sessions.backends.base import CreateError
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Sum, Q, Avg, Count, Window, F
+from django.db.models.functions import RowNumber
+from core.models import User, ComandsResult, GroupsResult
+from profiles.models import Statistic, Championat, RunnerDay
 
-from core.models import Teams, User
-from profiles.models import Statistic, BestFiveRunners, RunnerDay
 
+def get_best_five_summ(team_id):
+    try:
+        age_categories = [
+            ('cat1', 5, 17), ('cat2', 18, 35), ('cat3', 36, 49), ('cat4', 50, 99)
+        ]
 
-# функция обновляет сведения в модели каждые по сумме 5 участников к каждой возрастной категории
-# @receiver(pre_save, sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     get_best_five_summ()
-#
-#
-# @receiver(pre_delete, sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     get_best_five_summ()
-
-@shared_task
-def get_best_five_summ():
-    teams = Teams.objects.values_list('team', flat=True)
-    my_list = []
-    my_dict = {}
-    d = dict()
-    age_categories = [
-        # (f'до {age} лет', age) for age in range(18, 80, 17)
-        ('cat1', 5, 17), ("cat2", 18, 35), ("cat3", 36, 49), ("cat4", 50, 99)
-    ]
-    from django.db.models import Sum, Q, Window, F
-    from django.db.models.functions import RowNumber
-    from profiles.models import Statistic
-    for team in teams:
         team_results = {}
-        grand_total = 0  # Initialize a variable to keep track of the grand total across all categories for the current team
+        grand_total = 0
 
         for category_name, age_start, age_end in age_categories:
-            # Filter participants within the age range and belonging to the current team
             filtered_stats = Statistic.objects.filter(
-                runner_stat__runner_team=team,
+                runner_stat__runner_team_id=team_id,
                 runner_stat__runner_age__gte=age_start,
                 runner_stat__runner_age__lte=age_end
             )
 
-            # Annotate each participant with a rank based on total_balls in descending order
+            if not filtered_stats.exists():
+                team_results[category_name] = 0
+                continue
+
             ranked_stats = filtered_stats.annotate(
                 rank=Window(
                     expression=RowNumber(),
@@ -51,98 +35,119 @@ def get_best_five_summ():
                 )
             )
 
-            # Filter to get only the top 5 participants
             top_five_stats = ranked_stats.filter(rank__lte=5)
-
-            # Aggregate the total balls of the top five participants
             total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
-
-            # Store the results in a dictionary
-            total_balls_sum = total_balls['total_balls_sum'] if total_balls['total_balls_sum'] is not None else 0
+            total_balls_sum = total_balls.get('total_balls_sum')
             team_results[category_name] = total_balls_sum
-
-            # Add to the grand total
             grand_total += total_balls_sum
 
-        # Update or create in BestFiveRunners
-        best_five, created = BestFiveRunners.objects.update_or_create(
-            team=team,  # Use the team ID as the unique identifier
+        Championat.objects.update_or_create(
+            team_id=team_id,
             defaults={
-                'age18': team_results.get('cat1', 0),
-                'age35': team_results.get('cat2', 0),
-                'age49': team_results.get('cat3', 0),
-                'ageover50': team_results.get('cat4', 0),
+                'age18': team_results.get('cat1'),
+                'age35': team_results.get('cat2'),
+                'age49': team_results.get('cat3'),
+                'ageover50': team_results.get('cat4'),
                 'balls': grand_total
             }
         )
-    return "success"
+
+    except Exception:
+        raise
 
 
-# @receiver(post_save,sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     calc_start.delay(instance.runner.id, instance.runner.username)
-#     print(123)
-#
-# @receiver(post_delete,sender=RunnerDay)
-# def my_signal_handler(instance, **kwargs):
-#     calc_start.delay(instance.runner.id, instance.runner.username)
-#     print(321)
+def calc_comands(username):
+    obj = get_user_model().objects.get(username=username)
+
+    if obj.runner_group is not None:
+        group_id = obj.runner_group.id
+        users_group = get_user_model().objects.filter(runner_group_id=group_id)
+        user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
+        total_group_results = user_group_stats.aggregate(
+            total_balls=Sum('total_balls'),
+            total_distance=Sum('total_distance'),
+            total_time=Sum('total_time'),
+            total_average_temp=Avg('total_average_temp'),
+            total_days=Sum('total_days'),
+            total_runs=Sum('total_runs'),
+            tot_members=Count('runner_stat__username')
+        )
+
+        GroupsResult.objects.update_or_create(
+            group_id=group_id,
+            defaults={
+                'group_total_balls': total_group_results.get('total_balls'),
+                'group_total_distance': total_group_results.get('total_distance'),
+                'group_total_time': str(total_group_results.get('total_time')),
+                'group_average_temp': str(total_group_results.get('total_average_temp')),
+                'group_total_runs': total_group_results.get('total_runs'),
+                'group_total_members': total_group_results.get('tot_members')
+            }
+        )
+
+    team_id = obj.runner_team.id
+
+    users = get_user_model().objects.filter(runner_team_id=team_id)
+    user_stats = Statistic.objects.filter(runner_stat__in=users)
+    total_comand_results = user_stats.aggregate(
+        total_balls=Sum('total_balls'),
+        total_distance=Sum('total_distance'),
+        total_time=Sum('total_time'),
+        total_average_temp=Avg('total_average_temp'),
+        total_days=Sum('total_days'),
+        total_runs=Sum('total_runs'),
+        tot_members=Count('runner_stat__username')
+    )
+
+    ComandsResult.objects.update_or_create(
+        comand_id=team_id,
+        defaults={
+            'comands_total_members': total_comand_results.get('tot_members'),
+            'comand_total_distance': total_comand_results.get('total_distance'),
+            'comand_total_balls': total_comand_results.get('total_balls'),
+            'comand_total_time': str(total_comand_results.get('total_time')),
+            'comand_average_temp': str(total_comand_results.get('total_average_temp')),
+            'comand_total_runs': total_comand_results.get('total_runs')
+        }
+    )
+    get_best_five_summ(team_id)
 
 
-@shared_task()
-def calc_start(runner_id, username):
-    total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(
-        Sum('day_distance'))
-    if total_distance['day_distance__sum'] is None:
-        dist = 0
-    else:
-        dist = total_distance['day_distance__sum']
-
-    total_time = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_time'))
-    if total_time['day_time__sum'] is None:
-        tot_time = '00:00'
-    else:
-        tot_time = total_time['day_time__sum']
-    # avg_time = self.avg_temp_function(username)
-    avg_time = RunnerDay.objects.filter(runner__username=username).aggregate(Avg('day_average_temp'))
-
-    if avg_time['day_average_temp__avg'] is None:
-        avg_time = '00:00'
-    else:
-        avg_time = avg_time['day_average_temp__avg']
-
-    tot_runs = RunnerDay.objects.filter(runner__username=username).filter(
-        day_distance__gte=0).count()
-    tot_days = RunnerDay.objects.filter(runner__username=username).filter(
-        day_select__gte=0).distinct('day_select').count()
-    tot_balls = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('ball'))
-    if tot_balls['ball__sum'] is None:
-        balls = 0
-    else:
-        balls = tot_balls['ball__sum']
-    is_qual = True if dist >= 30 else False
-
+@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+def calc_start(self, runner_id, username):
     try:
-        obj=Statistic.objects.get(runner_stat_id=runner_id)
-        Statistic.objects.filter(id=obj.pk).update(
-        total_distance=dist,
-        total_time=':'.join(str(tot_time).split(':')),
-        total_average_temp=':'.join(str(avg_time).split(':')),
-        total_days=tot_days,
-        total_runs=tot_runs,
-        total_balls=balls,
-        is_qualificated=is_qual)
+        runner_days = RunnerDay.objects.filter(runner__username=username)
+        total_distance = runner_days.aggregate(Sum('day_distance'))
+        dist = total_distance['day_distance__sum'] or 0
 
+        total_time = runner_days.aggregate(Sum('day_time'))
+        tot_time = total_time['day_time__sum'] or '00:00'
 
-    except:
-        Statistic.objects.create(
+        avg_time = runner_days.aggregate(Avg('day_average_temp'))
+        avg_time = avg_time['day_average_temp__avg'] or '00:00'
+
+        tot_runs = runner_days.filter(day_distance__gte=0).count()
+        tot_days = runner_days.filter(day_select__gte=0).distinct('day_select').count()
+
+        tot_balls = runner_days.aggregate(Sum('ball'))
+        balls = tot_balls['ball__sum'] or 0
+
+        is_qual = dist >= 30
+
+        Statistic.objects.update_or_create(
             runner_stat_id=runner_id,
-            total_distance=dist,
-            total_time=':'.join(str(tot_time).split(':')),
-            total_average_temp=':'.join(str(avg_time).split(':')),
-            total_days=tot_days,
-            total_runs=tot_runs,
-            total_balls=balls,
-            is_qualificated=is_qual)
+            defaults={
+                'total_distance': dist,
+                'total_time': ':'.join(str(tot_time).split(':')),
+                'total_average_temp': ':'.join(str(avg_time).split(':')),
+                'total_days': tot_days,
+                'total_runs': tot_runs,
+                'total_balls': balls,
+                'is_qualificated': is_qual
+            }
+        )
 
-    return "success"
+    except CreateError:
+        raise
+
+    calc_comands(username)

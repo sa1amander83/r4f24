@@ -13,8 +13,8 @@ class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(
         attrs={'class': 'form-control form-control-user', 'id': 'username'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
-    runner_team = forms.CharField(label='Команда',
-                                  widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'team'}))
+    runner_team__team = forms.CharField(label='Команда',
+                                        widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'team'}))
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.TextInput(attrs={'class': 'form-control form-control-user'}))
     # runner_status = forms.ChoiceField(widget=forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'}))
@@ -27,11 +27,13 @@ class RegisterUserForm(UserCreationForm):
         model = User
 
         widgets = {
-        'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
+            'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
         }
         fields = (
-        'username', 'runner_status', 'runner_team', 'keyword', 'runner_age', 'runner_gender', 'runner_category',
-        'password1','password2', 'zabeg22', 'zabeg23')
+            'username', 'runner_status', 'runner_team__team', 'keyword', 'runner_age', 'runner_gender',
+            'runner_category',
+            'password1', 'password2', 'zabeg22', 'zabeg23')
+
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user'}))
@@ -52,7 +54,7 @@ class UserImportForm(ModelForm):
 class MyAverage(forms.TimeInput):
     input_type = 'time'
     format = '%M:%S'
-    TIME_INPUT_FORMAT=['%M:%S']
+    TIME_INPUT_FORMAT = ['%M:%S']
 
 
 class MyTotalTimeInput(forms.TimeInput):
@@ -79,13 +81,10 @@ class MultipleFileField(forms.FileField):
 
 
 class RunnerDayForm(ModelForm):
-
-
     class Meta:
         day_time = forms.TimeField(help_text='00:00:00')
         day_average_temp = forms.TimeField(help_text="00:00:00")
         model = RunnerDay
-
 
         # current_date = date.today()
         # date16 = datetime.date(2023, 7, 10)
@@ -104,14 +103,13 @@ class RunnerDayForm(ModelForm):
             'day_time': MyTotalTimeInput(
                 attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '00:15:00'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'type':'time', 'step': '1','value':'00:04:00',
+                attrs={'class': 'form-control form-control-user', 'type': 'time', 'step': '1', 'value': '00:04:00',
                        'id': 'temp'}),
-            'ball': forms.NumberInput(attrs={'class': 'form-control', 'readonly':'True','id':'ball', 'placeholder':'00'}),
-
-
+            'ball': forms.NumberInput(
+                attrs={'class': 'form-control', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
 
         }
-        fields = ['day_select',  'day_distance', 'day_time', 'day_average_temp', 'ball']
+        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball']
 
     photo = MultiFileField(min_num=1, max_num=6, max_file_size=2048 * 2048 * 5)
 
@@ -133,6 +131,8 @@ class FamilyForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ('group_title',)
+
+
 # class JoinGroupForm(forms.Form):
 #     join_group = forms.BooleanField(
 #         required=True,
@@ -147,17 +147,21 @@ class FamilyForm(forms.ModelForm):
 #         labels = {'choice': ''}
 #         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-control form-control-user','id':'id_username', 'autocomplete':'username', 'autofocus':'on'}))
+    username = forms.CharField(label='Логин', widget=forms.TextInput(
+        attrs={'class': 'form-control form-control-user', 'id': 'id_username', 'autocomplete': 'username',
+               'autofocus': 'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
 
     keyword = forms.CharField(label='Кодовое слово',
-                              widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
+                              widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user',
+                                                                'autocomplete': 'current-password'}))
 
     password1 = forms.CharField(label='Пароль',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
+                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user',
+                                                                  'autocomplete': 'current-password'}))
     password2 = forms.CharField(label='Повтор пароля',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user', 'autocomplete':'current-password'}))
-
+                                widget=forms.PasswordInput(attrs={'class': 'form-control form-control-user',
+                                                                  'autocomplete': 'current-password'}))
 
     class Meta:
         model = User

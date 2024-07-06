@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load cache %}
 {% load time_tag %}
 <div class="container-fluid">
     <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
@@ -23,15 +23,20 @@
                             страница</a>
                         <div class="dropdown-divider"></div>
 
+                        <a class="dropdown-item text-center"
+                           href="{% url 'groups:myteam' username=user.username %}">Моя команда</a>
+                        <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item text-center"
-                           href="{% url 'groups:mygroup' username=user.username %}">Группа</a>
+                           href="{% url 'groups:mygroup' username=user.username %}">Моя группа</a>
                         <div class="dropdown-divider"></div>
+
 
 
                         <a class="dropdown-item text-center"
                            href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
                         <div class="dropdown-divider"></div>
+
                         <a class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i
                                 class="fa-brands fa-telegram "></i> Telegram </a>
                         <div class="dropdown-divider"></div>
@@ -76,23 +81,27 @@
             {#    </button>#}
 
         </ul>
+{#        {% cache 600 header %}#}
+            <a href="{% url 'index' %}"> Главная</a>
+            <a href="{% url 'runners' %}"> Участники</a>
+            <a href="{% url 'championat' %}"> Чемпионат</a>
+            <a href="{% url 'allComandsView' %}"> Команды</a>
+            <a href="{% url 'allGroupsView' %}"> Группы</a>
+            <a href="{% url 'statistic' %}"> Статистика</a>
 
-        <a href="{% url 'index' %}"> Главная</a>
-        <a href="{% url 'runners' %}"> Участники</a>
-        <a href="{% url 'championat' %}"> Чемпионат</a>
-        <a href="{% url 'comandsview' %}"> Команды</a>
-        <a href="{% url 'groupsview' %}"> Группы</a>
-        <a href="{% url 'statistic' %}"> Статистика</a>
+
 
 
 
     </nav>
     <div class="flex justify-content-between">
+    {% now 'j' as today %}
+
         {% for day in 1|range:31 %}
-            <a href="{% url 'runner_day_results' day %}">{{ day }}</a>
+            <a href="{% url 'runner_day_results' day %}" style="width: 50px; height: 50px; border-radius: 50%; background: skyblue; text-align: center; display: block">  <span class="text-lg-center">{{ day }}</span></a>
         {% endfor %}
     </div>
-
+{#      {% endcache %}#}
 
 </div>
 

@@ -62,8 +62,10 @@ class RunnerDay(models.Model):
     NUM_OF_RUN = [
         (1, 1), (2, 2)
     ]
-    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner', db_index=True)
-    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=datetime.now().day, db_index=True)
+    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
+                               db_index=True)
+    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=datetime.now().day,
+                                     db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1)])
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
@@ -123,13 +125,13 @@ class Statistic(models.Model):
     #     return result['day_average_temp__avg']
 
 
-class BestFiveRunners(models.Model):
-    team=models.IntegerField(verbose_name='команда',null=True, unique=True, db_index=True )
-    age18 = models.IntegerField(verbose_name='возраст до 18',null=True,db_index=True)
-    age35 = models.IntegerField(verbose_name='возраст 18-35',null=True,db_index=True)
-    age49= models.IntegerField(verbose_name='возраст 36-49',db_index=True)
-    ageover50 = models.IntegerField(verbose_name='возраст 50+',null=True,db_index=True)
-    balls = models.IntegerField(verbose_name='баллы',null=True,db_index=True)
+class Championat(models.Model):
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда', null=True,  db_index=True)
+    age18 = models.IntegerField(verbose_name='возраст до 18', null=True, db_index=True)
+    age35 = models.IntegerField(verbose_name='возраст 18-35', null=True, db_index=True)
+    age49 = models.IntegerField(verbose_name='возраст 36-49', db_index=True)
+    ageover50 = models.IntegerField(verbose_name='возраст 50+', null=True, db_index=True)
+    balls = models.IntegerField(verbose_name='баллы', null=True, db_index=True)
 
     def __str__(self):
         return str(self.team)

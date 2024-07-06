@@ -5,42 +5,57 @@
 {% block content %}
 
     <div class="container-fluid">
-        <h1>Стастика групп</h1>
+        {% if flag %}
+            <h1>Статистика групп</h1>
+        {% else %}
+            Статистика команд
+        {% endif %}
 
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-striped" id="comanda">
+            <thead class="table-dark text-center">
+
             <tr>
-
-            </tr>
-
-
-            <tr>
-                <th>Команда</th>
+                <th> {% if flag %}Группа{% else %} Команда {% endif %}</th>
+                <th>Участники</th>
                 <th>Баллы</th>
                 <th>Дистанция</th>
                 <th>Общее Время</th>
                 <th>Темп</th>
-                <th>Дней пробега</th>
                 <th>Пробежки</th>
             </tr>
             </thead>
             <tbody>
-            {% for team, data in group_data.items %}
 
+            {% for team in group_data %}
+
+                {##}
                 {#                TODO сделать  дропдаун на членов группы#}
+                {##}
+                <tr>
+                    <td> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
+                        <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
+                    </td>
+                    {% if flag %}
+                        <td>{{ team.group_total_members }}</td>
+                        <td>{{ team.group_total_balls }}</td>
+                        <td>{{ team.group_total_distance }}</td>
+                        <td>{{ team.group_total_time }}</td>
+                        <td>{{ team.group_average_temp|time:"i:s" }}</td>
+                        <td>{{ team.group_total_runs }}</td>
 
-                {% if  data.total_results.total_balls %}
-                    <tr>
-                        <td><a href="{% url 'groups:viewGroup' team.id %}">{{ team.group_title }}</a></td>
-                        <td>{{ data.total_results.total_balls }}</td>
-                        <td>{{ data.total_results.total_distance }}</td>
-                        <td>{{ data.total_results.total_time }}</td>
-                        <td>{{ data.total_results.total_average_temp|smooth_filter }}</td>
-                        <td>{{ data.total_results.total_days }}</td>
-                        <td>{{ data.total_results.total_runs }}</td>
-                    </tr>
-                {% endif %}
+                    {% else %}
+                        <td>{{ team.comands_total_members }}</td>
+                        <td>{{ team.comand_total_balls }}</td>
+                        <td>{{ team.comand_total_distance }}</td>
+                        <td>{{ team.comand_total_time }}</td>
+                        <td>{{ team.comand_average_temp|time:"i:s" }}</td>
+                        <td>{{ team.comand_total_runs }}</td>
 
+
+                    {% endif %}
+                </tr>
+
+                {##}
                 {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
                 {#                {% for user in data.users %}#}
                 {#                    {% for stat in data.user_stats %}#}
@@ -64,3 +79,50 @@
     </div>
 
 {% endblock %}
+
+{% block extrascripts %}
+
+    <script>
+
+        new DataTable('#comanda', {
+
+                columnDefs: [
+                    {
+
+                        className: 'dt-center'
+                    }
+                ],
+                pageLength: 50,
+                ordering: true,
+                bLengthChange: true,
+                info: true,
+                searching: true,
+
+                layout: {
+                    topStart: 'info',
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
+            }
+        );
+    </script>
+{% endblock %}%}
