@@ -30,7 +30,7 @@ class MyGroup(ListView, DataMixin):
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         group_users = {}
-
+        group_stat = {}
         try:
             obj = get_user_model().objects.get(username=self.kwargs['username'])
             if 'mygroup' in self.request.path_info:
@@ -93,6 +93,7 @@ class MyGroup(ListView, DataMixin):
                         })
                     except:
                         continue
+
                 context['qs'] = group_users
             else:
                 context['message'] = 'Вы не состоите в группе'
@@ -107,26 +108,26 @@ class MyGroup(ListView, DataMixin):
 
 # добавляем группу участнику если он в ней состоит
 
-def addRunnerToGroup(request, username, group):
-    if request.method == 'POST':
-        group_id = request.POST.get('group').id
-        group = get_object_or_404(User, id=request.user.id).runner_group
-
-        if group:
-            messages.warning(request, f'Вы уже входите  в эту группу: {group}.')
-        else:
-            group.runner_group = group_id
-            messages.success(request, f'Вы создали и добавились в группу{group.group_title}.')
-        return redirect('group_view', group_id=group.id)
-    else:
-        form = AddFamilyForm()
-        grp = group
-
-    groups = Group.objects.all()
-
-    calc_comands.delay(username)
-    return render(request, 'add_runner_to_group.html',
-                  {'groups': groups, 'group': grp, 'username': username, 'form': form})
+# def addRunnerToGroup(request, username, group):
+#     if request.method == 'POST':
+#         group_id = request.POST.get('group').id
+#         group = get_object_or_404(User, id=request.user.id).runner_group
+#
+#         if group:
+#             messages.warning(request, f'Вы уже входите  в эту группу: {group}.')
+#         else:
+#             group.runner_group = group_id
+#             messages.success(request, f'Вы создали и добавились в группу{group.group_title}.')
+#         return redirect('group_view', group_id=group.id)
+#     else:
+#         form = AddFamilyForm()
+#         grp = group
+#
+#     groups = Group.objects.all()
+#
+#
+#     return render(request, 'add_runner_to_group.html',
+#                   {'groups': groups, 'group': grp, 'username': username, 'form': form})
 
 
 # def join_group_view(request):
@@ -280,7 +281,7 @@ def group_list_and_create_view(request, username):
                 user.runner_group = group
                 user.save()
 
-            calc_start.delay(username)
+            calc_start.delay(user.id, user.username)
 
             messages.success(request, 'Group created successfully!')
             return redirect('groups:mygroup', username)
@@ -302,6 +303,6 @@ def add_user_to_group(request):
     user = request.user
     user.runner_group = group
     user.save()
-    calc_start.delay(user.username)
+    calc_start.delay(user.id, user.username)
     redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
     return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})
