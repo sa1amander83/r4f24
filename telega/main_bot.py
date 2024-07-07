@@ -30,12 +30,13 @@ from profiles.models import RunnerDay, Photo, Teams
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
+
 # from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from r4f24.settings import TOKEN_BOT
+
 
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
-bot = Bot(TOKEN_BOT)
+bot = Bot(os.getenv('TOKEN_BOT'))
 dp = Dispatcher()
 
 user_sessions = {}
@@ -47,23 +48,22 @@ class ProfileStateGroup(StatesGroup):
     # age = State()
     # description = State()
 
-def get_kb() -> ReplyKeyboardMarkup:
 
-    kb = [
-        [types.KeyboardButton(text='Вход')],
-        [types.KeyboardButton(text='Выход')],
-        [types.KeyboardButton(text='Пробежка')],
-        [types.KeyboardButton(text='Моя группа')],
-        [types.KeyboardButton(text='Статистика')],
-        [types.KeyboardButton(text='Чемпионат')],
-        [types.KeyboardButton(text='Команды')],
-        [types.KeyboardButton(text='Группы')],
-
-    ]
-    keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, )
-
-
-    return keyboard
+# def get_kb() -> ReplyKeyboardMarkup:
+#     kb = [
+#         [types.KeyboardButton(text='Вход')],
+#         [types.KeyboardButton(text='Выход')],
+#         [types.KeyboardButton(text='Пробежка')],
+#         [types.KeyboardButton(text='Моя группа')],
+#         [types.KeyboardButton(text='Статистика')],
+#         [types.KeyboardButton(text='Чемпионат')],
+#         [types.KeyboardButton(text='Команды')],
+#         [types.KeyboardButton(text='Группы')],
+#
+#     ]
+#     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, )
+#
+#     return keyboard
 
 
 @dp.message(CommandStart())
@@ -84,12 +84,11 @@ async def send_welcome(message: types.Message):
     await message.reply("Hi! Use the menu below to interact with the bot.", reply_markup=get_kb())
 
 
-
 @dp.message()
 async def command_create(message: types.Message) -> None:
     await message.answer(
         text=F"Давай создадим наш профиль!Отправь мне свою фотографию -> 📷",
-        reply_markup=get_kb())
+        reply_markup=send_welcome())
     await message.answer(text='Теперь отправь свое имя!')
     await ProfileStateGroup.next()
 
@@ -279,7 +278,7 @@ async def login_user(message):
 
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
-    bot = Bot(token=TOKEN_BOT, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=os.getenv('TOKEN_BOT'), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     # And the run events dispatching
     await dp.start_polling(bot)

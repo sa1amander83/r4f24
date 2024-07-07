@@ -14,7 +14,7 @@ import telebot
 from core.models import Teams, User, Group
 from profiles.models import RunnerDay, Photo
 
-bot = telebot.TeleBot(settings.TOKEN_BOT)
+bot = telebot.TeleBot(os.getenv('TOKEN_BOT'))
 
 
 class TelegramBotView(View):

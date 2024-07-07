@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'groups',
     'django_cleanup',
     'sorl.thumbnail',
+    'telega',
     # "debug_toolbar",
     'crispy_forms',
 
