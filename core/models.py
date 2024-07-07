@@ -99,11 +99,11 @@ class User(AbstractUser):
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
     ]
 
-    STATUS = [
-        (1, 'Участник'), (2, 'член семьи участника')
-    ]
-
-    runner_status = models.IntegerField(choices=STATUS, verbose_name='Ваш статус', default=1)
+    # STATUS = [
+    #     (1, 'Участник'), (2, 'член семьи участника')
+    # ]
+    #
+    # runner_status = models.IntegerField(choices=STATUS, verbose_name='Ваш статус', default=1)
     email = False
     last_name = False
     first_name = False

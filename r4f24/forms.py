@@ -27,10 +27,10 @@ class RegisterUserForm(UserCreationForm):
         model = User
 
         widgets = {
-            'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
+            # 'runner_status': forms.RadioSelect(attrs={'class': 'form-control form-control-user', 'id': 'status'})
         }
         fields = (
-            'username', 'runner_status', 'runner_team__team', 'keyword', 'runner_age', 'runner_gender',
+            'username',  'runner_team__team', 'keyword', 'runner_age', 'runner_gender',
             'runner_category',
             'password1', 'password2', 'zabeg22', 'zabeg23')
 

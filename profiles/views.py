@@ -52,7 +52,7 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
-        context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
+        # context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
             return dict(list(context.items()) + list(c_def.items()))
