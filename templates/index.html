@@ -1,159 +1,322 @@
-{% extends 'base.html' %}
-{% load static %}
-{#{% static 'js/table.js' %}#}
-{% load time_tag %}
-{% load divide_tag %}
-{% load cat_tag %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+{% extends 'base.html' %} {% load static %} {#{% static 'js/table.js' %}#}
+{%load time_tag %} {% load divide_tag %} {% load cat_tag %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+  integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+  crossorigin="anonymous"
+/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-{% include 'components/sidebar.html' %}
-{% block content %}
-
-    <div class="container-fluid">
-        {% csrf_token %}
-
-
-
-
-
-        {% if cat_selected == 5 %}
-            <h2> Результаты участников женщин </h2>
-        {% elif cat_selected %}
-            <h2> Результаты участников в категории {{ cat_selected|cat_tag }} </h2>
-        {% else %}
-            <h3> Общие результаты участников</h3>
-
-
-        {% endif %}
-
-        <div class="topbar-divider"></div>
-        <div class="flex justify-content-around">
-
-
-
-
-                <h2>выбор категории:</h2>
-                <a class="text-center text-warning text-3xl" href="{% url 'index' %}">Общий</a>
-                <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runner_category' 1  %}">Новичок</a>
-                <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runner_category' 2 %}">Любитель</a>
-                <a class=" text-center text-warning text-3xl"
-                   href="{% url 'runner_category' 3  %}">Профи</a>
-                <a class="text-center text-warning text-3xl"
-                   href="{% url 'runner_category_age_female' 0 %}">Женщины</a>
-                </div>
-
-                <div class=" dropdown">
-
-                    <a class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Возраст
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">Возраст
-                        <a class="dropdown-item text-center"
-
-                           href="{% url 'runner_category_age' cat=cat_selected  age=0  %}">Все</a>
-
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center"
-                           href="{% url 'runner_category_age' cat=cat_selected age=1  %}">до 17
-                            лет</a>
-                        <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item text-center"
-                           href="{% url 'runner_category_age' cat=cat_selected age=2 %}">18-35
-                            лет</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center"
-                           href="{% url 'runner_category_age' cat=cat_selected age=3 %}"> 36-49
-                            лет </a>
-                        <div class="dropdown-divider"></div>
-
-
-                        <a class="dropdown-item text-center"
-                           href="{% url 'runner_category_age' cat=cat_selected age=4 %}">
-                            50+</a>
-                        <div class="dropdown-divider"></div>
-
-                    </div>
-                </div>
-
-
-        <div class="container-fluid">
-            <table id="myTable" class="table  table-striped text-center">
-
-                <thead class="table-dark text-center">
-
-                <td>Место</td>
-
-                <td>Номер участника</td>
-                <td> Баллы</td>
-                <td> пробег</td>
-                <td> общее время</td>
-                <td> средний темп мин/км</td>
-                <td> Дней забега</td>
-                <td> Количество пробежек</td>
-                </thead>
-                <tbody class="text-center">
-
-
-                {% for s in tot_dist %}
-
-
-                    <tr class="row-cols-md-4 c">
-
-
-                        <td>{{ forloop.counter }}</td>
-                        <td><a href="/profile/{{ s.runner_stat }}">{{ s.runner_stat }} </a></td>
-                        <td>  {{ s.total_balls }}</td>
-                        <td> {{ s.total_distance|floatformat:3 }}</td>
-                        <td> {{ s.total_time|time:"H:i:s"}}</td>
-                        {#                    <td> {{ s.avg_time|smooth_filter }}</td>#}
-                        <td> {{ s.total_average_temp|time:"i:s" }}</td>
-                        <td>  {{ s.total_days }}</td>
-                        <td>  {{ s.total_runs }}</td>
-
-
-                    </tr>
-
-
-                {% endfor %}
-
-                </tbody>
-                <tr></tr>
-
-            </table>
-        </div>
-
-
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+  crossorigin="anonymous"
+></script>
+{% include 'components/sidebar.html' %} {% block content %}
+<div class="flex gap-4">
+  <!-- Календарь -->
+  <div>
+    <div class="flex">
+      <div class="mx-auto text-base font-medium">Сентябрь</div>
     </div>
-{% endblock %}
+    <div
+      class="border p-5 rounded-xl shadow grid grid-cols-7 gap-4 mt-5 text-center"
+    >
+      <div class="font-medium">Пн</div>
+      <div class="font-medium">Вт</div>
+      <div class="font-medium">Ср</div>
+      <div class="font-medium">Чт</div>
+      <div class="font-medium">Пт</div>
+      <div class="font-medium">Сб</div>
+      <div class="font-medium">Вс</div>
+      <div class="py-0.5 rounded relative text-slate-500">26</div>
+      <div class="py-0.5 rounded relative text-slate-500">27</div>
+      <div class="py-0.5 rounded relative text-slate-500">28</div>
+      <div class="py-0.5 rounded relative text-slate-500">29</div>
+      <div class="py-0.5 rounded relative text-slate-500">30</div>
+      <div class="py-0.5 rounded relative text-slate-500">31</div>
+      <div class="py-0.5 rounded relative">1</div>
+      <div class="py-0.5 rounded relative">2</div>
+      <div class="py-0.5 rounded relative">3</div>
+      <div class="py-0.5 rounded relative">4</div>
+      <div class="py-0.5 rounded relative">5</div>
+      <div class="py-0.5 rounded relative">6</div>
+      <div class="py-0.5 rounded relative">7</div>
+      <div class="py-0.5 rounded relative">8</div>
+      <div class="py-0.5 rounded relative">9</div>
+      <div class="py-0.5 rounded relative">10</div>
+      <div class="py-0.5 rounded relative">11</div>
+      <div class="py-0.5 rounded relative">12</div>
+      <div class="py-0.5 rounded relative">13</div>
+      <div class="py-0.5 rounded relative">14</div>
+      <div class="py-0.5 rounded relative">15</div>
+      <div class="py-0.5 rounded relative">16</div>
+      <div class="py-0.5 rounded relative">17</div>
+      <div class="py-0.5 rounded relative">18</div>
+      <div class="py-0.5 rounded relative">19</div>
+      <div class="py-0.5 rounded relative">20</div>
+      <div class="py-0.5 rounded relative">21</div>
+      <div class="py-0.5 rounded relative">22</div>
+      <div class="py-0.5 rounded relative">23</div>
+      <div class="py-0.5 rounded relative">24</div>
+      <div class="py-0.5 rounded relative">25</div>
+      <div class="py-0.5 rounded relative">26</div>
+      <div class="py-0.5 rounded relative">27</div>
+      <div class="py-0.5 rounded relative">28</div>
+      <div class="py-0.5 rounded relative">29</div>
+      <div class="py-0.5 rounded relative">30</div>
+      <div class="py-0.5 rounded relative text-slate-500">1</div>
+      <div class="py-0.5 rounded relative text-slate-500">2</div>
+      <div class="py-0.5 rounded relative text-slate-500">3</div>
+      <div class="py-0.5 rounded relative text-slate-500">4</div>
+      <div class="py-0.5 rounded relative text-slate-500">5</div>
+      <div class="py-0.5 rounded relative text-slate-500">6</div>
+    </div>
+  </div>
+  <!-- Таблица -->
+  <div
+    class="flex justify-center shadow border w-full flex-col items-center rounded-xl"
+  >
+    {% csrf_token %} {% if cat_selected == 5 %}
+    <h2>Результаты участников женщин</h2>
+    {% elif cat_selected %}
+    <h2>Результаты участников в категории {{ cat_selected|cat_tag }}</h2>
+    {% else %}
+    <h3>Общие результаты участников</h3>
 
-{% block extrascripts %}
+    {% endif %}
+
+    <div class="w-full overflow-x-auto">
+      <div class="w-full flex justify-center items-center mb-4 border-gray-200">
+        <ul
+          class="flex flex-nowrap -mb-px text-sm font-medium text-center text-gray-500"
+        >
+          <li class="me-2">
+            <a
+              href="{% url 'index' %}"
+              class="inline-flex items-center justify-center p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active group"
+            >
+              <svg
+                class="w-4 h-4 me-2 text-blue-600"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"
+                /></svg
+              >Общий
+            </a>
+          </li>
+          <li class="me-2">
+            <a
+              href="{% url 'runner_category' 1  %}"
+              class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group"
+              aria-current="page"
+            >
+              <svg
+                class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 18 18"
+              >
+                <path
+                  d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"
+                /></svg
+              >Новичок
+            </a>
+          </li>
+          <li class="me-2">
+            <a
+              href="{% url 'runner_category' 2 %}"
+              class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group"
+            >
+              <svg
+                class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M5 11.424V1a1 1 0 1 0-2 0v10.424a3.228 3.228 0 0 0 0 6.152V19a1 1 0 1 0 2 0v-1.424a3.228 3.228 0 0 0 0-6.152ZM19.25 14.5A3.243 3.243 0 0 0 17 11.424V1a1 1 0 0 0-2 0v10.424a3.227 3.227 0 0 0 0 6.152V19a1 1 0 1 0 2 0v-1.424a3.243 3.243 0 0 0 2.25-3.076Zm-6-9A3.243 3.243 0 0 0 11 2.424V1a1 1 0 0 0-2 0v1.424a3.228 3.228 0 0 0 0 6.152V19a1 1 0 1 0 2 0V8.576A3.243 3.243 0 0 0 13.25 5.5Z"
+                /></svg
+              >Любитель
+            </a>
+          </li>
+          <li class="me-2">
+            <a
+              href="{% url 'runner_category' 3  %}"
+              class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group"
+            >
+              <svg
+                class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 18 20"
+              >
+                <path
+                  d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"
+                /></svg
+              >Профи
+            </a>
+          </li>
+          <li class="me-2">
+            <a
+              href="{% url 'runner_category_age_female' 0 %}"
+              class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group"
+            >
+              <svg
+                class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 18 20"
+              >
+                <path
+                  d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"
+                /></svg
+              >Женщины
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <button
+          id="dropdownActionButton"
+          data-dropdown-toggle="dropdownAction"
+          class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+          type="button"
+        >
+          <span class="sr-only">Action button</span>
+          Сортировка по возрасту
+          <svg
+            class="w-2.5 h-2.5 ms-2.5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div
+          id="dropdownAction"
+          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+        >
+          <ul
+            class="py-1 text-sm text-gray-700 dark:text-gray-200"
+            aria-labelledby="dropdownActionButton"
+          >
+            <li>
+              <a
+                href="{% url 'runner_category_age' cat=cat_selected age=1  %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >до 17 лет</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'runner_category_age' cat=cat_selected age=2 %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >18-35 лет</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'runner_category_age' cat=cat_selected age=3 %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >36-49 лет</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'runner_category_age' cat=cat_selected age=4 %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >50+</a
+              >
+            </li>
+          </ul>
+          <div class="py-1">
+            <a
+              href="{% url 'runner_category_age' cat=cat_selected  age=0  %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >Все</a
+            >
+          </div>
+        </div>
+      </div>
+      <table
+        id="myTable"
+        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="px-6 py-3">Место</th>
+            <th scope="col" class="px-6 py-3">Участник</th>
+            <th scope="col" class="px-6 py-3">Баллы</th>
+            <th scope="col" class="px-6 py-3">пробег</th>
+            <th scope="col" class="px-6 py-3">общее время</th>
+            <th scope="col" class="px-6 py-3">Темп мин/км</th>
+            <th scope="col" class="px-6 py-3">Дней забега</th>
+            <th scope="col" class="px-6 py-3">Количество пробежек</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in tot_dist %}
+
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <td class="px-6 py-4">{{ forloop.counter }}</td>
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              <a href="/profile/{{ s.runner_stat }}">{{ s.runner_stat }} </a>
+            </th>
+            <td class="px-6 py-4">{{ s.total_balls }}</td>
+            <td class="px-6 py-4">{{ s.total_distance|floatformat:3 }}</td>
+            <td class="px-6 py-4">{{ s.total_time|time:"H:i:s"}}</td>
+
+            <td class="px-6 py-4">{{ s.total_average_temp|time:"i:s" }}</td>
+            <td class="px-6 py-4">{{ s.total_days }}</td>
+            <td class="px-6 py-4">{{ s.total_runs }}</td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endblock %} {% block extrascripts %}
 
     <script>
-
-var table = new DataTable('#myTable', {
-    language: {
-        url: 'http://cdn.datatables.net/plug-ins/2.0.8/i18n/ru.json',
-    },
-});
-
+      var table = new DataTable("#myTable", {
+        language: {
+          url: "http://cdn.datatables.net/plug-ins/2.0.8/i18n/ru.json",
+        },
+      });
     </script>
-{% endblock %}
+    {% endblock %}
+  </div>
+</div>

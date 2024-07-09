@@ -15,11 +15,30 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body class="min-h-screen bg-gray-50">
+  <body class="">
     {% block main %} {% include 'components/header.html' %} {% endblock main%}
-    <main class="flex flex-col justify-center p-6 pb-12">
+    <main
+      class="border rounded-xl shadow flex flex-wrap justify-around items-center max-w-screen-xl h-screen m-auto"
+    >
+      <!-- Headings -->
+      <div class="flex flex-col justify-center items-center">
+        <h1
+          class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+        >
+          Бег, меняющий жизнь!
+          <span class="text-blue-600 dark:text-blue-500">the world's #1</span>
+          CRM.
+        </h1>
+        <p
+          class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
+        >
+          Принимайте участие в спортивных событиях, смотрите результаты или
+          организуйте своё событие.
+        </p>
+      </div>
       {% block content %} {% csrf_token %} {% endblock %}
     </main>
+
     <link
       rel="stylesheet"
       href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css"
