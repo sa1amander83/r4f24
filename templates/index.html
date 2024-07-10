@@ -98,13 +98,15 @@
 
                 <th>Место</th>
 
-                <th>Номер участника</th>
+                <th>Участник</th>
                 <th> Баллы</th>
                 <th> пробег</th>
                 <th> общее время</th>
                 <th> средний темп мин/км</th>
                 <th> Дней забега</th>
                 <th> Количество пробежек</th>
+                <th> пол</th>
+
                 </thead>
                 <tbody class="text-center">
 
@@ -124,6 +126,8 @@
                         <td> {{ s.total_average_temp|time:"i:s" }}</td>
                         <td>  {{ s.total_days }}</td>
                         <td>  {{ s.total_runs }}</td>
+                        <td>  {{ s.runner_stat__runner_gender }}</td>
+
 
 
                     </tr>
