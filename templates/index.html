@@ -164,7 +164,7 @@
     <!-- Dashboard -->
     <div class="flex bg-gray-200 w-full rounded-t-2xl">
       <div
-        class="flex flex-col justify-center my-6 border-r p-6 w-96 border-white"
+        class="flex flex-col gap-2 justify-center my-6 border-r p-6 w-96 border-white"
       >
         <div class="flex">
           <div class="mx-auto text-lg font-semibold truncate">Сентябрь</div>
@@ -223,6 +223,80 @@
           <div class="py-0.5 rounded relative text-slate-500">5</div>
           <div class="py-0.5 rounded relative text-slate-500">6</div>
         </div>
+                <!-- Chart category -->
+        <div class="p-5 rounded-xl bg-white">
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+          <div class="font-sans leading-normal tracking-normal">
+            <canvas class="text-white w-96" id="pie-chart" ></canvas>
+            <script>
+            Chart.defaults.color = '#f8fafc';
+            new Chart(document.getElementById("pie-chart"), {
+                
+                type: 'pie',
+                data: {
+                  labels: ["Новичок", "Любитель","Профи"],
+                  datasets: [{
+                    label: "Кол-во участников",
+                    backgroundColor: ["#fde047", "#10b981","#f97316"],
+                    data: [{{new}},{{mid}},{{hi}}]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    position: "bottom",
+                    labels: {
+                      fontColor: "black",
+                      fontSize: 14,
+                      padding: 20,
+                    },
+                  },
+                  }
+                
+            });
+            </script>
+            
+          </div>
+        </div>
+                        <!-- Chart gender -->
+        <div class="p-5 rounded-xl bg-white">
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+          <div class="font-sans leading-normal tracking-normal">
+            <canvas class="text-white w-96" id="gender-chart" ></canvas>
+            <script>
+            Chart.defaults.color = '#f8fafc';
+            new Chart(document.getElementById("gender-chart"), {
+                
+                type: 'pie',
+                data: {
+                  labels: ["Женщин", "Мужчин"],
+                  datasets: [{
+                    label: "Кол-во участников",
+                    backgroundColor: ["#f43f5e", "#0ea5e9"],
+                    data: [{{fem}},{{men}}]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    position: "bottom",
+                    labels: {
+                      fontColor: "black",
+                      fontSize: 14,
+                      padding: 20,
+                    },
+                  },
+                  }
+                
+            });
+            </script>
+            
+          </div>
+        </div>
       </div>
       <!-- главный блок -->
       <div class="w-full my-6 p-6">
@@ -244,7 +318,7 @@
                   <button
                     id="dropdown-button"
                     data-dropdown-toggle="dropdown"
-                    class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+                    class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50"
                     type="button"
                   >
                     Все категории
@@ -266,37 +340,37 @@
                   </button>
                   <div
                     id="dropdown"
-                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-36 dark:bg-gray-700"
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-36 "
                   >
                     <ul
-                      class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                      class="py-1 text-sm text-gray-700 "
                       aria-labelledby="dropdownActionButton"
                     >
                       <li>
                         <a
                           href="{% url 'runner_category_age' cat=cat_selected age=1  %}"
-                          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          class="block px-4 py-2 hover:bg-gray-100 "
                           >до 17 лет</a
                         >
                       </li>
                       <li>
                         <a
                           href="{% url 'runner_category_age' cat=cat_selected age=2 %}"
-                          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          class="block px-4 py-2 hover:bg-gray-100 "
                           >18-35 лет</a
                         >
                       </li>
                       <li>
                         <a
                           href="{% url 'runner_category_age' cat=cat_selected age=3 %}"
-                          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          class="block px-4 py-2 hover:bg-gray-100 "
                           >36-49 лет</a
                         >
                       </li>
                       <li>
                         <a
                           href="{% url 'runner_category_age' cat=cat_selected age=4 %}"
-                          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          class="block px-4 py-2 hover:bg-gray-100 "
                           >50+</a
                         >
                       </li>
@@ -319,11 +393,11 @@
           <div class="w-full overflow-x-auto">
             <table
               id="index"
-              class="w-full text-sm text-left  text-gray-500 dark:text-gray-400"
+              class="w-full text-sm text-left px-1  text-gray-500 "
             >
 
               <thead
-                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                class="text-xs text-gray-700 uppercase bg-gray-50 "
               >
                 <tr>
                   <th scope="col" class="px-6 py-3">Место</th>
@@ -341,7 +415,7 @@
                 {% for s in tot_dist %}
 
                 <tr
-                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  class="bg-white border-b "
                 >
                   <td class="px-6 py-4">{{ forloop.counter }}</td>
                   <th
@@ -427,11 +501,13 @@
         <script>
   var table = new DataTable("#index", {
    layout: {
-                    topStart: null,
+                    topStart: "info",
                     bottom: 'paging',
                     bottomStart: null,
                     bottomEnd: null
                 },
+
+
     language: {
       processing: "Подождите...",
       search: "",
@@ -448,7 +524,7 @@
         next: "Следующая",
         last: "Последняя",
       },
-      searchPlaceholder: "поиск участника",
+      searchPlaceholder: "Поиск участника",
     },
   });
 </script>
