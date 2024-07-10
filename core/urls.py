@@ -1,7 +1,8 @@
 from django.urls import path
 
-from core.views import IndexView, CatListView, RunnersCatView, Championate,  \
-    StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view
+from core.views import IndexView, CatListView, RunnersCatView, Championate, \
+    StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view, \
+    exportcsv
 from groups.views import view_group
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
     path('runners/<slug:cat>/', RunnersView.as_view(), name='runners'),
     path('runner-day-results/<int:day>/', runner_day_results_view, name='runner_day_results'),
 
+    path('exportcsv/', exportcsv, name='exportcsv'),
 ]

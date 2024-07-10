@@ -1,8 +1,11 @@
+import csv
+
 from django.contrib.auth import get_user_model
 from django.db import models, IntegrityError
 from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window
 
 from django.db.models.functions import Cast, RowNumber
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
@@ -777,3 +780,18 @@ def group_statistics_view(request):
 def runner_day_results_view(request, day):
     results = RunnerDay.objects.filter(day_select=day)
     return render(request, 'runner_day_results.html', {'results': results, 'day': day})
+
+
+def exportcsv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="users.csv"'
+
+    writer = csv.writer(response, delimiter=";")
+    writer.writerow(['uchastnik', 'day', 'ball', 'number_of_run', 'distance', 'time', 'average'])
+
+    users = RunnerDay.objects.all().values_list('runner__username', 'day_select','ball' ,'number_of_run', 'day_distance', 'day_time',
+                                                'day_average_temp')
+    for user in users:
+        writer.writerow(user)
+
+    return response
