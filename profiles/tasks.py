@@ -114,6 +114,7 @@ def calc_comands(username):
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+# @shared_task()
 def calc_start(self, runner_id, username):
     try:
         runner_days = RunnerDay.objects.filter(runner__username=username)
