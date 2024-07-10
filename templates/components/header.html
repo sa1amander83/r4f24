@@ -1,108 +1,258 @@
-{% load static %}
-{% load cache %}
-{% load time_tag %}
-<div class="container-fluid">
-    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow flex justify-content-evenly">
-        <ul class="navbar-nav profile-user ">
+{% load static %} {% load cache %} {% load time_tag %}
 
+<header class="border-b border-sky-700 mb-5">
+  <nav class="border-gray-200 uppercase">
+    <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+      <a href="#" class="flex items-center space-x-3">
+        <img
+          src="https://flowbite.com/docs/images/logo.svg"
+          class="h-8"
+          alt="Flowbite Logo"
+        />
+        <span
+          class="self-center lg:block text-2xl font-semibold whitespace-nowrap text-white"
+          >МЫЗАБЕГ2024</span
+        >
+      </a>
+      <div class="flex md:order-2 space-x-3 md:space-x-0">
+        {% if request.user.is_authenticated %}
 
-            {% if request.user.is_authenticated %}
-                <div class="container-user-profile">
-                <div class="col-lg-auto user-profile">
+        <img
+          id="avatarButton"
+          type="button"
+          data-dropdown-toggle="userDropdown"
+          data-dropdown-placement="bottom-start"
+          class="w-10 h-10 rounded-full cursor-pointer"
+          src="{% static 'img/avatar7.png' %}"
+          alt="User dropdown"
+        />
 
-                </div>
-                <div class=" dropdown">
-                    <a class="btn btn-primary dropdown-toggle  "
-                       href="{% url 'profile:profile' username=user.username %}" role="button" id="dropdownMenuLink"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ user.username }}
-                    </a>
+        <!-- Dropdown menu headars -->
+        <div
+          id="userDropdown"
+          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+        >
+          <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+            <div>{{ user.username }}</div>
+          </div>
+          <ul
+            class="py-2 text-sm text-gray-700 dark:text-gray-200"
+            aria-labelledby="avatarButton"
+          >
+            <li>
+              <a
+                href="{% url 'profile:profile' username=user.username %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Моя страница</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'groups:mygroup' username=user.username %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Группа</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'profile:editprofile' username=user.username %}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Редактировать профиль</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://t.me/+75TfUU8Jc102YmNi"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Telegram</a
+              >
+            </li>
+          </ul>
+          <div class="py-1">
+            <a
+              href="{% url 'authorize:logout' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >Выход</a
+            >
+          </div>
+        </div>
+        {% else %}
+        <!-- Avatar users -->
+        <div class="flex items-center hidden md:flex lg:flex">
+          <a
+            href="{% url 'authorize:register' %}"
+            class="text-white bg-sky-800 hover:bg-sky-700 border border-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-700 font-medium rounded-3xl text-sm px-5 py-2 text-center inline-flex items-center me-2"
+          >
+            Регистрация
+          </a>
+          <a
+            href="{% url 'authorize:login' %}"
+            class="text-white bg-sky-700 hover:bg-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-5 py-2 text-center inline-flex items-center me-2"
+          >
+            <svg
+              class="w-6 h-6 me-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+              />
+            </svg>
 
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item text-center" href="{% url 'profile:profile' username=user.username %}">Моя
-                            страница</a>
-                        <div class="dropdown-divider"></div>
+            Вход
+          </a>
+        </div>
+        {% endif %}
+        <button
+          data-collapse-toggle="navbar-cta"
+          type="button"
+          class="inline-flex items-center p-2 w-10 h-10 text-white justify-center text-sm rounded-lg md:hidden hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-700"
+          aria-controls="navbar-cta"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Open main menu</span>
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- main menu -->
+      <div
+        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+        id="navbar-cta"
+      >
+        <ul
+          class="flex flex-col p-4 md:p-0 mt-4 rounded-lg md:space-x-8 md:flex-row md:mt-0 md:border-0"
+        >
+          <li>
+            <a
+              href="{% url 'index' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              aria-current="page"
+              >Главная</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'runners' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              >Участники</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'championat' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              >Чемпионат</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'allComandsView' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              >Команды</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'allGroupsView' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              >Группы</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'statistic' %}"
+              class="block py-2 px-3 md:p-0 rounded hover:bg-sky-700 md:hover:text-sky-300 md:hover:bg-transparent text-white"
+              >Статистика</a
+            >
+          </li>
+          <li>
+            <div class="h-px w-full bg-gray-300 mb-4 md:hidden lg:hidden"></div>
+            <div
+              class="flex items-center w-full justify-center md:hidden lg:hidden"
+            >
+              <a
+                href="{% url 'authorize:register' %}"
+                class="text-white bg-sky-800 hover:bg-sky-700 border border-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-700 font-medium rounded-3xl text-sm px-5 py-2 text-center inline-flex items-center me-2"
+              >
+                <!-- <svg
+                  class="w-6 h-6 me-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                    clip-rule="evenodd"
+                  />
+                </svg> -->
 
-                        <a class="dropdown-item text-center"
-                           href="{% url 'groups:myteam' username=user.username %}">Моя команда</a>
-                        <div class="dropdown-divider"></div>
+                Регистрация
+              </a>
+              <a
+                href="{% url 'authorize:login' %}"
+                class="text-white bg-sky-700 hover:bg-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-5 py-2 text-center inline-flex items-center me-2"
+              >
+                <svg
+                  class="w-6 h-6 me-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+                  />
+                </svg>
 
-                        <a class="dropdown-item text-center"
-                           href="{% url 'groups:mygroup' username=user.username %}">Моя группа</a>
-                        <div class="dropdown-divider"></div>
-
-
-
-                        <a class="dropdown-item text-center"
-                           href="{% url 'profile:editprofile' username=user.username %}">Редактировать профиль</a>
-                        <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item text-center" href="https://t.me/+75TfUU8Jc102YmNi"> <i
-                                class="fa-brands fa-telegram "></i> Telegram </a>
-                        <div class="dropdown-divider"></div>
-
-
-                        <a class="dropdown-item text-center" href="{% url 'authorize:logout' %}">Выход</a>
-                        <div class="dropdown-divider"></div>
-
-                    </div>
-
-
-                </div>
-
-            {% else %}
-                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:register' %}"> Регистрация </a></li>
-                <div class="topbar-divider d-none d-sm-block"></div>
-                <li class="col-lg-auto user-profile"><a href="{% url 'authorize:login' %}"> Вход </a></li>
-                <div class="topbar-divider d-none d-sm-block"></div>
-
-
-            {% endif %}
-
-
-            <div class="topbar-divider"></div>
-            {% for i in user_detail %}
-                {% if i.is_superuser %}
-                    <div class="col-lg-auto user-profile"><a href="{% url 'exportcsv' %}"> экспорт csv </a></div>
-                {% endif %}
-
-            {% endfor %}
-
-            {#        {% if request.user.is_authenticated %}#}
-            {##}
-            {##}
-            {##}
-            {#        {% endif %}#}
+                Вход
+              </a>
             </div>
-
-            <!-- Sidebar Toggle (Topbar) -->
-            {#    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">#}
-            {#        <i class="fa fa-bars"></i>#}
-            {#    </button>#}
-
+          </li>
         </ul>
-{#        {% cache 600 header %}#}
-            <a href="{% url 'index' %}"> Главная</a>
-            <a href="{% url 'runners' %}"> Участники</a>
-            <a href="{% url 'championat' %}"> Чемпионат</a>
-            <a href="{% url 'allComandsView' %}"> Команды</a>
-            <a href="{% url 'allGroupsView' %}"> Группы</a>
-            <a href="{% url 'statistic' %}"> Статистика</a>
-
-
-
-
-
-    </nav>
-    <div class="flex justify-content-between">
-    {% now 'j' as today %}
-
-        {% for day in 1|range:31 %}
-            <a href="{% url 'runner_day_results' day %}" style="width: 50px; height: 50px; border-radius: 50%; background: skyblue; text-align: center; display: block">  <span class="text-lg-center">{{ day }}</span></a>
-        {% endfor %}
+      </div>
     </div>
-{#      {% endcache %}#}
-
-</div>
-
-
+  </nav>
+  {% comment %}
+  <div class="flex justify-content-between">
+    {% now 'j' as today %} {% for day in 1|range:31 %}
+    <a
+      href="{% url 'runner_day_results' day %}"
+      style="
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: skyblue;
+        text-align: center;
+        display: block;
+      "
+    >
+      <span class="text-lg-center">{{ day }}</span></a
+    >
+    {% endfor %}
+  </div>
+  {% endcomment %}
+</header>

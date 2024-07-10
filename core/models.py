@@ -93,7 +93,7 @@ class Group(models.Model):
 
 class User(AbstractUser):
     GENDER = [
-        ('м', "м"), ("ж", "ж")
+        ('м', "Мужской"), ("ж", "Женский")
     ]
     CATEGORY = [
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
