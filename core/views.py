@@ -23,8 +23,15 @@ class IndexView(DataMixin, ListView):
         context['user_detail'] = get_user_model().objects.filter(id=self.request.user.id)
         context['cat_selected'] = 0
         context['age'] = 0
+        context['fem'] = get_user_model().objects.filter(not_running=False, runner_gender='ж').count()
+        context['men'] = get_user_model().objects.filter(not_running=False, runner_gender='м').count()
+        context['new'] = get_user_model().objects.filter(not_running=False, runner_category=1).count()
+        context['mid'] = get_user_model().objects.filter(not_running=False, runner_category=2).count()
+        context['hi'] = get_user_model().objects.filter(not_running=False, runner_category=3).count()
         context['count_of_runners'] = get_user_model().objects.exclude(not_running=True).count()
-        context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).order_by('-total_balls')
+        context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).\
+        values('runner_stat__username','total_time','total_distance','runner_stat__runner_gender','runner_stat__runner_category',
+                                                                                              'total_runs','total_balls','total_average_temp').order_by('-total_balls')
 
         return context
 
