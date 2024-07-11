@@ -44,7 +44,7 @@
                 {% if data %}
                     {% for d in data %}
                         <p> Сумма балов - {{ d.total_balls }}</p>
-                        <p> дистанция за все время пробега - {{ d.total_distance }}</p>
+                        <p> дистанция за все время пробега - {{ d.total_distance|floatformat:3 }}</p>
                         <p> все время пробега - {{ d.total_time|time:"H:i:s" }}</p>
                         <p> средний темп - {{ d.total_average_temp|time:"i:s" }}</p>
                         <p> дней пробега - {{ d.total_days }}</p>

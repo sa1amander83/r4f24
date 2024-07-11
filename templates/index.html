@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 {% extends 'base.html' %} {% load static %} {#{% static 'js/table.js' %}#}
 {%load time_tag %} {% load divide_tag %} {% load cat_tag %}
 <link
@@ -424,14 +422,14 @@
                     scope="row"
                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                   >
-                    <a href="/profile/{{ s.runner_stat }}"></a>
-                      <div>
+                    <a href="/profile/{{ s.runner_stat__username }}">  <div>
                         <span
                           class="flex justify-center items-center text-sm font-semibold text-black"
                           >{{ s.runner_stat__username }}
-                          
+
                           </span
-                        >
+                        ></a>
+
                         
                         <div class="flex justify-center items-center">
                           
@@ -539,4 +537,4 @@
   </main>
 </div>
 
->>>>>>> d13d5322fa880dd9fbcbc41497c33499dfbc9b01
+

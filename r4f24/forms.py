@@ -10,32 +10,42 @@ from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
 
 
 class RegisterUserForm(UserCreationForm):
-    
-
     username = forms.CharField(label='Логин', widget=forms.TextInput(
-        attrs={'placeholder': "Введите номер",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'username'}))
+        attrs={'placeholder': "Введите номер",
+               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+               'id': 'username'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
     runner_team__team = forms.CharField(label='Команда',
-                                        widget=forms.TextInput(attrs={'placeholder': "Введите свою команду",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'team'}))
+                                        widget=forms.TextInput(attrs={'placeholder': "Введите свою команду",
+                                                                      'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                                                      'id': 'team'}))
     keyword = forms.CharField(label='Кодовое слово',
-                              widget=forms.TextInput(attrs={'placeholder': "Введите кодовое слово",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+                              widget=forms.TextInput(attrs={'placeholder': "Введите кодовое слово",
+                                                            'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
     runner_age = forms.CharField(label='Возраст',
-                              widget=forms.TextInput(attrs={'placeholder': "Укажите свой возраст",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+                                 widget=forms.TextInput(attrs={'placeholder': "Укажите свой возраст",
+                                                               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
     # runner_status = forms.BooleanField(widget=forms.RadioSelect(choices=(('Участник','Член семьи участника'),), attrs={'class': 'form-control form-control-user', 'id': 'status'}))
     password1 = forms.CharField(label='Пароль',
-                                widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+                                widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль",
+                                                                  'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
     password2 = forms.CharField(label='Повтор пароля',
-                                widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль еще раз",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+                                widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль еще раз",
+                                                                  'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
 
     class Meta:
         model = User
-       
+
         widgets = {
-          
-            'runner_gender': forms.Select(attrs={ 'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}),
-            'runner_category': forms.Select(attrs={ 'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}),
-            'zabeg22': forms.CheckboxInput(attrs={'class':'w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-blue-800 focus:ring-2  dark:border-blue-600'}),
-            'zabeg23': forms.CheckboxInput(attrs={'class':'w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-blue-800 focus:ring-2  dark:border-blue-600'})
+
+            'runner_gender': forms.Select(attrs={
+                'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}),
+            'runner_category': forms.Select(attrs={
+                'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}),
+            'zabeg22': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-blue-800 focus:ring-2  dark:border-blue-600'}),
+            'zabeg23': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-blue-100 border-blue-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-blue-800 focus:ring-2  dark:border-blue-600'})
         }
         fields = (
             'username', 'runner_team__team', 'keyword', 'runner_age', 'runner_gender',
@@ -44,9 +54,11 @@ class RegisterUserForm(UserCreationForm):
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'placeholder': "Ведите имя", 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
+    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'placeholder': "Ведите имя",
+                                                                            'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
     password = forms.CharField(label='Пароль',
-                               widget=forms.PasswordInput(attrs={'placeholder': "Введите свой пароль", 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
+                               widget=forms.PasswordInput(attrs={'placeholder': "Введите свой пароль",
+                                                                 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
 
     class Meta:
         model = get_user_model()
@@ -107,11 +119,12 @@ class RunnerDayForm(ModelForm):
             'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
-                attrs={'class': 'form-control form-control-user', 'value': '5', 'id': 'day_distance'}),
+                attrs={'class': 'form-control form-control-user', 'id': 'day_distance', 'value': '0'}),
             'day_time': MyTotalTimeInput(
-                attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '00:15:00'}),
+                attrs={'class': 'form-control form-control-user', 'step': '1', 'value': '00:00:00'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'type': 'time', 'step': '1', 'value': '00:04:00',
+                attrs={'class': 'form-control form-control-user', 'type': 'time', 'step': '1',
+                       'value': '00:00:00',
                        'id': 'temp'}),
             'ball': forms.NumberInput(
                 attrs={'class': 'form-control', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
@@ -156,19 +169,23 @@ class FamilyForm(forms.ModelForm):
 #         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(
-        attrs={'placeholder': "Ведите имя", 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+        attrs={'placeholder': "Ведите имя",
+               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                'autofocus': 'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
 
     keyword = forms.CharField(label='Кодовое слово',
-                              widget=forms.PasswordInput(attrs={'placeholder': "Ведите кодовое слово",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                              widget=forms.PasswordInput(attrs={'placeholder': "Ведите кодовое слово",
+                                                                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                                                                 'autocomplete': 'current-password'}))
 
     password1 = forms.CharField(label='Пароль',
-                                widget=forms.PasswordInput(attrs={'placeholder': "Minimum 8 characters",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                widget=forms.PasswordInput(attrs={'placeholder': "Minimum 8 characters",
+                                                                  'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                                                                   'autocomplete': 'current-password'}))
     password2 = forms.CharField(label='Повтор пароля',
-                                widget=forms.PasswordInput(attrs={'placeholder': "Minimum 8 characters",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                widget=forms.PasswordInput(attrs={'placeholder': "Minimum 8 characters",
+                                                                  'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                                                                   'autocomplete': 'current-password'}))
 
     class Meta:
