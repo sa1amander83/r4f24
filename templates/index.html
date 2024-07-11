@@ -1,0 +1,542 @@
+<<<<<<< HEAD
+=======
+{% extends 'base.html' %} {% load static %} {#{% static 'js/table.js' %}#}
+{%load time_tag %} {% load divide_tag %} {% load cat_tag %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+  integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+  crossorigin="anonymous"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+  crossorigin="anonymous"
+></script>
+{% include 'components/sidebar.html' %} {% block content %}
+<!-- <div class="">
+  <h1
+    class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+  >
+    Бег, меняющий жизнь!
+    <span class="text-blue-600 dark:text-blue-500">the world's #1</span>
+    CRM.
+  </h1>
+  <p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
+    Принимайте участие в спортивных событиях, смотрите результаты или
+    организуйте своё событие.
+  </p>
+</div> -->
+<div class="mx-10">
+  <div
+    class="flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"
+  ></div>
+  <main class="flex flex-col justify-center rounded-t-2xl bg-sky-900 h-full">
+    <header
+      class="flex flex-wrap items-center justify-between mx-auto p-4 w-full"
+    >
+      <div class="inline-flex rounded-md shadow-sm" role="group">
+        <a
+          href="{% url 'index' %}"
+          class="inline-flex items-center bg-sky-800 px-6 py-3 mr-2 text-base font-semibold text-white rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+        >
+          <!-- <svg
+            class="w-6 h-6 me-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-width="2"
+              d="M4.5 17H4a1 1 0 0 1-1-1 3 3 0 0 1 3-3h1m0-3.05A2.5 2.5 0 1 1 9 5.5M19.5 17h.5a1 1 0 0 0 1-1 3 3 0 0 0-3-3h-1m0-3.05a2.5 2.5 0 1 0-2-4.45m.5 13.5h-7a1 1 0 0 1-1-1 3 3 0 0 1 3-3h3a3 3 0 0 1 3 3 1 1 0 0 1-1 1Zm-1-9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
+            />
+          </svg> -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 me-2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+            />
+          </svg>
+
+          Общий
+        </a>
+        <a
+          href="{% url 'runner_category' 1  %}"
+          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6 me-2"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          Новичок
+        </a>
+        <a
+          href="{% url 'runner_category' 2 %}"
+          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6 me-2"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          Любитель
+        </a>
+        <a
+          href="{% url 'runner_category' 3  %}"
+          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6 me-2"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          Профи
+        </a>
+        <a
+          href="{% url 'runner_category_age_female' 0 %}"
+          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+        >
+          <svg
+            class="w-5 h-5 me-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"
+            />
+          </svg>
+          Женщины
+        </a>
+      </div>
+    </header>
+    <!-- Dashboard -->
+    <div class="flex bg-gray-200 w-full rounded-t-2xl">
+      <div
+        class="flex flex-col gap-2 justify-center my-6 border-r p-6 w-96 border-white"
+      >
+        <div class="flex">
+          <div class="mx-auto text-lg font-semibold truncate">Сентябрь</div>
+        </div>
+        <!-- Календарь -->
+        <div
+          class="p-5 rounded-xl bg-white grid grid-cols-7 gap-4 mt-5 text-center"
+        >
+          <div class="font-medium">Пн</div>
+          <div class="font-medium">Вт</div>
+          <div class="font-medium">Ср</div>
+          <div class="font-medium">Чт</div>
+          <div class="font-medium">Пт</div>
+          <div class="font-medium">Сб</div>
+          <div class="font-medium">Вс</div>
+          <div class="py-0.5 rounded relative text-slate-500">26</div>
+          <div class="py-0.5 rounded relative text-slate-500">27</div>
+          <div class="py-0.5 rounded relative text-slate-500">28</div>
+          <div class="py-0.5 rounded relative text-slate-500">29</div>
+          <div class="py-0.5 rounded relative text-slate-500">30</div>
+          <div class="py-0.5 rounded relative text-slate-500">31</div>
+          <div class="py-0.5 rounded relative">1</div>
+          <div class="py-0.5 rounded relative">2</div>
+          <div class="py-0.5 rounded relative">3</div>
+          <div class="py-0.5 rounded relative">4</div>
+          <div class="py-0.5 rounded relative">5</div>
+          <div class="py-0.5 rounded relative">6</div>
+          <div class="py-0.5 rounded relative">7</div>
+          <div class="py-0.5 rounded relative">8</div>
+          <div class="py-0.5 rounded relative">9</div>
+          <div class="py-0.5 rounded relative">10</div>
+          <div class="py-0.5 rounded relative">11</div>
+          <div class="py-0.5 rounded relative">12</div>
+          <div class="py-0.5 rounded relative">13</div>
+          <div class="py-0.5 rounded relative">14</div>
+          <div class="py-0.5 rounded relative">15</div>
+          <div class="py-0.5 rounded relative">16</div>
+          <div class="py-0.5 rounded relative">17</div>
+          <div class="py-0.5 rounded relative">18</div>
+          <div class="py-0.5 rounded relative">19</div>
+          <div class="py-0.5 rounded relative">20</div>
+          <div class="py-0.5 rounded relative">21</div>
+          <div class="py-0.5 rounded relative">22</div>
+          <div class="py-0.5 rounded relative">23</div>
+          <div class="py-0.5 rounded relative">24</div>
+          <div class="py-0.5 rounded relative">25</div>
+          <div class="py-0.5 rounded relative">26</div>
+          <div class="py-0.5 rounded relative">27</div>
+          <div class="py-0.5 rounded relative">28</div>
+          <div class="py-0.5 rounded relative">29</div>
+          <div class="py-0.5 rounded relative">30</div>
+          <div class="py-0.5 rounded relative text-slate-500">1</div>
+          <div class="py-0.5 rounded relative text-slate-500">2</div>
+          <div class="py-0.5 rounded relative text-slate-500">3</div>
+          <div class="py-0.5 rounded relative text-slate-500">4</div>
+          <div class="py-0.5 rounded relative text-slate-500">5</div>
+          <div class="py-0.5 rounded relative text-slate-500">6</div>
+        </div>
+                <!-- Chart category -->
+        <div class="p-5 rounded-xl bg-white">
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+          <div class="font-sans leading-normal tracking-normal">
+            <canvas class=" w-96" id="pie-chart" ></canvas>
+            <script>
+            Chart.defaults.color = '#000000';
+            new Chart(document.getElementById("pie-chart"), {
+                
+                type: 'pie',
+                data: {
+                  labels: ["Новичок", "Любитель","Профи"],
+                  datasets: [{
+                    label: "Кол-во участников",
+                    backgroundColor: ["#fde047", "#10b981","#f97316"],
+                    data: [{{new}},{{mid}},{{hi}}]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    position: "bottom",
+                    labels: {
+                      fontColor: "black",
+                      fontSize: 14,
+                      padding: 20,
+                    },
+                  },
+                  }
+                
+            });
+            </script>
+            
+          </div>
+        </div>
+                        <!-- Chart gender -->
+        <div class="p-5 rounded-xl bg-white">
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+          <div class="font-sans leading-normal tracking-normal">
+            <canvas class="text-white w-96" id="gender-chart" ></canvas>
+            <script>
+            Chart.defaults.color = '#000000';
+            new Chart(document.getElementById("gender-chart"), {
+                
+                type: 'pie',
+                data: {
+                  labels: ["Женщин", "Мужчин"],
+                  datasets: [{
+                    label: "Кол-во участников",
+                    backgroundColor: ["#f43f5e", "#0ea5e9"],
+                    data: [{{fem}},{{men}}]
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    position: "bottom",
+                    labels: {
+                      fontColor: "black",
+                      fontSize: 14,
+                      padding: 20,
+                    },
+                  },
+                  }
+                
+            });
+            </script>
+            
+          </div>
+        </div>
+      </div>
+      <!-- главный блок -->
+      <div class="w-full my-6 p-6">
+                      <form>
+                <div class="flex justify-between items-center">
+                          <div class="">
+          {% csrf_token %} {% if cat_selected == 5 %}
+          <h2>Результаты участников женщин</h2>
+          {% elif cat_selected %}
+          <h2>Результаты участников в категории {{ cat_selected|cat_tag }}</h2>
+          {% else %}
+          <h3 class="mx-auto text-center text-lg font-semibold truncate">
+            Общие результаты участников
+          </h3>
+
+          {% endif %}
+        </div>
+                  <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Your Email</label>
+                  <button
+                    id="dropdown-button"
+                    data-dropdown-toggle="dropdown"
+                    class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50"
+                    type="button"
+                  >
+                    Все категории
+                    <svg
+                      class="w-2.5 h-2.5 ms-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    id="dropdown"
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-36 "
+                  >
+                    <ul
+                      class="py-1 text-sm text-gray-700 "
+                      aria-labelledby="dropdownActionButton"
+                    >
+                      <li>
+                        <a
+                          href="{% url 'runner_category_age' cat=cat_selected age=1  %}"
+                          class="block px-4 py-2 hover:bg-gray-100 "
+                          >до 17 лет</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{% url 'runner_category_age' cat=cat_selected age=2 %}"
+                          class="block px-4 py-2 hover:bg-gray-100 "
+                          >18-35 лет</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{% url 'runner_category_age' cat=cat_selected age=3 %}"
+                          class="block px-4 py-2 hover:bg-gray-100 "
+                          >36-49 лет</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{% url 'runner_category_age' cat=cat_selected age=4 %}"
+                          class="block px-4 py-2 hover:bg-gray-100 "
+                          >50+</a
+                        >
+                      </li>
+                    </ul>
+                    <div class="py-1">
+                      <a
+                        href="{% url 'runner_category_age' cat=cat_selected  age=0  %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        >Все</a
+                      >
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+
+        <div
+          class="flex justify-center mt-5 bg-white shadow border w-full flex-col items-center rounded-xl"
+        >
+          <div class="w-full overflow-x-auto">
+            <table
+              id="index"
+              class="w-full text-sm text-left px-1  text-gray-500 "
+            >
+
+              <thead
+                class="text-xs text-gray-700 uppercase bg-gray-50 "
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-3">Место</th>
+                  <th scope="col" class="px-6 py-3">Участник</th>
+                  <th scope="col" class="px-6 py-3">Баллы</th>
+                  <th scope="col" class="px-6 py-3">пробег</th>
+                  <th scope="col" class="px-6 py-3">общее время</th>
+                  <th scope="col" class="px-6 py-3">Темп мин/км</th> 
+                  <th scope="col" class="px-6 py-3">Количество пробежек</th>
+                </tr>
+              </thead>
+              <tbody>
+             
+
+                {% for s in tot_dist %}
+
+                <tr
+                  class="bg-white border-b "
+                >
+                  <td class="px-6 py-4">{{ forloop.counter }}</td>
+                  <th
+                    scope="row"
+                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                  >
+                    <a href="/profile/{{ s.runner_stat }}"></a>
+                      <div>
+                        <span
+                          class="flex justify-center items-center text-sm font-semibold text-black"
+                          >{{ s.runner_stat__username }}
+                          
+                          </span
+                        >
+                        
+                        <div class="flex justify-center items-center">
+                          
+                          {%if s.runner_stat__runner_gender == 'м' %}
+                          <svg
+                            class="w-5 h-5"
+                            fill="#0080ff"
+                            viewBox="-5.12 -5.12 266.24 266.24"
+                            id="Flat"
+                            xmlns="http://www.w3.org/2000/svg"
+                            stroke="#0080ff"
+                            stroke-width="5.12"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <path
+                                d="M219.9209,39.21582c-.02246-.11328-.06519-.21777-.09693-.32715a2.32952,2.32952,0,0,0-.324-.7876c-.05811-.10693-.10522-.21777-.17383-.31982a3.99291,3.99291,0,0,0-.49316-.604l-.0044-.00537h0a4.01587,4.01587,0,0,0-.61108-.499c-.08984-.06006-.1875-.10058-.28076-.15234a3.98009,3.98009,0,0,0-.40918-.21533c-.11646-.04786-.23828-.07422-.35791-.11084a3.89106,3.89106,0,0,0-.38965-.11573,4.05713,4.05713,0,0,0-.64258-.06494C216.09082,36.01221,216.04712,36,216,36H168a4,4,0,0,0,0,8h38.34326L154.83643,95.50635a76.00057,76.00057,0,1,0,5.65673,5.65674L212,49.65674V88a4,4,0,0,0,8,0V40.00146A4.03032,4.03032,0,0,0,219.9209,39.21582ZM152.083,200.084a67.96779,67.96779,0,1,1,0-96.168A68.07554,68.07554,0,0,1,152.083,200.084Z"
+                              ></path>
+                            </g>
+                          </svg>
+                          {%else%}
+                           <svg class="w-5 h-5" fill="#ff80c0" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#ff80c0" stroke-width="5.12"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M204,96a76,76,0,1,0-80,75.89355V204H88a4,4,0,0,0,0,8h36v28a4,4,0,0,0,8,0V212h36a4,4,0,0,0,0-8H132V171.89355A76.09456,76.09456,0,0,0,204,96ZM60,96a68,68,0,1,1,68,68A68.07728,68.07728,0,0,1,60,96Z"></path> </g>
+                            </svg>
+                          {%endif%}
+                          
+                            
+                     
+                          {%if s.runner_stat__runner_category == 1 %}
+                          <span
+                            class="bg-yellow-100 text-xs text-yellow-600 px-2 py-0.5 rounded text-center"
+                            >Новичок</span>
+                          {%elif s.runner_stat__runner_category == 2%}
+                          <span
+                            class="bg-green-100 text-xs text-green-600 px-2 py-0.5 rounded text-center"
+                            >Любитель</span>
+                            {%elif s.runner_stat__runner_category == 3%}
+                          <span
+                            class="bg-orange-100 text-xs text-orange-600 px-2 py-0.5 rounded text-center"
+                            >Профи</span>
+                          {%endif%}
+                        </div>
+                      </div>
+                    </a>
+                  </th>
+                  <td class="px-6 py-4">{{ s.total_balls }}</td>
+                  <td class="px-6 py-4">
+                    {{ s.total_distance|floatformat:3 }}
+                  </td>
+                  <td class="px-6 py-4">{{ s.total_time|time:"H:i:s"}}</td>
+
+                  <td class="px-6 py-4">
+                    {{ s.total_average_temp|time:"i:s" }}
+                  </td>
+                  
+                  <td class="px-6 py-4">{{ s.total_runs }}</td>
+                </tr>
+
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endblock %} {% block extrascripts %}
+
+        <script>
+  var table = new DataTable("#index", {
+   layout: {
+                    topStart: "info",
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+
+
+    language: {
+      processing: "Подождите...",
+      search: "",
+      lengthMenu: "Показать _MENU_ записей",
+      info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+      infoEmpty: "Записи с 0 до 0 из 0 записей",
+      infoFiltered: "(отфильтровано из _MAX_ записей)",
+      loadingRecords: "Загрузка записей...",
+      zeroRecords: "Записи отсутствуют.",
+      emptyTable: "В таблице отсутствуют данные",
+      paginate: {
+        first: "Первая",
+        previous: "Предыдущая",
+        next: "Следующая",
+        last: "Последняя",
+      },
+      searchPlaceholder: "Поиск участника",
+    },
+  });
+</script>
+          {% endblock %}
+        </div>
+      </div>
+
+      <!--блок с Таблица -->
+    </div>
+  </main>
+</div>
+
+>>>>>>> d13d5322fa880dd9fbcbc41497c33499dfbc9b01
