@@ -1,0 +1,197 @@
+{% extends 'base.html' %} {% load static %} {#{% static 'js/table.js' %}#} {%
+load time_tag %} {% load divide_tag %} {% load cat_tag %} {% load cache %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+  integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+  crossorigin="anonymous"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+  crossorigin="anonymous"
+></script>
+{% include 'components/sidebar.html' %} {% block content %}
+
+<div class="container-fluid">
+  {% csrf_token %} {% if cat_selected == 'woman' %}
+  <h2>Результаты участников женщин</h2>
+  {% elif cat_selected %}
+  <h2>Результаты участников в категории {{ cat_selected|cat_tag }}</h2>
+  {% else %}
+  <h3>Общие результаты участников</h3>
+
+  {% endif %}
+
+  <div class="topbar-divider"></div>
+  <div class="flex justify-content-around">
+    {% cache 600 select_category %}
+    <h2>выбор категории:</h2>
+    <a
+      class="text-center text-warning text-3xl"
+      href="{% url 'runner_category' 0 %}"
+      >Общий</a
+    >
+    <a
+      class="text-center text-warning text-3xl"
+      href="{% url 'runner_category_age' 1 0 %}"
+      >Новичок</a
+    >
+    <a
+      class="text-center text-warning text-3xl"
+      href="{% url 'runner_category_age' 2 0 %}"
+      >Любитель</a
+    >
+    <a
+      class="text-center text-warning text-3xl"
+      href="{% url 'runner_category_age' 3 0 %}"
+      >Профи</a
+    >
+    <a
+      class="text-center text-warning text-3xl"
+      href="{% url 'runner_category_age_female' 0  %}"
+      >Женщины</a
+    >
+  </div>
+  {% endcache %}
+  <div class="dropdown">
+    <a
+      class="btn btn-primary dropdown-toggle"
+      role="button"
+      id="dropdownMenuLink"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      Возраст
+    </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <a class="dropdown-item text-center" href="{% url 'runner_category' 0 %}"
+        >Все</a
+      >
+
+      <div class="dropdown-divider"></div>
+      <a
+        class="dropdown-item text-center"
+        {%
+        if
+        f
+        %}
+        href="{% url 'runner_category_age_female' 1  %}"
+      >
+        {% else %} href="{% url 'runner_category_age' cat_selected 1 %}"> {%
+        endif %} до 17 лет</a
+      >
+
+      <div class="dropdown-divider"></div>
+
+      <a
+        class="dropdown-item text-center"
+        {%
+        if
+        f
+        %}
+        href="{% url 'runner_category_age_female'  2  %}"
+      >
+        {% else %} href="{% url 'runner_category_age' cat_selected 2 %}"> {%
+        endif %} 18-35 лет</a
+      >
+
+      <div class="dropdown-divider"></div>
+      <a
+        class="dropdown-item text-center"
+        {%
+        if
+        f
+        %}
+        href="{% url 'runner_category_age_female'  3  %}"
+      >
+        {% else %} href="{% url 'runner_category_age' cat_selected 3 %}"> {%
+        endif %}36-49 лет
+      </a>
+
+      <div class="dropdown-divider"></div>
+
+      <a
+        class="dropdown-item text-center"
+        {%
+        if
+        f
+        %}
+        href="{% url 'runner_category_age_female'  4  %}"
+      >
+        {% else %} href="{% url 'runner_category_age' cat_selected 4 %}"> {%
+        endif %} 50+</a
+      >
+      <div class="dropdown-divider"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <table id="category" class="table table-striped text-center">
+      <thead class="table-dark text-center">
+        <th>№п/п</th>
+        <th>Номер участника</th>
+        <th>Команда</th>
+        <th>Баллы</th>
+        <th>пробег</th>
+        <th>время</th>
+        <th>средний темп</th>
+        <th>пробежки</th>
+      </thead>
+      <tbody class="text-center">
+        {% for s, val in tot_dist.items %} {{ s }} {% endfor %} {% for s in
+        tot_dist %}
+
+        <tr class="row-cols-xl-auto c">
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <a href="/profile/{{ s.runner_stat__username }}"
+              >{{ s.runner_stat__username }}
+            </a>
+          </td>
+          <td>{{ s.runner_stat__runner_team }}</td>
+          <td>{{ s.total_balls }}</td>
+          <td>{{ s.total_distance }}</td>
+          <td>{{ s.total_time|time:"H:i:s" }}</td>
+          <td>{{ s.total_average_temp|time:"i:s" }}</td>
+          <td>{{ s.total_runs }}</td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+      <tr></tr>
+    </table>
+  </div>
+
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+</div>
+{% endblock %} {% block extrascripts %}
+
+<script>
+
+  new DataTable('#category', {
+      columnDefs: [
+          {type: 'natural', target: 1},
+          {#{orderable: false, targets: [0,6,7,8]}#}
+      ],
+      ordering: true,
+      bLengthChange: false,
+      info: false,
+      searching: false
+  });
+</script>
+{% endblock %}
