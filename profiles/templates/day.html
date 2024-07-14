@@ -204,14 +204,16 @@
         document.querySelector('form').addEventListener('input', calcball);
 
 
-        let tot_koef, ost_dist, ost_koef
-        let ball = document.getElementById('ball')
-        let alarm = document.getElementById('alarm_message')
-        let button = document.getElementById('button')
-        let listoff
+
 
 
         function calcball(event) {
+              let tot_koef, ost_dist, ost_koef
+        let ball = document.getElementById('ball')
+        let alarm = document.getElementById('alarm_message')
+        let button = document.getElementById('button')
+
+
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
                 let distance = document.getElementById('day_distance').value
@@ -233,7 +235,7 @@
                             need_list_index = 1
                         } else {
                             need_list_index = distance_koef.indexOf(d) - 1
-                            //listoff =distance_koef.findIndex(item=>distance<=item[0])
+
                         }
                         let ost_dist
                         let ost_koef
@@ -269,10 +271,10 @@
 
                 if (total_avg <= 210) {
                     button.disabled=true
-                    alarm.innerHTML = 'проверьте коррекность ввода среднего темпа!'
-                } else if (Math.abs(avg * 60 - total_avg) > 30) {
+                    alarm.innerHTML = 'проверьте корректность ввода среднего темпа!'
+                } else if (Math.abs(avg * 60 - total_avg) > 60) {
                     button.disabled=true
-                    alarm.innerHTML = 'средний темп превышает расчетные показатели'
+                    alarm.innerHTML = 'средний темп не соответствует расчетным показателям'
                 } else {
                     button.disabled=false
                     alarm.innerHTML = ''
