@@ -406,14 +406,14 @@
                     scope="row"
                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                   >
-                    <a href="/profile/{{ s.runner_stat }}"></a>
+                    <a href="/profile/{{ s.runner_stat__username }}">
                       <div>
                         <span
                           class="flex justify-center items-center text-sm font-semibold text-black"
                           >{{ s.runner_stat__username }}
                           
                           </span
-                        >
+                        ></a>
                         
                         <div class="flex justify-center items-center">
                           
@@ -444,8 +444,7 @@
                             </svg>
                           {%endif%}
                           
-                            
-                     
+                                                
                           {%if s.runner_stat__runner_category == 1 %}
                           <span
                             class="bg-yellow-100 text-xs text-yellow-600 px-2 py-0.5 rounded text-center"

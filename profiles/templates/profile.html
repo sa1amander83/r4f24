@@ -125,6 +125,7 @@
 
                     {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
                         <td>
+{#                        TODO  здесь добавить ручку  для исправления пробега#}
                             <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
                                 <i class="fas fa-pen fa-lg"></i> </a>
                         </td>
@@ -154,7 +155,7 @@
                     </td>
 
                     {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-
+{#                        TODO  здесь добавить мусорку  для исправления пробега#}
                         <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
                             <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
                         </td>

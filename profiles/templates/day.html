@@ -12,7 +12,7 @@
 
         <div class="user-creation-form">
             <form method="post" enctype="multipart/form-data">
-          {{ num_of_run }}
+                {{ num_of_run }}
                 {% csrf_token %}
                 {% if messages %}
                     <ul class="messages">
@@ -22,18 +22,19 @@
                     </ul>
                 {% endif %}
                 {% for f in form %}
-                    <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
+                    <p><label class="form-label" for="{{ f.for_label }}"> {{ f.label }}: </label> {{ f }}</p>
                     <div class="form-error">{{ f.errors }}</div>
                 {% endfor %}
 
-                <button type="submit" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
+                <button type="submit" id="button" class="btn btn-facebook btn-user btn-block"> Сохранить</button>
 
             </form>
         </div>
 
-            <a href="{% url 'profile:profile' user.username %}" class="btn-primary col-lg-3 w-25"> Галя, у нас отмена!!!</a>
+        <a href="{% url 'profile:profile' user.username %}" class="btn-primary col-lg-3 w-25"> Галя, у нас отмена!!!</a>
     </div>
-
+    {#        TODO Саня этот див надо разместить под дивом среднего темпа#}
+    <div id="alarm_message"></div>
 {% endblock %}
 {% block extrascripts %}
     <script>
@@ -201,15 +202,20 @@
 
         document.querySelector('form').addEventListener('change', calcball);
         document.querySelector('form').addEventListener('input', calcball);
+
+
         let tot_koef, ost_dist, ost_koef
         let ball = document.getElementById('ball')
+        let alarm = document.getElementById('alarm_message')
+        let button = document.getElementById('button')
         let listoff
+
 
         function calcball(event) {
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
                 let distance = document.getElementById('day_distance').value
-
+                let total_time = document.getElementById('day_time').value
 
                 for (const key in temp_koef) {
                     if (temp <= key) {
@@ -218,7 +224,6 @@
                     }
                 }
 
-//https://doka.guide/js/array-find/
                 for (let d of distance_koef) {
                     if (distance <= d[0]) {
                         let need_list_index
@@ -230,7 +235,6 @@
                             need_list_index = distance_koef.indexOf(d) - 1
                             //listoff =distance_koef.findIndex(item=>distance<=item[0])
                         }
-
                         let ost_dist
                         let ost_koef
                         if (distance >= 5) {
@@ -240,12 +244,38 @@
                         } else {
 
                             ost_koef = distance_koef[need_list_index][1] * distance
-                             tot_koef =  ost_koef * avg_temp_koef;
+                            tot_koef = ost_koef * avg_temp_koef;
                         }
-
                         break;
                     }
+                }
+                let pieces = total_time.split(':');
+                let hrs = Number(pieces[0]);
+                let mins = Number(pieces[1]);
+                let secs = Number(pieces[2]);
+                let totalSecs = hrs * 60;
+                totalSecs += mins;
+                totalSecs += secs;
+                let avg = totalSecs / distance;
+                console.log(avg * 60)
+                let avgMins = Math.floor(avg / 60);
+                let avgSecs = avg - (60 * avgMins);
+                {#var avgHrs = Math.floor(avgMins / 60);#}
+                let temp_pieces = temp.split(':')
+                let temp_hrs = Number(temp_pieces[0]);
+                let temp_mins = Number(temp_pieces[1]);
+                let temp_secs = Number(temp_pieces[2]);
+                let total_avg = temp_mins * 60 + temp_secs
 
+                if (total_avg <= 210) {
+                    button.disabled=true
+                    alarm.innerHTML = 'проверьте коррекность ввода среднего темпа!'
+                } else if (Math.abs(avg * 60 - total_avg) > 30) {
+                    button.disabled=true
+                    alarm.innerHTML = 'средний темп превышает расчетные показатели'
+                } else {
+                    button.disabled=false
+                    alarm.innerHTML = ''
                 }
 
             }
@@ -255,6 +285,8 @@
                 ball.value = 0
             }
         }
+
+
     </script>
 
 {% endblock %}

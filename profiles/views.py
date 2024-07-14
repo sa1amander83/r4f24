@@ -83,7 +83,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('profile:profile')
     model = RunnerDay
 
-    sync_to_async()
+
     def form_valid(self, form):
 
         dayselected = form.cleaned_data['day_select']
