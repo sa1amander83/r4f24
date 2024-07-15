@@ -36,13 +36,13 @@ class MyGroup(ListView, DataMixin):
             if 'mygroup' in self.request.path_info:
                 group = obj.runner_group
                 users = get_user_model().objects.filter(runner_group=group)
-                group_stat = get_user_model().objects.filter(runner_group=obj.runner_group)
+                group_stat = get_user_model().objects.filter(runner_group=obj.runner_group, not_running=False)
                 flag=True
 
             else:
                 group=obj.runner_team
                 users = get_user_model().objects.filter(runner_team=group)
-                group_stat = get_user_model().objects.filter(runner_team=obj.runner_team)
+                group_stat = get_user_model().objects.filter(runner_team=obj.runner_team, not_running=False)
                 flag=False
 
             if group is not None:
@@ -212,7 +212,7 @@ class GroupsListView(ListView):
 
 
 # просмотр состава выбранной группы
-#TODO переделать на  одну вьюху - команду, группу, моя группа, моя команда 2
+
 def view_group(request,  group):
 
     if 'groups' in request.path_info:

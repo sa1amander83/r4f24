@@ -34,26 +34,29 @@
             {% endfor %}
 
             {% for k,v in qs.items %}
+                <tr aria-colspan="9">{{ k }}</tr>
+                <table class="table-striped" id="myteam">
 
-                <table class="table  table-striped">
+                    <thead>
+                    {#                    <tr class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary">#}
+                    {#                        <th colspan="9"> {{ k }}</th>#}
+                    {#                    </tr>#}
+
+                    <tr>
+                        <th>№п/п</th>
+                        <th>Участник</th>
+                        <th>баллы</th>
+                        <th>дистанция</th>
+                        <th>время</th>
+                        <th>средний темп</th>
+                        <th>всего дней</th>
+                        <th> пробежки</th>
+                        <th>квалификация</th>
+                    </tr>
+                    </thead>
                     <tbody>
-                    <tr class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary">
-                        <td colspan="9"> {{ k }}</td>
-                    </tr>
-                    <tr class="text-center table-warning">
-                        <td>№п/п</td>
-                        <td>Участник</td>
-                        <td>баллы</td>
-                        <td>дистанция</td>
-                        <td>время</td>
-                        <td>средний темп</td>
-                        <td>всего дней</td>
-                        <td> пробежки</td>
-                        <td>квалификация</td>
-                    </tr>
                     {% for u in v %}
-                        <tr class="text-center">
-
+                        <tr>
                             <td> {{ forloop.counter }}</td>
                             <td> {{ u.user }}</td>
                             <td> {{ u.total_balls }}</td>
@@ -63,18 +66,8 @@
                             <td> {{ u.total_days }}</td>
                             <td> {{ u.total_runs }}</td>
                             <td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
-
                         </tr>
-
-                        <p>
-                        <p>
-                        <p>
-
-
-
-
                     {% endfor %}
-
 
                     </tbody>
                 </table>
@@ -85,4 +78,50 @@
         {% endif %}
     </div>
 {% endblock %}
+{% block extrascripts %}
 
+    <script>
+        var table = new DataTable("#myteam", {
+
+             layout: {
+                pageLength: 30,
+
+            },
+            {#    topStart: "info",#}
+            {#    bottom: 'paging',#}
+            {##}
+            {#    bottomStart: null,#}
+            {#    bottomEnd: null,#}
+            {#    responsive: true,#}
+
+
+            columnDefs: [
+                {targets: '_all', className: 'dt-body-center  dt-head-center'},
+                {
+                    defaultContent: "-",
+                    targets: "_all"
+                }
+
+            ],
+
+            language: {
+                processing: "Подождите...",
+                search: "",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+                infoEmpty: "Записи с 0 до 0 из 0 записей",
+                infoFiltered: "(отфильтровано из _MAX_ записей)",
+                loadingRecords: "Загрузка записей...",
+                zeroRecords: "Записи отсутствуют.",
+                emptyTable: "В таблице отсутствуют данные",
+                paginate: {
+                    first: "Первая",
+                    previous: "Предыдущая",
+                    next: "Следующая",
+                    last: "Последняя",
+                },
+                searchPlaceholder: "Поиск участника",
+            },
+        });
+    </script>
+{% endblock %}

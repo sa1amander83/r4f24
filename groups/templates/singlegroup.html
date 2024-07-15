@@ -60,10 +60,35 @@
 
         new DataTable('#singlegroup', {
 
-                order:[1,'desc']
+                order:[1,'desc'],
 
+            columnDefs: [
+                {targets: '_all', className: 'dt-body-center  dt-head-center'},
+                {
+                    defaultContent: "-",
+                    targets: "_all"
+                }
 
+            ],
 
+            language: {
+                processing: "Подождите...",
+                search: "",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+                infoEmpty: "Записи с 0 до 0 из 0 записей",
+                infoFiltered: "(отфильтровано из _MAX_ записей)",
+                loadingRecords: "Загрузка записей...",
+                zeroRecords: "Записи отсутствуют.",
+                emptyTable: "В таблице отсутствуют данные",
+                paginate: {
+                    first: "Первая",
+                    previous: "Предыдущая",
+                    next: "Следующая",
+                    last: "Последняя",
+                },
+                searchPlaceholder: "Поиск участника",
+            },
         });
 
     </script>

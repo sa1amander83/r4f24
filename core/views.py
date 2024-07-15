@@ -34,7 +34,7 @@ class IndexView(DataMixin, ListView):
         context['count_of_runners'] = get_user_model().objects.exclude(not_running=True).count()
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).\
         values('runner_stat__username','total_time','total_distance','runner_stat__runner_gender','runner_stat__runner_category',
-                                                                                              'total_runs','total_balls','total_average_temp').order_by('-total_balls')
+                                                                                              'total_runs','total_balls','total_average_temp').order_by('-total_balls', '-total_distance')
 
         return context
 
@@ -59,7 +59,7 @@ class CatListView(DataMixin, ListView):
             all_runners = get_user_model().objects.all()
 
             comand_list = dict()
-            # TODO сделать модель статистики команд???? наподобие участника
+
             for v in all_teams:
                 teamsss = RunnerDay.objects.filter(runner__runner_team__team=v).filter(
                     day_average_temp__lte="00:08:00"). \

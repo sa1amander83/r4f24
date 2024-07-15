@@ -29,7 +29,7 @@
             {% for team in group_data %}
 
                 {##}
-                {#                TODO сделать  дропдаун на членов группы#}
+                {#                TODO сделать  дропдаун членов группы или хуй с ним#}
                 {##}
                 <tr>
                     <td> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
@@ -86,43 +86,34 @@
 
         new DataTable('#comanda', {
                 order: [[2, 'desc']],
-                columnDefs: [
 
-
-                    {className: 'dt-center'}
-                ],
-
-                pageLength: 50,
-                ordering: true,
-                bLengthChange: true,
-                info: true,
-                searching: true,
-
-                layout: {
-                    topStart: 'info',
-                    bottom: 'paging',
-                    bottomStart: null,
-                    bottomEnd: null
-                },
-                language: {
-                    "processing": "Подождите...",
-                    "search": "",
-                    "lengthMenu": "Показать _MENU_ записей",
-                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
-                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
-                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
-                    "loadingRecords": "Загрузка записей...",
-                    "zeroRecords": "Записи отсутствуют.",
-                    "emptyTable": "В таблице отсутствуют данные",
-                    "paginate": {
-                        "first": "Первая",
-                        "previous": "Предыдущая",
-                        "next": "Следующая",
-                        "last": "Последняя"
-                    },
-                    "searchPlaceholder": "поиск участника",
+            columnDefs: [
+                {targets: '_all', className: 'dt-body-center  dt-head-center'},
+                {
+                    defaultContent: "-",
+                    targets: "_all"
                 }
-            }
-        );
+
+            ],
+
+            language: {
+                processing: "Подождите...",
+                search: "",
+                lengthMenu: "Показать _MENU_ записей",
+                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+                infoEmpty: "Записи с 0 до 0 из 0 записей",
+                infoFiltered: "(отфильтровано из _MAX_ записей)",
+                loadingRecords: "Загрузка записей...",
+                zeroRecords: "Записи отсутствуют.",
+                emptyTable: "В таблице отсутствуют данные",
+                paginate: {
+                    first: "Первая",
+                    previous: "Предыдущая",
+                    next: "Следующая",
+                    last: "Последняя",
+                },
+                searchPlaceholder: "Поиск команды/группы",
+            },
+        });
     </script>
 {% endblock %}%}

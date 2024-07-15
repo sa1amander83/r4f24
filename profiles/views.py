@@ -50,8 +50,14 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         else:
             context['haverun'] = 0
 
-        obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
+        runners_list = list(
+            Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username', flat=True))
 
+        context['place'] = runners_list.index(self.kwargs['username']) + 1
+
+        obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
+        context['tot_dist'] = Statistic.objects.all().order_by('-total_balls', 'total_distance')
+        # place = stats.index(user_stat) + 1
         # context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
@@ -82,7 +88,6 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     template_name = 'day.html'
     success_url = reverse_lazy('profile:profile')
     model = RunnerDay
-
 
     def form_valid(self, form):
 
