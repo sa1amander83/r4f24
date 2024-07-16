@@ -185,7 +185,7 @@ class RunnersCatGenderView(DataMixin, ListView):
         if get_age == 0:
             context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).filter(
                 runner_stat__runner_gender='ж').values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',     'runner_stat__runner_gender',
+                                                       'total_runs', 'total_time', 'runner_stat__runner_gender',
                                                        'total_balls', 'total_days', 'total_distance',
                                                        'total_average_temp').order_by('-total_balls')
             return context
@@ -196,7 +196,7 @@ class RunnersCatGenderView(DataMixin, ListView):
                 runner_stat__runner_age__gte=start_age). \
                 filter(runner_stat__runner_age__lte=last_age).filter(runner_stat__runner_gender='ж').filter(
                 runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
-                                                       'total_runs', 'total_time',     'runner_stat__runner_gender',
+                                                       'total_runs', 'total_time', 'runner_stat__runner_gender',
                                                        'total_balls', 'total_days', 'total_distance',
                                                        'total_average_temp').order_by('-total_balls')
             return context
@@ -395,7 +395,7 @@ class OneTeamStat(DataMixin, ListView):
         context['qs'] = Statistic.objects.filter(
             runner_stat__runner_team__team=comand_number). \
             values('runner_stat__username', 'runner_stat__runner_category',
-                   'runner_stat__runner_age',
+                   'runner_stat__runner_age','runner_stat__runner_gender',
                    'total_time', 'total_distance', 'total_days', 'total_runs', 'total_balls',
                    'total_average_temp').order_by('-total_balls')
         return context
@@ -786,7 +786,8 @@ def group_statistics_view(request):
 
 
 def runner_day_results_view(request, day):
-    results = RunnerDay.objects.filter(day_select=day)
+    results = RunnerDay.objects.filter(day_select=day, runner__not_running=False, day_distance__gt=0).order_by(
+        '-day_distance')
     return render(request, 'runner_day_results.html', {'results': results, 'day': day})
 
 

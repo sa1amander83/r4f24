@@ -1,35 +1,83 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
 
-<div class="container">
-    <h1>Результаты {{ day }} сентября</h1>
+    <div class="container">
+        <div>
+            {% include 'components/calendar.html' %}
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Участник</th>
-                <th>Дистанция</th>
-                <th>Время</th>
-                <th>Средний темп</th>
-                <th>Баллы</th>
-                <th>Номер пробежки</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for result in results %}
+        </div>
+        <div>
+            <h1>Результаты {{ day }} сентября</h1>
+
+            <table id="dayResults" class="table table-striped">
+                <thead>
                 <tr>
-                    <td> <a href="{% url 'profile:profile' result.runner.username %}"> {{ result.runner.username }} </a></td>
-                    <td>{{ result.day_distance }}</td>
-                    <td>{{ result.day_time }}</td>
-                    <td>{{ result.day_average_temp }}</td>
-                    <td>{{ result.ball }}</td>
-                    <td>{{ result.number_of_run }}</td>
+                    <th>Участник</th>
+                    <th>Дистанция</th>
+                    <th>Время</th>
+                    <th>Средний темп</th>
+                    <th>Баллы</th>
+                    <th>Номер пробежки</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody>
+                {% for result in results %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'profile:profile' result.runner.username %}"> {{ result.runner.username }} </a>
+                        </td>
+                        <td>{{ result.day_distance }}</td>
+                        <td>{{ result.day_time }}</td>
+                        <td>{{ result.day_average_temp }}</td>
+                        <td>{{ result.ball }}</td>
+                        <td>{{ result.number_of_run }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+    <script>
+        new DataTable('#dayResults', {
+                responsive: true,
+                columnDefs: [
+
+                    {targets: '_all', className: 'dt-body-center  dt-head-center'},
+                ],
+
+                language: {
+                    processing: "Подождите...",
+                    search: "",
+                    lengthMenu: "Показать _MENU_ записей",
+                    info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    infoEmpty: "Записи с 0 до 0 из 0 записей",
+                    infoFiltered: "(отфильтровано из _MAX_ записей)",
+                    loadingRecords: "Загрузка записей...",
+                    zeroRecords: "Записи отсутствуют.",
+                    emptyTable: "В таблице отсутствуют данные",
+                    paginate: {
+                        first: "Первая",
+                        previous: "Предыдущая",
+                        next: "Следующая",
+                        last: "Последняя",
+                    },
+
+
+                    ordering: true,
+                    bLengthChange: false,
+
+                    {#searching: false,#}
+                    scrollX: true,
+                },
+                searchPlaceholder: "Поиск участника",
+            },
+        );
+
+    </script>
 
 {% endblock %}

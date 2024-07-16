@@ -23,7 +23,7 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"
 ></script>
-{% include 'components/sidebar.html' %} {% block content %}
+{% include 'components/calendar.html' %} {% block content %}
 
     <div class="mx-5 md:mx-10">
         <div
@@ -325,7 +325,7 @@
                                 <li>
                                     <a
                                             href="
-                                                    
+
                                                     {% if f %}{% url 'runner_category_age_female' 1 %}{% else %}{% url 'runner_category_age' cat_selected 1 %}{% endif %}"
                                             class="block px-4 py-2 hover:bg-gray-100"
                                     >до 17 лет</a
@@ -334,7 +334,7 @@
                                 <li>
                                     <a
                                             href="
-                                                    
+
                                                     {% if f %}{% url 'runner_category_age_female'  age=2 %}{% else %}{% url 'runner_category_age' cat_selected 2 %}{% endif %}"
                                             class="block px-4 py-2 hover:bg-gray-100"
                                     >18-35 лет</a
@@ -343,7 +343,7 @@
                                 <li>
                                     <a
                                             href="
-                                                    
+
                                                     {% if f %}{% url 'runner_category_age_female'  age=3 %}{% else %}{% url 'runner_category_age' cat_selected 3 %}{% endif %}"
                                             class="block px-4 py-2 hover:bg-gray-100"
                                     >36-49 лет</a
@@ -352,7 +352,7 @@
                                 <li>
                                     <a
                                             href="
-                                                    
+
                                                     {% if f %}{% url 'runner_category_age_female'  age=4 %}{% else %}{% url 'runner_category_age' cat_selected 4 %}{% endif %}"
                                             class="block px-4 py-2 hover:bg-gray-100"
                                     >50+</a
@@ -403,7 +403,7 @@
                                                 <div>
                                                     <span
                                                             class="flex justify-center items-center text-sm font-semibold text-black"
-                                                    >{{ s.runner_stat__username }}   
+                                                    >{{ s.runner_stat__username }}
                                                     </span>
 
                                                     <div class="flex justify-center items-center">

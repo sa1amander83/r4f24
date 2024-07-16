@@ -1,0 +1,86 @@
+
+{% load static %} {#{% static 'js/table.js' %}#}
+{% load time_tag %} {% load divide_tag %} {% load cat_tag %}
+ <!-- Chart category -->
+        <div class="">
+            <div class="flex items-center h-10 intro-x"><h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
+                категорий</h2></div>
+            <div class="p-5 shadow my-5 rounded-xl bg-white">
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <div class="font-sans leading-normal tracking-normal">
+                    <canvas class=" w-96" id="pie-chart"></canvas>
+                    <script>
+                        Chart.defaults.color = '#000000';
+                        new Chart(document.getElementById("pie-chart"), {
+
+                            type: 'pie',
+                            data: {
+                                labels: ["Новичок", "Любитель", "Профи"],
+                                datasets: [{
+                                    label: "Кол-во участников",
+                                    backgroundColor: ["#fde047", "#10b981", "#f97316"],
+                                    data: [{{new}}, {{mid}}, {{hi}}]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    position: "bottom",
+                                    labels: {
+                                        fontColor: "black",
+                                        fontSize: 14,
+                                        padding: 20,
+                                    },
+                                },
+                            }
+
+                        });
+                    </script>
+
+                </div>
+            </div>
+        </div>
+        <!-- Chart gender -->
+        <div class="">
+            <div class="flex items-center h-10 intro-x"><h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
+                категорий</h2></div>
+            <div class="p-5 shadow mt-5 rounded-xl bg-white">
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <div class="font-sans leading-normal tracking-normal">
+                    <canvas class="text-white w-96" id="gender-chart"></canvas>
+                    <script>
+                        Chart.defaults.color = '#000000';
+                        new Chart(document.getElementById("gender-chart"), {
+
+                            type: 'pie',
+                            data: {
+                                labels: ["Женщин", "Мужчин"],
+                                datasets: [{
+                                    label: "Кол-во участников",
+                                    backgroundColor: ["#f43f5e", "#0ea5e9"],
+                                    data: [{{fem}}, {{men}}]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    position: "bottom",
+                                    labels: {
+                                        fontColor: "black",
+                                        fontSize: 14,
+                                        padding: 20,
+                                    },
+                                },
+                            }
+
+                        });
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>

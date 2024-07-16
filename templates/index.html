@@ -22,7 +22,7 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"
 ></script>
-{% include 'components/sidebar.html' %} {% block content %}
+{% include 'components/calendar.html' %} {% block content %}
     <!-- <div class="">
       <h1
         class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
@@ -164,131 +164,8 @@
         </div>
     </header>
     <!-- Dashboard -->
-    <div class="flex  flex-col-reverse bg-gray-200 w-full mb-3 rounded-2xl  lg:flex-row lg:flex-nowrap">
-    <!-- Сайдбар -->
-    <div
-            class="flex flex-col  p-3 mb-3 md:p-6 md:my-0 md:grid-cols-2 md:gap-4 md:grid w-full justify-center  lg:flex lg:max-w-96     lg:border-r border-gray-300 "
-    >
-        <!-- Календарь -->
-        <div class="">
-            <div class="flex items-center h-10"><h2 class="mr-5 text-lg font-semibold truncate">Календарь события</h2>
-            </div>
-            <div class=" rounded-xl shadow bg-white my-5 p-5">
-                <div class="flex ">
-                    <div class="mx-auto text-base font-semibold truncate">Сентябрь</div>
-                </div>
-                <div
-                        class="grid grid-cols-7 gap-4 mt-5 text-center"
-                >
-                    <div class="font-medium">Пн</div>
-                    <div class="font-medium">Вт</div>
-                    <div class="font-medium">Ср</div>
-                    <div class="font-medium">Чт</div>
-                    <div class="font-medium">Пт</div>
-                    <div class="font-medium">Сб</div>
-                    <div class="font-medium">Вс</div>
-                    <div class="py-0.5 rounded relative text-slate-500">26</div>
-                    <div class="py-0.5 rounded relative text-slate-500">27</div>
-                    <div class="py-0.5 rounded relative text-slate-500">28</div>
-                    <div class="py-0.5 rounded relative text-slate-500">29</div>
-                    <div class="py-0.5 rounded relative text-slate-500">30</div>
-                    <div class="py-0.5 rounded relative text-slate-500">31</div>
-                    {% now 'j' as today %} {% for day in 1|range:31 %}
-                    <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
-                       href="{% url 'runner_day_results' day %}">{{ day }}</a>
-                {% endfor %}
-                    <div class="py-0.5 rounded relative text-slate-500">1</div>
-                    <div class="py-0.5 rounded relative text-slate-500">2</div>
-                    <div class="py-0.5 rounded relative text-slate-500">3</div>
-                    <div class="py-0.5 rounded relative text-slate-500">4</div>
-                    <div class="py-0.5 rounded relative text-slate-500">5</div>
-                    <div class="py-0.5 rounded relative text-slate-500">6</div>
-                </div>
-            </div>
-        </div>
-        <!-- Chart category -->
-        <div class="">
-            <div class="flex items-center h-10 intro-x"><h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
-                категорий</h2></div>
-            <div class="p-5 shadow my-5 rounded-xl bg-white">
-
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-                <div class="font-sans leading-normal tracking-normal">
-                    <canvas class=" w-96" id="pie-chart"></canvas>
-                    <script>
-                        Chart.defaults.color = '#000000';
-                        new Chart(document.getElementById("pie-chart"), {
-
-                            type: 'pie',
-                            data: {
-                                labels: ["Новичок", "Любитель", "Профи"],
-                                datasets: [{
-                                    label: "Кол-во участников",
-                                    backgroundColor: ["#fde047", "#10b981", "#f97316"],
-                                    data: [{{new}}, {{mid}}, {{hi}}]
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                legend: {
-                                    position: "bottom",
-                                    labels: {
-                                        fontColor: "black",
-                                        fontSize: 14,
-                                        padding: 20,
-                                    },
-                                },
-                            }
-
-                        });
-                    </script>
-
-                </div>
-            </div>
-        </div>
-        <!-- Chart gender -->
-        <div class="">
-            <div class="flex items-center h-10 intro-x"><h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
-                категорий</h2></div>
-            <div class="p-5 shadow mt-5 rounded-xl bg-white">
-
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-                <div class="font-sans leading-normal tracking-normal">
-                    <canvas class="text-white w-96" id="gender-chart"></canvas>
-                    <script>
-                        Chart.defaults.color = '#000000';
-                        new Chart(document.getElementById("gender-chart"), {
-
-                            type: 'pie',
-                            data: {
-                                labels: ["Женщин", "Мужчин"],
-                                datasets: [{
-                                    label: "Кол-во участников",
-                                    backgroundColor: ["#f43f5e", "#0ea5e9"],
-                                    data: [{{fem}}, {{men}}]
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                legend: {
-                                    position: "bottom",
-                                    labels: {
-                                        fontColor: "black",
-                                        fontSize: 14,
-                                        padding: 20,
-                                    },
-                                },
-                            }
-
-                        });
-                    </script>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'components/calendar.html' %}
+    {% include 'components/chart.html' %}
     <!-- главный блок -->
     <div class="flex flex-col w-full p-3 my-3 md:p-6 md:my-0">
 
