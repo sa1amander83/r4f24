@@ -33,7 +33,7 @@
 
         <a href="{% url 'profile:profile' user.username %}" class="btn-primary col-lg-3 w-25"> Галя, у нас отмена!!!</a>
     </div>
-    {#        TODO Саня этот див надо разместить под дивом среднего темпа или где то сбоку  я хз}
+   <!--      TODO Саня этот див надо разместить под дивом среднего темпа или где то сбоку  я хз !-->
     <div id="alarm_message"></div>
 {% endblock %}
 {% block extrascripts %}
@@ -204,14 +204,11 @@
         document.querySelector('form').addEventListener('input', calcball);
 
 
-
-
-
         function calcball(event) {
-              let tot_koef, ost_dist, ost_koef
-        let ball = document.getElementById('ball')
-        let alarm = document.getElementById('alarm_message')
-        let button = document.getElementById('button')
+            let tot_koef, ost_dist, ost_koef
+            let ball = document.getElementById('ball')
+            let alarm = document.getElementById('alarm_message')
+            let button = document.getElementById('button')
 
 
             if (event.target.tagName === 'INPUT') {
@@ -270,13 +267,15 @@
                 let total_avg = temp_mins * 60 + temp_secs
 
                 if (total_avg <= 210) {
-                    button.disabled=true
+                    button.disabled = true
                     alarm.innerHTML = 'проверьте корректность ввода среднего темпа!'
                 } else if (Math.abs(avg * 60 - total_avg) > 60) {
-                    button.disabled=true
+                    button.disabled = true
                     alarm.innerHTML = 'средний темп не соответствует расчетным показателям'
+                } else if (total_time === '' || temp === '' || distance === '') {
+                    button.disabled = true
                 } else {
-                    button.disabled=false
+                    button.disabled = false
                     alarm.innerHTML = ''
                 }
 
