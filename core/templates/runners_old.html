@@ -1,0 +1,114 @@
+{% extends 'base.html' %} {% load static %} {% load cat_tag %} {% block content
+%} {% csrf_token %}
+<div class="container-fluid">
+  {% if cat_selected == '1' %}
+  <h2>Участников в категории "Новичок" - {{ count_of_runners }}</h2>
+  {% elif cat_selected == '2' %}
+  <h2>Участников в категории "Любитель" - {{ count_of_runners }}</h2>
+  {% elif cat_selected == '3' %}
+  <h2>Участников в категории "Профи" - {{ count_of_rulnners }}</h2>
+
+  {% elif cat_selected == '50' %}
+  <h2>Участников в категории "50+" - {{ count_of_runners }}</h2>
+
+  {% elif cat_selected == 'woman' %}
+  <h2>Участников женщин" - {{ count_of_runners }}</h2>
+
+  {% endif %}
+
+  <br />
+  <div class="header-stat-comanda">
+    <p></p>
+    <h2>выбор категории:</h2>
+
+    <a class="text-center text-warning" href="{% url 'runners' %}"> Все </a>
+
+    <a class="text-center text-warning" href="{% url 'runners' 1 %}">Новичок</a>
+
+    <a class="text-center text-warning" href="{% url 'runners'  2 %}"
+      >Любитель</a
+    >
+
+    <a class="text-center text-warning" href="{% url 'runners'  3 %}">Профи</a>
+
+    {#
+    <a class="text-center text-warning" #} {# href="{% url 'runners' 50 %}"
+      >50+</a
+    >#}
+    <a class="text-center text-warning" href="{% url 'runners'  'f' %}">
+      Женщины</a
+    >
+  </div>
+
+  <hr />
+
+  <table class="table table-striped dt-center" id="runners">
+    <thead class="table-dark text-center">
+      <tr>
+        <th class="text-lg-center">№ п/п</th>
+        <th class="text-lg-center">номер участника</th>
+        <th class="text-lg-center">категория</th>
+        <th class="text-lg-center">возраст</th>
+        <th class="text-lg-center">пол</th>
+      </tr>
+    </thead>
+
+    <tbody class="dt-body-center">
+      {% for p in profile %}
+      <tr class="text-center">
+        <td>{{ forloop.counter }}</td>
+        <td><a href="/profile/{{ p.username }}"> {{ p.username }}</a></td>
+        <td>{{ p.runner_category|cat_tag }}</td>
+        <td>{{ p.runner_age }}</td>
+        <td>{{ p.runner_gender }}</td>
+      </tr>
+
+      {% endfor %}
+    </tbody>
+    <tr></tr>
+  </table>
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+{% endblock %} {% block extrascripts %}
+
+<script>
+  new DataTable("#runners", {
+    columnDefs: [
+      { targets: "_all", className: "dt-body-center  dt-head-center" },
+    ],
+    pageLength: 50,
+    ordering: true,
+    bLengthChange: true,
+    info: true,
+    searching: true,
+
+    layout: {
+      topStart: "info",
+      bottom: "paging",
+      bottomStart: null,
+      bottomEnd: null,
+    },
+    language: {
+      processing: "Подождите...",
+      search: "",
+      lengthMenu: "Показать _MENU_ записей",
+      info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+      infoEmpty: "Записи с 0 до 0 из 0 записей",
+      infoFiltered: "(отфильтровано из _MAX_ записей)",
+      loadingRecords: "Загрузка записей...",
+      zeroRecords: "Записи отсутствуют.",
+      emptyTable: "В таблице отсутствуют данные",
+      paginate: {
+        first: "Первая",
+        previous: "Предыдущая",
+        next: "Следующая",
+        last: "Последняя",
+      },
+      searchPlaceholder: "поиск участника",
+    },
+  });
+</script>
+{% endblock %}

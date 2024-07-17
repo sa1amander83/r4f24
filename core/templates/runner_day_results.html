@@ -1,83 +1,85 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
-
-    <div class="container">
-        <div>
-            {% include 'components/calendar.html' %}
-
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="mx-5 md:mx-10">
+  <div
+    class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"
+  ></div>
+  <main
+    class="flex flex-col justify-center rounded-2xl pt-5 mb-3 bg-sky-900 h-full"
+  >
+    <div class="w-full mt-5 shadow flex-col items-center rounded-xl">
+      <div>{% include 'components/calendar.html' %}</div>
+      <div class="flex flex-col w-full p-3 my-3 md:p-6 md:my-0">
+        <h1 class="text-left text-lg font-semibold truncate">
+          Результаты {{ day }} сентября
+        </h1>
+        <div class="mt-5 bg-white shadow flex-col items-center rounded-xl">
+          <table
+            id="dayResults"
+            class="display text-sm text-left px-1 text-gray-500"
+          >
+            <thead>
+              <tr>
+                <th scope="col" class="px-6 py-3">Участник</th>
+                <th scope="col" class="px-6 py-3">Дистанция</th>
+                <th scope="col" class="px-6 py-3">Время</th>
+                <th scope="col" class="px-6 py-3">Средний темп</th>
+                <th scope="col" class="px-6 py-3">Баллы</th>
+                <th scope="col" class="px-6 py-3">Номер пробежки</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for result in results %}
+              <tr class="bg-white border-b">
+                <td class="px-6 py-4">
+                  <a href="{% url 'profile:profile' result.runner.username %}">
+                    {{ result.runner.username }}
+                  </a>
+                </td>
+                <td class="px-6 py-4">{{ result.day_distance }}</td>
+                <td class="px-6 py-4">{{ result.day_time }}</td>
+                <td class="px-6 py-4">{{ result.day_average_temp }}</td>
+                <td class="px-6 py-4">{{ result.ball }}</td>
+                <td class="px-6 py-4">{{ result.number_of_run }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div>
-            <h1>Результаты {{ day }} сентября</h1>
-
-            <table id="dayResults" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Участник</th>
-                    <th>Дистанция</th>
-                    <th>Время</th>
-                    <th>Средний темп</th>
-                    <th>Баллы</th>
-                    <th>Номер пробежки</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for result in results %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'profile:profile' result.runner.username %}"> {{ result.runner.username }} </a>
-                        </td>
-                        <td>{{ result.day_distance }}</td>
-                        <td>{{ result.day_time }}</td>
-                        <td>{{ result.day_average_temp }}</td>
-                        <td>{{ result.ball }}</td>
-                        <td>{{ result.number_of_run }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+      </div>
     </div>
+  </main>
+</div>
+{% endblock %} {% block extrascripts %}
+<script>
+  new DataTable("#dayResults", {
+    columnDefs: [
+      { targets: "_all", className: "dt-body-center  dt-head-center" },
+    ],
 
-{% endblock %}
+    language: {
+      processing: "Подождите...",
+      search: "",
+      lengthMenu: "Показать _MENU_ записей",
+      info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+      infoEmpty: "Записи с 0 до 0 из 0 записей",
+      infoFiltered: "(отфильтровано из _MAX_ записей)",
+      loadingRecords: "Загрузка записей...",
+      zeroRecords: "Записи отсутствуют.",
+      emptyTable: "В таблице отсутствуют данные",
+      paginate: {
+        first: "Первая",
+        previous: "Предыдущая",
+        next: "Следующая",
+        last: "Последняя",
+      },
 
-{% block extrascripts %}
-    <script>
-        new DataTable('#dayResults', {
-                responsive: true,
-                columnDefs: [
+      ordering: true,
+      bLengthChange: false,
 
-                    {targets: '_all', className: 'dt-body-center  dt-head-center'},
-                ],
-
-                language: {
-                    processing: "Подождите...",
-                    search: "",
-                    lengthMenu: "Показать _MENU_ записей",
-                    info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                    infoEmpty: "Записи с 0 до 0 из 0 записей",
-                    infoFiltered: "(отфильтровано из _MAX_ записей)",
-                    loadingRecords: "Загрузка записей...",
-                    zeroRecords: "Записи отсутствуют.",
-                    emptyTable: "В таблице отсутствуют данные",
-                    paginate: {
-                        first: "Первая",
-                        previous: "Предыдущая",
-                        next: "Следующая",
-                        last: "Последняя",
-                    },
-
-
-                    ordering: true,
-                    bLengthChange: false,
-
-                    {#searching: false,#}
-                    scrollX: true,
-                },
-                searchPlaceholder: "Поиск участника",
-            },
-        );
-
-    </script>
+      scrollX: true,
+    },
+    searchPlaceholder: "Поиск участника",
+  });
+</script>
 
 {% endblock %}
