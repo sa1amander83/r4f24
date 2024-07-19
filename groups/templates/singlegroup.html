@@ -12,7 +12,7 @@
             </h1>
             <p>Участники - {{ data.total_results.tot_users }}</p>
             <p>Баллы {{ data.total_results.total_balls }}</p>
-            <p>Дистанция {{ data.total_results.total_distance }}</p>
+            <p>Дистанция {{ data.total_results.total_distance|floatformat:3 }}</p>
             <p>Время {{ data.total_results.total_time }}</p>
             <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
             <p>Дней пробега {{ data.total_results.total_days }}</p>
@@ -37,7 +37,7 @@
                             <tr>
                                 <td><a href="{% url 'profile:profile' user.username %}"> {{ user.username }}</a></td>
                                 <td>{{ stat.total_balls }}</td>
-                                <td>{{ stat.total_distance }}</td>
+                                <td>{{ stat.total_distance|floatformat:3 }}</td>
                                 <td>{{ stat.total_time|time:"H:i:s" }}</td>
                                 <td>{{ stat.total_average_temp|time:"i:s" }}</td>
                                 <td>{{ stat.total_days }}</td>

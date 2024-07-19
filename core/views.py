@@ -87,7 +87,7 @@ class RunnersCatView(DataMixin, ListView):
         cat_selected = self.kwargs['cat']
         context['cat_selected'] = cat_selected
 
-        context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False).values(
+        context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False,runner_stat__runner_category=cat_selected).values(
             'runner_stat__username', 'runner_stat__runner_team', 'total_runs', 'total_time',
             'total_balls', 'total_days', 'total_distance', 'total_average_temp').order_by('-total_balls')
 
