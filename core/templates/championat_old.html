@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load time_tag %}
+{% load divide_tag %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        {% csrf_token %}
+
+    </div>
+
+    <h1> Чемпионат </h1>
+
+    <hr>
+
+    <ul>
+
+
+        {#{{ best_runners }}#}
+        {#      <ul>#}
+        {#    {% for age_group, runners in best_runners.items %}#}
+        {#      <h2>{{ age_group }}</h2>#}
+        {#      <ul>#}
+        {#        {% for runner in runners %}#}
+        {#          <li>#}
+        {#            {{ runner.runner_stat.first_name }} {{ runner.runner_stat.last_name }} - {{ runner.total_balls }} баллов#}
+        {#          </li>#}
+        {#        {% endfor %}#}
+        {#      </ul>#}
+        {#    {% endfor %}#}
+        {#  </ul>#}
+
+
+        <hr>
+        <div class="container-fluid">
+            <table id="champ" class="table  table-striped text-center">
+
+                <thead class="table-dark text-center">
+
+                <th>Место</th>
+                <th>Номер команды</th>
+                 <th> Всего баллов</th>
+                <th> до 18 лет</th>
+                <th> 18-35 лет</th>
+                <th> 36-49 лет</th>
+                <th> 50+ лет</th>
+
+
+                </thead>
+                <tbody class="text-center">
+
+
+
+                {% for k in qs %}
+
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                        {% if  k.1 != 0 %}
+                            <td><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
+                            <td> {{ k.1 }}</td>
+                            <td> {{ k.2 }} </td>
+                            <td> {{ k.3 }} </td>
+                            <td> {{ k.4 }} </td>
+                            <td> {{ k.5 }} </td>
+
+
+                        {% else %}
+
+                            <td><a href="/comands/{{ k.1 }}">{{ k.1 }} </a></td>
+                            <td> нет пробега</td>
+
+                            <td> - - - - - - -</td>
+                            <td> - - - - - - -</td>
+                            <td> - - - - - - -</td>
+                            <td> - - - - - - -</td>
+                            {#                        <td> - - - - - - -</td>#}
+
+                        {% endif %}
+
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+                <tr></tr>
+
+            </table>
+        </div>
+
+        {#    {% пригодится для статистки по дням %}#}
+        {#       {% for value in tot_dist.values %}#}
+        {#        <p class='first'> пробег участника {{ value }}  </p>#}
+
+
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+    </ul>
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script>
+
+        new DataTable('#champ', {
+
+                columnDefs: [
+                   { targets: '_all', className: 'dt-body-center  dt-head-center' }
+                ],
+                pageLength: 50,
+                ordering: true,
+                bLengthChange: true,
+                info: true,
+                searching: true,
+
+                layout: {
+                    topStart: 'info',
+                    bottom: 'paging',
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                language: {
+                    "processing": "Подождите...",
+                    "search": "",
+                    "lengthMenu": "Показать _MENU_ записей",
+                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "loadingRecords": "Загрузка записей...",
+                    "zeroRecords": "Записи отсутствуют.",
+                    "emptyTable": "В таблице отсутствуют данные",
+                    "paginate": {
+                        "first": "Первая",
+                        "previous": "Предыдущая",
+                        "next": "Следующая",
+                        "last": "Последняя"
+                    },
+                    "searchPlaceholder": "поиск участника",
+                }
+            }
+        );
+    </script>
+{% endblock %}
