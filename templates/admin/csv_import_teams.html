@@ -1,0 +1,8 @@
+
+    <div>
+        <form action="import_teams" method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">Импорт команд</button>
+        </form>
+    </div>

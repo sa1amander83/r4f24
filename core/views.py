@@ -217,19 +217,19 @@ class RunnersView(DataMixin, ListView):
             cat_selected = self.kwargs['cat']
             context['cat_selected'] = cat_selected
             if cat_selected != 'f':
-                context['profile'] = get_user_model().objects.filter(runner_category=cat_selected).values('username',
+                context['profile'] = get_user_model().objects.filter(runner_category=cat_selected,not_running=False).values('username',
                                                                                                           'runner_category',
                                                                                                           'runner_age',
                                                                                                           'runner_gender',
-                                                                                                          'runner_group')
-                context['count_of_runners'] = get_user_model().objects.filter(runner_category=cat_selected).count()
+                                                                                                          'runner_group__group_title')
+                context['count_of_runners'] = get_user_model().objects.filter(runner_category=cat_selected,not_running=False).count()
 
             else:
-                context['profile'] = get_user_model().objects.filter(runner_gender='ж').values('username',
+                context['profile'] = get_user_model().objects.filter(runner_gender='ж',not_running=False).values('username',
                                                                                                'runner_category',
                                                                                                'runner_age',
                                                                                                'runner_gender',
-                                                                                               'runner_group')
+                                                                                               'runner_group__group_title')
 
             return context
 
@@ -240,7 +240,8 @@ class RunnersView(DataMixin, ListView):
             context['profile'] = get_user_model().objects.all().filter(not_running=False).values('username',
                                                                                                  'runner_category',
                                                                                                  'runner_age',
-                                                                                                 'runner_gender')
+                                                                                                 'runner_gender',
+                                                                                                  'runner_group__group_title')
             return context
 
 

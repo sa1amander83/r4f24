@@ -21,6 +21,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 from core.views import IndexView
+from r4f24.views import exportcsv_runnerdays, exportcsv_statistica, import_teams
 from telega.views import TelegramBotView
 
 urlpatterns = [
@@ -30,7 +31,9 @@ urlpatterns = [
     path('', include('authorize.urls')),
     path('', include('profiles.urls')),
     path('', include('groups.urls')),
-
+   path('import_teams',import_teams,name='import_teams' ),
+   path('export_runnerdays',exportcsv_runnerdays, name='export_runnerdays'),
+   path('export_statistica',exportcsv_statistica, name='export_statistica'),
     path("__debug__/", include("debug_toolbar.urls")),
 
 

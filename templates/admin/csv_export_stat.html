@@ -1,0 +1,7 @@
+    <div>
+        <form action="export_statistica" method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">СТАТИСТИКа</button>
+        </form>
+    </div>

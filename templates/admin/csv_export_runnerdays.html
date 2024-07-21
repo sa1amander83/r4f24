@@ -1,0 +1,7 @@
+    <div>
+        <form action="export_runnerdays" method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit"> пробежки</button>
+        </form>
+    </div>

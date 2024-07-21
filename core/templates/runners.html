@@ -355,6 +355,7 @@
               <th scope="col" class="px-6 py-3">категория</th>
               <th scope="col" class="px-6 py-3">возраст</th>
               <th scope="col" class="px-6 py-3">пол</th>
+              <th scope="col" class="px-6 py-3">группа</th>
             </tr>
           </thead>
 
@@ -368,6 +369,7 @@
               <td class="px-6 py-4">{{ p.runner_category|cat_tag }}</td>
               <td class="px-6 py-4">{{ p.runner_age }}</td>
               <td class="px-6 py-4">{{ p.runner_gender }}</td>
+              <td class="px-6 py-4">{{ p.runner_group }}</td>
             </tr>
 
             {% endfor %}

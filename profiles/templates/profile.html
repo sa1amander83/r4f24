@@ -4,30 +4,30 @@
 {% load divide_tag %}
 {% load time_tag %}
 {% load cat_tag %}
-
-{% load thumbnail %}
 {% block content %}
-
-{% csrf_token %}
-
-
-<div class=" container-fluid ">
-
-    {#   шапка личного кабинета с описанием участника#}
-    <br>
-    {% if request.user.is_authenticated and request.user == run_user %}
+    {% load thumbnail %}
+    {% csrf_token %}
 
 
-        <div class="button">
 
-            <a href='{% url 'profile:addrunday' runner_stat %}'
-               class="button rounded 3 bg-blue-600 text-5xl text-stone-50">
-                Внести сведения
-            </a>
-        </div>
-    {% endif %}
-    <br>
-    {% comment %}
+
+    <div class=" container-fluid ">
+
+        {#   шапка личного кабинета с описанием участника#}
+        <br>
+        {% if request.user.is_authenticated and request.user == run_user %}
+
+
+            <div class="button">
+
+                <a href='{% url 'profile:addrunday' runner_stat %}'
+                   class="button rounded 3 bg-blue-600 text-5xl text-stone-50">
+                    Внести сведения
+                </a>
+            </div>
+        {% endif %}
+        <br>
+        {% comment %}
 <div class="button">
     {##}
     {#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
@@ -38,152 +38,146 @@
     {#                    </div>#}
 </div> {% endcomment %}
 
-    <h1> Статистика по участнику № {{ runner_stat }}  </h1>
-    <div class="statistic-user flex justify-content-around">
-        <div>
-            {% if data %}
-                {% for d in data %}
-                    <p> Сумма балов - {{ d.total_balls }}</p>
-                    <p> дистанция за все время пробега - {{ d.total_distance|floatformat:3 }}</p>
-                    <p> все время пробега - {{ d.total_time|time:"H:i:s" }}</p>
-                    <p> средний темп - {{ d.total_average_temp|time:"i:s" }}</p>
-                    <p> дней пробега - {{ d.total_days }}</p>
-                    <p> количество пробежек - {{ d.total_runs }}</p>
-                    <p> квалификация пройдена - {% if d.is_qualificated %} Да {% else %} Нет {% endif %}</p>
+        <h1> Статистика по участнику № {{ runner_stat }}  </h1>
+        <div class="statistic-user flex justify-content-around">
+            <div>
+                {% if data %}
+                    {% for d in data %}
+                        <p> Сумма балов - {{ d.total_balls }}</p>
+                        <p> дистанция за все время пробега - {{ d.total_distance|floatformat:3 }}</p>
+                        <p> все время пробега - {{ d.total_time|time:"H:i:s" }}</p>
+                        <p> средний темп - {{ d.total_average_temp|time:"i:s" }}</p>
+                        <p> дней пробега - {{ d.total_days }}</p>
+                        <p> количество пробежек - {{ d.total_runs }}</p>
+                        <p> квалификация пройдена - {% if d.is_qualificated %} Да {% else %} Нет {% endif %}</p>
 
-                {% endfor %}
-                </div>
-
-
-            {% else %}
-                <h2 class="bg-red-500"> Участник пока не внес никаких сведений о пробежках</h2>
-            {% endif %}
-        {#            {% cache 300 user.username %}#}
-
-        <div>
-            {% for d in user_data %}
-                <p class="col-form-label"> Команда - №{{ d.runner_team }}</p>
-                <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
-                <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
-                <p class="col-form-label"> Категория - {{ d.runner_category|cat_tag }}</p>
-            {% endfor %}
-            <p>Место в общем рейтинге {{ place }}</p>
-            {% if exists_in_group %}
-                <p class="col-form-label"> состоит в группе {{ exists_in_group.family_title }}</p>
-
-
-            {% endif %}
-
-        </div>
-{#        {% endcache %}#}
-        <div>
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }} col-lg-auto   text-danger "
-                                                 style="font-size: 28px" {% endif %}>{{ message }}</li>
                     {% endfor %}
-                </ul>
-            {% endif %}
+                    </div>
+
+
+                {% else %}
+                    <h2 class="bg-red-500"> Участник пока не внес никаких сведений о пробежках</h2>
+                {% endif %}
+            {% cache 300 user.username %}
+
+                <div>
+                    {% for d in user_data %}
+                        <p class="col-form-label"> Команда - №{{ d.runner_team }}</p>
+                        <p class="col-form-label"> Пол - {{ d.runner_gender }}</p>
+                        <p class="col-form-label"> Возраст - {{ d.runner_age }}</p>
+                        <p class="col-form-label"> Категория - {{ d.runner_category|cat_tag }}</p>
+                    {% endfor %}
+                    {% if exists_in_group %}
+                        <p class="col-form-label"> состоит в группе {{ exists_in_group.family_title }}</p>
+
+
+                    {% endif %}
+
+                </div>
+            {% endcache %}
+            <div>
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }} col-lg-auto   text-danger "
+                                                     style="font-size: 28px" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% for u in tot_dist %}
+                <div class="rating">
+
+                <p class="col-form-label">Место в общем рейтинге - {{ forloop.counter }} </p>
+                {#            #TODO добавить место в рейтинге по категории#}
+                <p class="col-form-label">Место в рейтинге по категории - {{ forloop.counter }} </p>
+
+                <p class="col-form-label">Пробег за все время - {{ u.total_dist|floatformat:3 }} км</p>
+                <p class="col-form-label">Общее время пробега - {{ u.total_time }}</p>
+                <p class="col-form-label"> Средний темп - {{ u.avg_temp }} мин/км</p>
+            {% endfor %}
+            </div>
         </div>
 
+
+        <table class="table  table-striped" id="profile">
+            <thead class="table-dark text-center">
+            <tr class="bg">
+                <th></th>
+                <th> день</th>
+                <th> баллы</th>
+                <th> дистанция</th>
+                <th> время</th>
+                <th> темп</th>
+                <th> пробежка</th>
+                <th> фото</th>
+                <th></th>
+            </tr>
+            </thead>
+
+
+            <tbody>
+
+            {% for p in runner_day %}
+
+                <tr class="text-center">
+
+
+                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+                        <td>
+                            <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
+                                <i class="fas fa-pen fa-lg"></i> </a>
+                        </td>
+                        {% else %} <td></td>
+                    {% endif %}
+                    <td>{{ p.day_select }} </td>
+                    <td> {{ p.ball }} </td>
+                    <td> {{ p.day_distance|floatformat:3 }}</td>
+                    <td> {{ p.day_time|time:'H:i:s' }}</td>
+                    <td> {{ p.day_average_temp|time:'i:s' }}</td>
+                    <td> {{ p.number_of_run }}</td>
+
+                    <td style="width: max-content; display: flex">
+                        {% for image in images %}
+                            {% if request.user.is_authenticated and p.day_select == image.day_select and p.number_of_run == image.number_of_run %}
+
+                                {#                #TODO  ЗДЕСЬ СДЕЛАТЬ ВЫСПЛЫВАЮШЕЕ ОКНО для просмотра пробегов#}
+                                
+                                {% thumbnail image "40x40" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt=""
+                                         style="margin: 3px"/>
+
+                                {% endthumbnail %}
+
+                            {% else %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
+                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+
+                        <td><a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
+                            <i class="fa-solid fa-trash" style="padding-right: 20px"> </i></a>
+                        </td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+                </tr>
+
+
+            {% endfor %}
+
+            </tbody>
+            <tr></tr>
+        </table>
+
+
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
 
     </div>
-</div>
-
-
-<table class="table  table-striped" id="profile">
-    <thead class="table-dark text-center">
-    <tr class="bg">
-        <th></th>
-        <th> день</th>
-        <th> баллы</th>
-        <th> дистанция</th>
-        <th> время</th>
-        <th> темп</th>
-        <th> пробежка</th>
-        <th> фото</th>
-        <th></th>
-    </tr>
-    </thead>
-
-
-    <tbody>
-
-    {% for p in runner_day %}
-
-        <tr class="text-center">
-
-
-            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-                <td>
-
-                    <a href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                        </svg>
-                    </a>
-                </td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            <td>{{ p.day_select }} </td>
-            <td> {{ p.ball }} </td>
-            <td> {{ p.day_distance|floatformat:3 }}</td>
-            <td> {{ p.day_time|time:'H:i:s' }}</td>
-            <td> {{ p.day_average_temp|time:'i:s' }}</td>
-            <td> {{ p.number_of_run }}</td>
-
-            <td style="width: max-content; display: flex">
-                {% for image in images %}
-                    {% if request.user.is_authenticated and p.day_select == image.day_select and p.number_of_run == image.number_of_run %}
-
-                        {#                #TODO  ЗДЕСЬ СДЕЛАТЬ ВЫСПЛЫВАЮШЕЕ ОКНО для просмотра пробегов#}
-                        {% thumbnail image "40x40" crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt=""
-                                 style="margin: 3px"/>
-
-                        {% endthumbnail %}
-
-                    {% else %}
-                    {% endif %}
-                {% endfor %}
-            </td>
-
-            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-                <td>
-
-
-                    <a href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
-                        <i class="fa-solid fa-trash" style="padding-right: 20px"> </i>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                        </svg>
-                    </a>
-                </td>
-            {% else %}
-                <td></td>
-            {% endif %}
-
-        </tr>
-
-
-    {% endfor %}
-
-    </tbody>
-    <tr></tr>
-</table>
-
-
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-</div>
 {% endblock %}
 
 
@@ -193,8 +187,7 @@
         new DataTable('#profile', {
             columnDefs: [
                 {type: 'natural', target: 1},
-                {orderable: false, targets: [0, 6, 7, 8]},
-                {targets: '_all', className: 'dt-body-center  dt-head-center'}
+                {orderable: false, targets: [0,6,7,8]}
             ],
             ordering: true,
             bLengthChange: false,

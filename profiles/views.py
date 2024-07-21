@@ -52,9 +52,10 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
 
         runners_list = list(
             Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username', flat=True))
-
-        context['place'] = runners_list.index(self.kwargs['username']) + 1
-
+        try:
+            context['place'] = runners_list.index(self.kwargs['username']) + 1
+        except  BaseException:
+            context['place']=''
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
         context['tot_dist'] = Statistic.objects.all().order_by('-total_balls', 'total_distance')
         # place = stats.index(user_stat) + 1
