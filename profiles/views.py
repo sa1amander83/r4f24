@@ -33,9 +33,12 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
         context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
-
-        context['run_user'] = get_user_model().objects.get(username=self.kwargs['username'])
-
+        getuser_stat=Statistic.objects.get(runner_stat__username=self.kwargs['username'])
+        getuser = get_user_model().objects.get(username=self.kwargs['username'])
+        context['run_user'] = getuser.username
+        get_category= getuser.runner_category
+        context['run_user_avg']=getuser_stat.total_average_temp
+        context['run_user_time']=getuser_stat.total_time
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select', 'number_of_run')
 
@@ -49,11 +52,16 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             context['haverun'] = 1
         else:
             context['haverun'] = 0
-
+        context['total_runners']= Statistic.objects.all().count()
+        context['total_runners_category']= Statistic.objects.filter(runner_stat__runner_category=get_category).count()
         runners_list = list(
             Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username', flat=True))
+        runners_list_category=list(
+            Statistic.objects.filter(runner_stat__runner_category=get_category).order_by('-total_balls').values_list('runner_stat__username', flat=True))
+
         try:
-            context['place'] = runners_list.index(self.kwargs['username']) + 1
+            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1
+            context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1
         except  BaseException:
             context['place']=''
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])

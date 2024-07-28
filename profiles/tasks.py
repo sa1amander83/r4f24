@@ -53,7 +53,7 @@ def get_best_five_summ(team_id):
         )
 
     except Exception:
-        raise
+        print('error from get_best_five_summ')
 
 
 def calc_comands(username):
@@ -149,6 +149,6 @@ def calc_start(self, runner_id, username):
         )
 
     except CreateError:
-        raise
+        print('error from calc start')
 
     calc_comands(username)
