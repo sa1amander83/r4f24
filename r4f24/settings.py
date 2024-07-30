@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'authorize',
     'groups',
     'django_cleanup',
-    'sorl.thumbnail',
+    
     "debug_toolbar",
 
 
@@ -74,14 +74,14 @@ INSTALLED_APPS = [
 
 # from django.core.files.storage import get_storage_class
 
-from django_hashedfilenamestorage.storage import HashedFilenameMetaStorage
+# from django_hashedfilenamestorage.storage import HashedFilenameMetaStorage
 
 # HashedFilenameMyStorage = HashedFilenameMetaStorage(
 #     storage_class=get_storage_class('core.MyStorage'),
 # )
 
 
-DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
+# DEFAULT_FILE_STORAGE = 'django_hashedfilenamestorage.storage.HashedFilenameFileSystemStorage'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
