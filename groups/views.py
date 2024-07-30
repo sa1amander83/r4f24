@@ -305,4 +305,4 @@ def add_user_to_group(request):
     user.save()
     calc_start.delay(user.id, user.username)
     redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
-    return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})
+    return JsonResponse(data={'status': 'success', 'message': 'Вы добавлены в группу', 'redirect_url': redirect_url})
