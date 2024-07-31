@@ -16,17 +16,18 @@
             <h1 class="text-left text-lg font-semibold truncate">Статистика команд</h1>
         {% endif %}
         <div class=" w-full mt-5 bg-white shadow  rounded-xl">
-        <table class="table table-striped" id="comanda">
-            <thead class="table-dark text-center">
+        <table class="display  text-sm text-left px-1  text-gray-500 "
+                    style="width:100%" id="comanda">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
 
             <tr>
-                <th> {% if flag %}Группа{% else %} Команда {% endif %}</th>
-                <th>Участники</th>
-                <th>Баллы</th>
-                <th>Дистанция</th>
-                <th>Общее Время</th>
-                <th>Темп</th>
-                <th>Пробежки</th>
+                <th scope="col" class="px-6 py-3"> {% if flag %}Группа{% else %} Команда {% endif %}</th>
+                <th scope="col" class="px-6 py-3">Участники</th>
+                <th scope="col" class="px-6 py-3">Баллы</th>
+                <th scope="col" class="px-6 py-3">Дистанция</th>
+                <th scope="col" class="px-6 py-3">Общее Время</th>
+                <th scope="col" class="px-6 py-3">Темп</th>
+                <th scope="col" class="px-6 py-3">Пробежки</th>
             </tr>
             </thead>
             <tbody>
@@ -36,25 +37,26 @@
                 {##}
                 {#                TODO сделать  дропдаун членов группы или хуй с ним#}
                 {##}
-                <tr>
-                    <td> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
+                <tr class="bg-white border-b ">
+                    <td scope="row"
+                                class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap "> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
                         <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
                     </td>
                     {% if flag %}
-                        <td>{{ team.group_total_members }}</td>
-                        <td>{{ team.group_total_balls }}</td>
-                        <td>{{ team.group_total_distance }}</td>
-                        <td>{{ team.group_total_time }}</td>
-                        <td>{{ team.group_average_temp|time:"i:s" }}</td>
-                        <td>{{ team.group_total_runs }}</td>
+                        <td class="px-6 py-4">{{ team.group_total_members }}</td>
+                        <td class="px-6 py-4">{{ team.group_total_balls }}</td>
+                        <td class="px-6 py-4">{{ team.group_total_distance }}</td>
+                        <td class="px-6 py-4">{{ team.group_total_time }}</td>
+                        <td class="px-6 py-4">{{ team.group_average_temp|time:"i:s" }}</td>
+                        <td class="px-6 py-4">{{ team.group_total_runs }}</td>
 
                     {% else %}
-                        <td>{{ team.comands_total_members }}</td>
-                        <td>{{ team.comand_total_balls }}</td>
-                        <td>{{ team.comand_total_distance }}</td>
-                        <td>{{ team.comand_total_time }}</td>
-                        <td>{{ team.comand_average_temp|time:"i:s" }}</td>
-                        <td>{{ team.comand_total_runs }}</td>
+                        <td class="px-6 py-4">{{ team.comands_total_members }}</td>
+                        <td class="px-6 py-4">{{ team.comand_total_balls }}</td>
+                        <td class="px-6 py-4">{{ team.comand_total_distance }}</td>
+                        <td class="px-6 py-4">{{ team.comand_total_time }}</td>
+                        <td class="px-6 py-4">{{ team.comand_average_temp|time:"i:s" }}</td>
+                        <td class="px-6 py-4">{{ team.comand_total_runs }}</td>
 
 
                     {% endif %}

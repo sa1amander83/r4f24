@@ -55,10 +55,10 @@ class RegisterUserForm(UserCreationForm):
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'placeholder': "Ведите имя",
-                                                                            'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
+                                                                            'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-sky-500 focus:ring-sky-500'}))
     password = forms.CharField(label='Пароль',
                                widget=forms.PasswordInput(attrs={'placeholder': "Введите свой пароль",
-                                                                 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500'}))
+                                                                 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-sky-500 focus:ring-sky-500'}))
 
     class Meta:
         model = get_user_model()

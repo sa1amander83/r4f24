@@ -2,40 +2,20 @@
 {% load static %}
 {% block content %}
 
+    <body class="bg-gradient-primary">
 
 
+    <div class="container">
 
+        <div class="card o-hidden border-0 shadow-lg my-5">
 
-    <div class="flex justify-center gap-10   ">
-    <div class= >
-        <svg
-          class="mx-auto h-12 text-grey-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-        <h2 class="mt-2 text-2xl text-center font-bold text-gray-500 sm:mt-6 sm:text-3xl">
-          Редактировать профиль
-        </h2>
-      </div>
+            <div class="row">
 
-        <div class="flex justify-center bg-gray-200">
+                <br>
 
-           
-
-            
-
-                
-
-                    <form class="flex flex-col justify-center" method="post">
+                <div class="user-creation-form  flex justify-center">
+{#                    <form method="post" action="{% url 'register' %}" enctype="text/plain">#}
+                    <form method="post">
                            {% csrf_token %}
                     {{ form.name.errors }}
                         {% if messages %}
@@ -57,11 +37,10 @@
                         <button type="submit" class="btn btn-facebook btn-user btn-block"> Обновить сведения</button>
 
                     </form>
-                
-          
+                </div>
+            </div>
         </div>
     </div>
-
 
 
 
