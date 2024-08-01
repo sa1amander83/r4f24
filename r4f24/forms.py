@@ -116,18 +116,18 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
 
-            'day_select': forms.Select(attrs={'class': 'form-control form-control-user', 'id': 'day_id'}),
+            'day_select': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_id'}),
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
-                attrs={'class': 'form-control form-control-user', 'id': 'day_distance', 'value': '0'}),
+                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'value': '0'}),
             'day_time': MyTotalTimeInput(
-                attrs={'class': 'form-control form-control-user', 'type': 'time', 'id': 'day_time', 'step': '1', 'value': '00:00:00'}),
+                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'time', 'id': 'day_time', 'step': '1', 'value': '00:00:00'}),
             'day_average_temp': MyAverage(
-                attrs={'class': 'form-control form-control-user', 'type': 'time', 'step': '1',
+                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'time', 'step': '1',
                        'value': '00:00:00',
                        'id': 'temp'}),
             'ball': forms.NumberInput(
-                attrs={'class': 'form-control', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
+                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
 
         }
         fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball']
