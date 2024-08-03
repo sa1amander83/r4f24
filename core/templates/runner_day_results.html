@@ -51,9 +51,12 @@
 </div>
 {% endblock %} {% block extrascripts %}
 <script>
-  new DataTable("#dayResults", {
+  let table = new DataTable("#dayResults", {
     columnDefs: [
-      { targets: "_all", className: "dt-body-center  dt-head-center" },
+      { targets: "_all", className: "dt-body-center  dt-head-center",
+           },
+              { orderSequence: ['desc'], targets: [4] },
+
     ],
 
     language: {

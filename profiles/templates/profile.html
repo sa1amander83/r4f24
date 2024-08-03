@@ -364,10 +364,11 @@
 {% block extrascripts %}
     <script>
 
-        new DataTable('#profile', 
+       let table= new DataTable('#profile',
             {
                 autoWidth: true,
             columnDefs: [
+
                 {targets: '_all', className: 'dt-body-center  dt-head-center'}],
             layout: {
                 topStart: "info",

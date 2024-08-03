@@ -22,17 +22,11 @@
       integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
       crossorigin="anonymous"
     ></script>
-
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body class="bg-sky-800">
-    {% block main %} {% include 'components/header.html' %} {% endblock main%}
-    {% block content %} {% csrf_token %} {% endblock %}
-
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" 
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   
     <link
       rel="stylesheet"
       href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css"
@@ -43,6 +37,11 @@
 
     <script src="https://cdn.datatables.net/plug-ins/2.0.8/sorting/natural.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+  </head>
+  <body class="bg-sky-800">
+    {% block main %} {% include 'components/header.html' %} {% endblock main%}
+    {% block content %} {% csrf_token %} {% endblock %}
+
     {% block extrascripts %}{% endblock %}
   </body>
 </html>

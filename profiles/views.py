@@ -62,8 +62,8 @@ class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
             Statistic.objects.filter(runner_stat__runner_category=get_category).order_by('-total_balls').values_list('runner_stat__username', flat=True))
 
         try:
-            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1
-            context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1
+            context['place_in_total'] = runners_list.index(self.kwargs['username'])
+            context['place_in_category'] = runners_list_category.index(self.kwargs['username'])
         except  BaseException:
             context['place']=''
         obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
