@@ -31,11 +31,10 @@ urlpatterns = [
     path('', include('authorize.urls')),
     path('', include('profiles.urls')),
     path('', include('groups.urls')),
-   path('import_teams',import_teams,name='import_teams' ),
-   path('export_runnerdays',exportcsv_runnerdays, name='export_runnerdays'),
-   path('export_statistica',exportcsv_statistica, name='export_statistica'),
+    path('import_teams', import_teams, name='import_teams'),
+    path('export_runnerdays', exportcsv_runnerdays, name='export_runnerdays'),
+    path('export_statistica', exportcsv_statistica, name='export_statistica'),
     path("__debug__/", include("debug_toolbar.urls")),
-
 
 ]
 urlpatterns += staticfiles_urlpatterns()

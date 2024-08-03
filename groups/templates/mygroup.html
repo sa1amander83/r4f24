@@ -58,7 +58,7 @@
                     {% for u in v %}
                         <tr>
                             <td> {{ forloop.counter }}</td>
-                            <td> {{ u.user }}</td>
+                            <td> <a href="{% url 'profile:profile' u.user %}"> {{ u.user }} </a></td>
                             <td> {{ u.total_balls }}</td>
                             <td> {{ u.total_distance }}</td>
                             <td> {{ u.total_time }}</td>
@@ -81,9 +81,9 @@
 {% block extrascripts %}
 
     <script>
-        var table = new DataTable("#myteam", {
+        let table = new DataTable("#myteam", {
 
-             layout: {
+            layout: {
                 pageLength: 30,
 
             },
@@ -100,8 +100,8 @@
                 {
                     defaultContent: "-",
                     targets: "_all"
-                }
-
+                },
+                { orderSequence: ['desc'], targets: [2] },
             ],
 
             language: {

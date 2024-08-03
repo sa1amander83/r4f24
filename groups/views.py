@@ -45,7 +45,7 @@ class MyGroup(ListView, DataMixin):
                 group_stat = get_user_model().objects.filter(runner_team=obj.runner_team, not_running=False)
                 flag=False
 
-            if group is not None:
+            if group:
                 # получаем всех пользователей с этой группой или командой
                 group_users[group] = []
 
