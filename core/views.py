@@ -644,7 +644,7 @@ class StatisticView(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['calend'] = {x: x for x in range(1, 31)}
 
-        context['total_runners'] = get_user_model().objects.all().filter(not_running=False).count()
+        context['total_runners'] = Statistic.objects.all().count()
         context['runners_mens'] = get_user_model().objects.filter(runner_gender='м').filter(not_running=False).count()
         context['runners_womens'] = get_user_model().objects.filter(runner_gender='ж').filter(not_running=False).count()
 
@@ -657,6 +657,11 @@ class StatisticView(DataMixin, ListView):
 
         context['run2022'] = get_user_model().objects.filter(zabeg22=True).filter(not_running=False).count()
         context['run2023'] = get_user_model().objects.filter(zabeg23=True).filter(not_running=False).count()
+        context['total_distance'] = Statistic.objects.all().aggregate(Sum('total_distance'))['total_distance__sum']
+        context['total_time']= Statistic.objects.all().aggregate(Sum('total_time'))['total_time__sum']
+        context['total_runs']=Statistic.objects.all().aggregate(Sum('total_runs'))['total_runs__sum']
+
+
         # context['run30'] = RunnerDay.objects.annotate(day_count=Count(
         #     (Q(day_average_temp__lte="00:08:00") & Q(
         #         day_distance__gt=0)) |

@@ -33,20 +33,21 @@ class ProfileUser( ListView, DataMixin):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(calend='calend')
         context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
-        getuser_stat = Statistic.objects.get(runner_stat__username=self.kwargs['username'])
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
-        context['run_user'] = getuser.username
-        context['exists_in_group'] = getuser.runner_group_id
         try:
+            getuser_stat = Statistic.objects.get(runner_stat__username=self.kwargs['username'])
 
+            context['run_user'] = getuser.username
+            context['exists_in_group'] = getuser.runner_group_id
             context['runner_group'] = Group.objects.get(id=getuser.runner_group_id).group_title
+            context['run_user_avg'] = getuser_stat.total_average_temp
+            context['run_user_time'] = getuser_stat.total_time
         except ObjectDoesNotExist:
             context['runner_group'] = False
-
+            getuser_stat=False
 
         get_category = getuser.runner_category
-        context['run_user_avg'] = getuser_stat.total_average_temp
-        context['run_user_time'] = getuser_stat.total_time
+
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
             'day_select', 'number_of_run')
 
