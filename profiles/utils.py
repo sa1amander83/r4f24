@@ -17,7 +17,7 @@ class DataMixin:
         cats = get_user_model().objects.annotate(Count('runner_category'))
         context['count_of_runners'] = get_user_model().objects.all().count() + 1
 
-        context['calend'] = {x: x for x in range(1, 31)}
+
 
         context['cats'] = cats
         if 'cat_selected' not in context:
