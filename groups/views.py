@@ -222,13 +222,13 @@ def view_group(request, group):
         users = get_user_model().objects.filter(runner_group=group_id)
         group_count = GroupsResult.objects.all().count()
         # all_groups = Group.objects.all()
-        grp_stats = GroupsResult.objects.all().order_by('-group_total_balls').values_list('group__group_title','group_total_balls')
+        grp_stats = GroupsResult.objects.all().order_by('-group_total_balls', 'group_total_distance').values_list(
+            'group__group_title', 'group_total_balls')
         group_titles = list(grp_stats.values_list('group__group_title', flat=True))
 
         # If you want to see the total balls alongside the titles, you can keep it as is
         # or create a list of tuples as follows:
         group_stats_list = list(group_titles)
-
 
         flag = True
 
@@ -238,8 +238,9 @@ def view_group(request, group):
         users = get_user_model().objects.filter(runner_team=group_id)
         group_count = Teams.objects.all().count()
         flag = False
-        comand_results = ComandsResult.objects.all().order_by('-comand_total_balls').values_list('comand__team',
-                                                                                            'comand_total_balls')
+        comand_results = ComandsResult.objects.all().order_by('-comand_total_balls',
+                                                              'comand_total_distance').values_list('comand__team',
+                                                                                                   'comand_total_balls')
         group_titles = list(comand_results.values_list('comand__team', flat=True))
         group_stats_list = list(group_titles)
 
@@ -268,13 +269,13 @@ def view_group(request, group):
 
     # Sort rankings based on total runs (or any other metric)
     rankings.sort(key=lambda x: x[1] if x[1] else 0, reverse=True)
-    new_rank=rankings.sort(key=lambda x: x[0])
+    new_rank = rankings.sort(key=lambda x: x[0])
 
     # Create a ranking dictionary
     # ranking_data = {name: stats for name, stats in rankings}
-    ranking_data=group_stats_list.index(group)+1
+    ranking_data = group_stats_list.index(group) + 1
     context = {
-        'group_data': group_data, 'flag': flag, 'group_count': group_count, 'rank':ranking_data
+        'group_data': group_data, 'flag': flag, 'group_count': group_count, 'rank': ranking_data
     }
     return render(request, 'singlegroup.html', context)
 
