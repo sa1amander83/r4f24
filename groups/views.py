@@ -236,7 +236,7 @@ def view_group(request, group):
     else:
         group_id = Teams.objects.get(team=group)
         users = get_user_model().objects.filter(runner_team=group_id)
-        group_count = Teams.objects.all().count()
+        group_count = ComandsResult.objects.all().count()
         flag = False
         comand_results = ComandsResult.objects.all().order_by('-comand_total_balls',
                                                               'comand_total_distance').values_list('comand__team',
