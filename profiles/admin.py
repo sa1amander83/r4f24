@@ -35,19 +35,19 @@ class RunnerAdmin(admin.ModelAdmin):
     #     return result
 
     # fields = ('пробег_за_день', 'дистанция_за_день', 'время_пробега', 'средний_темп',)
-    search_fields = ('username', 'runner_team__team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
-    list_editable = ( 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
+    search_fields = (
+    'username', 'runner_team__team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
+    list_editable = ('runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
     list_display = ('username', 'runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
     # 'пробег_за_день','дистанция_за_день', 'время_пробега', 'средний_темп',)
 
     list_display_links = ('username', 'runner_team')
 
     list_filter = ('runner_category', 'runner_team',)
-    ordering = ('username', )
+    ordering = ('username',)
 
     list_per_page = 100
     list_max_show_all = 100
-
 
     def get_urls(self):
         urls = super().get_urls()
@@ -120,12 +120,11 @@ class RunnerAdmin(admin.ModelAdmin):
                         # lst.insert(0, usernumber)
                         # print(lst)
                         # userinbase= Runner.objects.get(user__username=row[0])
-                        userid =  get_user_model().objects.get(username=row[2])
+                        userid = get_user_model().objects.get(username=row[2])
 
                         for x in lst:
-
                             runner = RunnerDay.objects.get_or_create(
-                                runner_id=userid.id-1,
+                                runner_id=userid.id - 1,
                                 day_select=x[0],
                                 day_distance=x[1],
                                 day_time=x[2],
@@ -175,7 +174,7 @@ class RunnerDayAdmin(admin.ModelAdmin):
     list_editable = ('day_select', 'day_distance', 'day_time', 'day_average_temp',
                      )
     list_display = ('runner', 'day_select', 'day_distance', 'day_time', 'day_average_temp',
-                    'get_photo_url', )
+                    'get_photo_url',)
     list_display_links = ('runner',)
 
     list_filter = ('day_select',)
@@ -188,6 +187,7 @@ class RunnerDayAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src='{object.photo.url}' width=50>")
 
     get_photo_url.short_description = 'Миниатюра'
+
 
 class StatisticAdmin(admin.ModelAdmin):
     search_fields = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
@@ -220,12 +220,12 @@ class StatisticAdmin(admin.ModelAdmin):
     ordering = ('total_distance',)
     # всего_времени.admin_order_field = '-total_time'
 
-class BestFiveAdmin(admin.ModelAdmin):
-    list_display = ('team','age18','age35','age49','ageover50', 'balls')
 
+class BestFiveAdmin(admin.ModelAdmin):
+    list_display = ('team', 'age18', 'age35', 'age49', 'ageover50', 'balls')
 
     class Meta:
-        verbose_name='Лучшие 5'
+        verbose_name = 'Лучшие 5'
 
 
 admin.site.register(RunnerDay, RunnerDayAdmin)

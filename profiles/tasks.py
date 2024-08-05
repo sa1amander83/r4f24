@@ -1,11 +1,13 @@
 from celery import shared_task
+from celery.schedules import crontab
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.base import CreateError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Q, Avg, Count, Window, F
 from django.db.models.functions import RowNumber
-from core.models import User, ComandsResult, GroupsResult
+from core.models import User, ComandsResult, GroupsResult, Teams, Group
 from profiles.models import Statistic, Championat, RunnerDay
+from r4f24.celery import app
 
 
 def get_best_five_summ(team_id):
@@ -152,3 +154,5 @@ def calc_start(self, runner_id, username):
         raise
 
     calc_comands(username)
+
+
