@@ -13,13 +13,14 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView
 
-from core.models import Group, User, Teams
+from core.models import Group, User, Teams, GroupsResult, ComandsResult
 from profiles.models import Statistic
 from profiles.tasks import calc_start, calc_comands
 from profiles.utils import DataMixin
 from r4f24.forms import FamilyForm, AddFamilyForm
 
-#просмотр группы участников
+
+# просмотр группы участников
 
 
 class MyGroup(ListView, DataMixin):
@@ -37,20 +38,17 @@ class MyGroup(ListView, DataMixin):
                 group = obj.runner_group
                 users = get_user_model().objects.filter(runner_group=group)
                 group_stat = get_user_model().objects.filter(runner_group=obj.runner_group, not_running=False)
-                flag=True
+                flag = True
 
             else:
-                group=obj.runner_team
+                group = obj.runner_team
                 users = get_user_model().objects.filter(runner_team=group)
                 group_stat = get_user_model().objects.filter(runner_team=obj.runner_team, not_running=False)
-                flag=False
+                flag = False
 
             if group:
                 # получаем всех пользователей с этой группой или командой
                 group_users[group] = []
-
-
-
 
                 user_stats = Statistic.objects.filter(runner_stat__in=users)
                 group_data = {}
@@ -72,7 +70,7 @@ class MyGroup(ListView, DataMixin):
                 # Pass the data to the template
 
                 context = {
-                    'flag':flag,
+                    'flag': flag,
                     'group_data': group_data
                 }
 
@@ -168,20 +166,22 @@ class GroupsListView(ListView):
 
     template_name = 'add_family.html'
     context_object_name = 'group'
-    form= AddFamilyForm
+    form = AddFamilyForm
+
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = AddFamilyForm()
         return context
 
     def post(self, request, *args, **kwargs):
-        form=AddFamilyForm(request.POST)
+        form = AddFamilyForm(request.POST)
         print(form.cleaned_data)
         group = form.cleaned_data['group_title']
         print(group)
 
     def get_queryset(self):
         return Group.objects.all()
+
 
 #
 # class AddFamily(CreateView, LoginRequiredMixin):
@@ -210,25 +210,41 @@ class GroupsListView(ListView):
 #     return render(request, 'add_family.html', {'form': form, 'families': families})
 
 
-
 # просмотр состава выбранной группы
 
-def view_group(request,  group):
-
+def view_group(request, group):
+    rankings = []
+    group_data = {}
     if 'groups' in request.path_info:
         # groups = Group.objects.filter(group_title=group)
         group_id = Group.objects.get(id=group)
-        group=group_id.group_title
+        group = group_id.group_title
         users = get_user_model().objects.filter(runner_group=group_id)
+        group_count = GroupsResult.objects.all().count()
+        # all_groups = Group.objects.all()
+        grp_stats = GroupsResult.objects.all().order_by('-group_total_balls').values_list('group__group_title','group_total_balls')
+        group_titles = list(grp_stats.values_list('group__group_title', flat=True))
+
+        # If you want to see the total balls alongside the titles, you can keep it as is
+        # or create a list of tuples as follows:
+        group_stats_list = list(group_titles)
+
+
         flag = True
+
 
     else:
         group_id = Teams.objects.get(team=group)
         users = get_user_model().objects.filter(runner_team=group_id)
+        group_count = Teams.objects.all().count()
         flag = False
+        comand_results = ComandsResult.objects.all().order_by('-comand_total_balls').values_list('comand__team',
+                                                                                            'comand_total_balls')
+        group_titles = list(comand_results.values_list('comand__team', flat=True))
+        group_stats_list = list(group_titles)
 
+    # Calculate total results for groups
     user_stats = Statistic.objects.filter(runner_stat__in=users)
-    group_data = {}
 
     total_results = user_stats.aggregate(
         total_balls=Sum('total_balls'),
@@ -244,13 +260,21 @@ def view_group(request,  group):
     group_data[group] = {
         'users': users,
         'total_results': total_results,
-        'user_stats': user_stats
+        'user_stats': user_stats,
+
     }
 
-    # Pass the data to the template
+    # Calculate total results for teams
 
+    # Sort rankings based on total runs (or any other metric)
+    rankings.sort(key=lambda x: x[1] if x[1] else 0, reverse=True)
+    new_rank=rankings.sort(key=lambda x: x[0])
+
+    # Create a ranking dictionary
+    # ranking_data = {name: stats for name, stats in rankings}
+    ranking_data=group_stats_list.index(group)+1
     context = {
-        'group_data': group_data, 'flag':flag
+        'group_data': group_data, 'flag': flag, 'group_count': group_count, 'rank':ranking_data
     }
     return render(request, 'singlegroup.html', context)
 
@@ -286,12 +310,13 @@ def group_list_and_create_view(request, username):
             messages.success(request, 'Group created successfully!')
             return redirect('groups:mygroup', username)
     else:
-        user= get_user_model().objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         if user.can_create_group:
-            can_create=True
-        form=AddFamilyForm()
+            can_create = True
+        form = AddFamilyForm()
     groups = Group.objects.all()
-    return render(request, 'group_list_and_create.html', {'groups': groups, 'form': form,'can_create':can_create})
+    return render(request, 'group_list_and_create.html', {'groups': groups, 'form': form, 'can_create': can_create})
+
 
 @login_required
 @require_POST
@@ -304,5 +329,6 @@ def add_user_to_group(request):
     user.runner_group = group
     user.save()
     calc_start.delay(user.id, user.username)
-    redirect_url = reverse('groups:mygroup', kwargs={'username':user.username})
-    return JsonResponse(data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})
+    redirect_url = reverse('groups:mygroup', kwargs={'username': user.username})
+    return JsonResponse(
+        data={'status': 'success', 'message': 'You have been added to the group', 'redirect_url': redirect_url})

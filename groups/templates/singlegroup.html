@@ -2,6 +2,8 @@
 <h1>hello</h1>
 {% block content %}
 
+
+
 <div class="mx-5">
   <div
     class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"
@@ -33,11 +35,11 @@
             </div>
             <div class="flex w-full flex-col border-l p-3 justify-center items-center text-xl font-bold">
                 <div>
-                    <span class=" text-2xl font-semibold leading-8">1</span>
-                    <span class=" text-slate-500 text-2xl font-semibold leading-8">/4</span> 
+                    <span class=" text-2xl font-semibold leading-8">    {{ rank }}</span>
+                    <span class=" text-slate-500 text-2xl font-semibold leading-8">/ {{ group_count }}</span>
                 </div>
                 <div>
-                  <span class="text-base text-slate-500">Место(группы)</span>
+                  <span class="text-base text-slate-500">Место ({% if flag %}группы{% else %}команды{% endif %})</span>
                     
                 </div>
 

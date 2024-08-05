@@ -20,7 +20,7 @@ from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
 
 
-class ProfileUser(LoginRequiredMixin, ListView, DataMixin):
+class ProfileUser( ListView, DataMixin):
     model = RunnerDay
     template_name = 'profile.html'
 
