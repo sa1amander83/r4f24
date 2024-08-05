@@ -1,95 +1,204 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load time_tag %}
+{% extends 'base.html' %} {%load static%} {%load time_tag%}
+<h1>hello</h1>
 {% block content %}
 
-    <div class="container-fluid">
+<div class="mx-5">
+  <div
+    class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"
+  ></div>
+  <main
+    class="flex flex-col justify-center rounded-2xl pb-3 pt-10 bg-sky-900 h-full"
+  >
+    <div
+      class="flex lg:gap-5 flex-col lg:flex-row  bg-gray-200 mb-3 rounded-2xl w-full p-3 my-3 md:p-6 md:my-0"
+    >
+            <!-- sidebar  -->
+             {% for team, data in group_data.items %}
+        <div class="">
+            <h1 class="mx-auto text-left text-lg font-semibold truncate">Ваша {% if flag %}группа {% else %} команда {% endif %}</h1>
+            <div class="lg:w-[429px] p-5 shadow my-5 rounded-xl bg-white">
+              <div class="flex flex-row  items-center mb-5">
+              <div class="flex w-full  justify-center  items-center gap-5">
+                    <img
+          class="w-20 h-20 shrink-0"
+          src="{% if flag %}{% static 'img/teams.png' %}{% else %}{% static 'img/group.png' %}{% endif %}"
+          alt="User Avatar"
+        />
+               <div class="flex flex-col">    
+                <div class="text-lg font-semibold text-slate-500 truncate">{{ team }} 
+
+                  </div>
+                
+                </div> 
+            </div>
+            <div class="flex w-full flex-col border-l p-3 justify-center items-center text-xl font-bold">
+                <div>
+                    <span class=" text-2xl font-semibold leading-8">1</span>
+                    <span class=" text-slate-500 text-2xl font-semibold leading-8">/4</span> 
+                </div>
+                <div>
+                  <span class="text-base text-slate-500">Место(группы)</span>
+                    
+                </div>
+
+            </div>
+              </div>
+
+            {#   {% cache 300 user.username %}#}
+           
+            
+             <div class="bg-gray-200 h-px mb-2"></div>
+                <div class="flex w-full justify-around items-center">
+                    <div class="p-5 flex flex-col justify-center items-center w-1/3 text-center border-r">
+                     
+                        <svg class="size-5 text-gray-500 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                        </svg>
+
+                        <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_balls }}</h4>
+                        <h5 class="mt-1 text-sm text-slate-500">Баллы</h5>
+                    </div>
+                    
+                    <div class="p-5 flex flex-col items-center w-1/3 text-center border-r">
+                        
+                        <svg class="size-5 text-gray-500 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+                        </svg>
+
+                        <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_distance }}</h4>
+                        <h5 class="mt-1 text-sm text-slate-500">Дистанция</h5>
+                    </div>
+                    
+                       
+                       
+                        
+                       
+                
+                <div class="p-5 flex flex-col items-center w-1/3 text-center">
+                       
+                        <svg class="size-5 text-gray-500 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
 
 
-        {% for team, data in group_data.items %}
+                    <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_average_temp|smooth_filter }}</h4>
+                    <h5 class="mt-1 text-sm text-slate-500">Темп</h5>
 
-            <h1>Статистика  {% if flag %}  группы  <b>{{ team }} </b>{% else %}  команды  <b>{{ team }}</b>{% endif %}
-            </h1>
-            <p>Участники - {{ data.total_results.tot_users }}</p>
-            <p>Баллы {{ data.total_results.total_balls }}</p>
-            <p>Дистанция {{ data.total_results.total_distance|floatformat:3 }}</p>
-            <p>Время {{ data.total_results.total_time }}</p>
-            <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
-            <p>Дней пробега {{ data.total_results.total_days }}</p>
-            <p>Всего пробежек {{ data.total_results.total_runs }} </p>
-            <table class="table table-striped" id="singlegroup">
-                <thead class="table-dark text-center">
-                <tr>
-                    <th>Участник</th>
-                    <th>Баллы</th>
-                    <th>Дистанция</th>
-                    <th>Общее Время</th>
-                    <th>Темп</th>
-                    <th>Дней пробега</th>
-                    <th>Пробежки</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for user in data.users %}
-                    {% for stat in data.user_stats %}
-                        {% if stat.runner_stat == user %}
 
-                            <tr>
-                                <td><a href="{% url 'profile:profile' user.username %}"> {{ user.username }}</a></td>
-                                <td>{{ stat.total_balls }}</td>
-                                <td>{{ stat.total_distance|floatformat:3 }}</td>
-                                <td>{{ stat.total_time|time:"H:i:s" }}</td>
-                                <td>{{ stat.total_average_temp|time:"i:s" }}</td>
-                                <td>{{ stat.total_days }}</td>
-                                <td>{{ stat.total_runs }}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-                </tbody>
-            </table>
-        {% endfor %}
+                </div>
+      
+
+     
+                {# {% endcache %}#}
+
+                </div>
+        </div>
+
+
+
+
+
     </div>
 
-{% endblock %}
+      
 
 
-{% block extrascripts %}
 
-    <script>
 
-        new DataTable('#singlegroup', {
+         
+      
+        <div class="flex flex-col flex-1 ">
+            <h1 class=" text-left text-lg font-semibold truncate"> Участники {% if flag %}группы {% else %} команды {% endif %}</h1>
+        <div class=" w-full mt-5 bg-white shadow  rounded-xl">
+        <table class="display  text-sm text-left px-1  text-gray-500 " style="width: 100%;" id="singlegroup">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50" >
+            <tr>
+  
+              <th scope="col" class="px-6 py-3">Участник</th>
+              <th scope="col" class="px-6 py-3">баллы</th>
+              <th scope="col" class="px-6 py-3">дистанция</th>
+              <th scope="col" class="px-6 py-3">Общее время</th>
+              <th scope="col" class="px-6 py-3">темп</th>
+              <th scope="col" class="px-6 py-3">Дней пробега</th>
+              <th scope="col" class="px-6 py-3">пробежки</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in data.users %} {%for stat in data.user_stats %} {% if stat.runner_stat == user %}
+            <tr class="bg-white border-b ">
+              
+              <td class="px-6 py-4"><a class="font-semibold text-black" href="{% url 'profile:profile' user.username %}">
+            {{ user.username }}</a</td>
+              <td class="px-6 py-4">{{ stat.total_balls }}</td>
+              <td class="px-6 py-4">{{ stat.total_distance|floatformat:3 }}</td>
+              <td class="px-6 py-4">{{ stat.total_time|time:"H:i:s" }}</td>
+              <td class="px-6 py-4">{{ stat.total_average_temp|time:"i:s" }}</td>
+              <td class="px-6 py-4">{{ stat.total_days }}</td>
+              <td class="px-6 py-4">{{ stat.total_runs }}</td>
+              
+            </tr>
+            {% endif %} {% endfor %} {% endfor %}
+          </tbody>
+        </table>
+        </div>
+        </div>
+    
 
-                order:[1,'desc'],
+       
+      </div>
+    </div>
+  </main>
+</div>
+{% endfor %}
+{% endblock %} {% block extrascripts %}
 
-            columnDefs: [
-                {targets: '_all', className: 'dt-body-center  dt-head-center'},
-                {
-                    defaultContent: "-",
-                    targets: "_all"
-                }
+<script>
+  var table = new DataTable("#singlegroup", {
 
-            ],
+       layout: {
+          pageLength: 30,
+          responsive: true,
+          
 
-            language: {
-                processing: "Подождите...",
-                search: "",
-                lengthMenu: "Показать _MENU_ записей",
-                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                infoEmpty: "Записи с 0 до 0 из 0 записей",
-                infoFiltered: "(отфильтровано из _MAX_ записей)",
-                loadingRecords: "Загрузка записей...",
-                zeroRecords: "Записи отсутствуют.",
-                emptyTable: "В таблице отсутствуют данные",
-                paginate: {
-                    first: "Первая",
-                    previous: "Предыдущая",
-                    next: "Следующая",
-                    last: "Последняя",
-                },
-                searchPlaceholder: "Поиск участника",
-            },
-        });
+      },
+      responsive: true,
+      scrollX: true,
+      {#    topStart: "info",#}
+      {#    bottom: 'paging',#}
+      {##}
+      {#    bottomStart: null,#}
+      {#    bottomEnd: null,#}
+       
 
-    </script>
+
+      columnDefs: [
+          {targets: '_all', className: 'dt-body-center  dt-head-center'},
+          {
+              defaultContent: "-",
+              targets: "_all"
+          }
+
+      ],
+
+      language: {
+          processing: "Подождите...",
+          search: "",
+          lengthMenu: "Показать _MENU_ записей",
+          info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+          infoEmpty: "Записи с 0 до 0 из 0 записей",
+          infoFiltered: "(отфильтровано из _MAX_ записей)",
+          loadingRecords: "Загрузка записей...",
+          zeroRecords: "Записи отсутствуют.",
+          emptyTable: "В таблице отсутствуют данные",
+          paginate: {
+              first: "Первая",
+              previous: "Предыдущая",
+              next: "Следующая",
+              last: "Последняя",
+          },
+          searchPlaceholder: "Поиск участника",
+      },
+  });
+</script>
 {% endblock %}

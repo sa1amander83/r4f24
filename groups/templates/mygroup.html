@@ -17,7 +17,8 @@
         <div class="">
             <h1 class="mx-auto text-left text-lg font-semibold truncate">Ваша {% if flag %}группа {% else %} команда {% endif %}</h1>
             <div class="lg:w-[429px] p-5 shadow my-5 rounded-xl bg-white">
-                <div class="flex justify-center mb-5 items-center gap-5">
+              <div class="flex flex-row  items-center mb-5">
+              <div class="flex w-full  justify-center  items-center gap-5">
                     <img
           class="w-20 h-20 shrink-0"
           src="{% if flag %}{% static 'img/teams.png' %}{% else %}{% static 'img/group.png' %}{% endif %}"
@@ -34,6 +35,19 @@
                 
                 </div> 
             </div>
+            <div class="flex w-full flex-col border-l p-3 justify-center items-center text-xl font-bold">
+                <div>
+                    <span class=" text-2xl font-semibold leading-8">1</span>
+                    <span class=" text-slate-500 text-2xl font-semibold leading-8">/4</span> 
+                </div>
+                <div>
+                  <span class="text-base text-slate-500">Место(группы)</span>
+                    
+                </div>
+
+            </div>
+              </div>
+
             {#   {% cache 300 user.username %}#}
            
             

@@ -4,19 +4,125 @@
 {% block content %}
 {%  load okon4_tag%}
     {% csrf_token %}
+<div class=" mx-5 ">
+  <div class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"></div>
+  <main class="flex flex-col justify-center rounded-2xl pb-3 pt-10 bg-sky-900 h-full">
+    <div class="flex lg:gap-5 flex-col lg:flex-row  bg-gray-200 mb-3  rounded-2xl w-full p-3 my-3 md:p-6 md:my-0">
+ <!-- sidebar  -->
+   <div class="">
 
+ 
+            <!-- Chart gender -->
+        <div class="">
+            <div class="flex items-center">
+                <h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
+                категорий</h2></div>
+            <div class="p-5 shadow mt-5 rounded-xl bg-white">
 
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <div class="font-sans leading-normal tracking-normal">
+                    <canvas class="text-white w-96" id="gender-static"></canvas>
+                    <script>
+                        Chart.defaults.color = '#000000';
+                        new Chart(document.getElementById("gender-static"), {
+
+                            type: 'pie',
+                            data: {
+                                labels: ["Женщин", "Мужчин"],
+                                datasets: [{
+                                    label: "Кол-во участников",
+                                    backgroundColor: ["#f43f5e", "#0ea5e9"],
+                                    data: [{{ runners_womens}}, {{ runners_mens}}]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    position: "bottom",
+                                    labels: {
+                                        fontColor: "black",
+                                        fontSize: 14,
+                                        padding: 20,
+                                    },
+                                },
+                            }
+
+                        });
+                    </script>
+
+                </div>
+            </div>
+        </div>
+
+ 
+   </div>
+   <div class="flex flex-col flex-1 ">
+    
+
+                    <!-- Верхний ряд -->
+                    <div class="">
+                        <h1 class="mx-auto text-center lg:text-left text-lg font-semibold truncate">Общие сведения</h1>
+                        
+
+                                <div class="grid  grid-cols-12 gap-6 mt-5">
+                                    
+                                    <div class="bg-white  rounded-xl shadow col-span-12 sm:col-span-6 xl:col-span-3">
+                                    <div class="p-5">
+                                    <div class="flex">
+
+                                <svg fill="#aaa7a7" class="size-6 text-gray-500" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="225px" height="225px" viewBox="-150.11 -150.11 784.43 784.43" xml:space="preserve" stroke="#aaa7a7" stroke-width="0.0048421"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="47.45258"> <g> <path d="M395.527,97.043V55.352H124.537l159.46,171.507c9.983,10.749,9.848,27.458-0.319,38.026L126.017,428.861h269.504v-25.18 c0-15.256,12.413-27.668,27.674-27.668c15.256,0,27.681,12.412,27.681,27.668v52.848c0,15.262-12.419,27.681-27.681,27.681H61.014 c-11.106,0-21.107-6.603-25.464-16.834c-4.359-10.226-2.189-22.012,5.509-30.026l184.584-191.964L40.743,46.521 c-7.492-8.068-9.496-19.798-5.101-29.899C40.042,6.525,50.005,0,61.014,0h362.188c15.255,0,27.68,12.413,27.68,27.68v69.363 c0,15.259-12.419,27.677-27.68,27.677C407.94,124.72,395.527,112.308,395.527,97.043z"></path> </g> </g><g id="SVGRepo_iconCarrier"> <g> <path d="M395.527,97.043V55.352H124.537l159.46,171.507c9.983,10.749,9.848,27.458-0.319,38.026L126.017,428.861h269.504v-25.18 c0-15.256,12.413-27.668,27.674-27.668c15.256,0,27.681,12.412,27.681,27.668v52.848c0,15.262-12.419,27.681-27.681,27.681H61.014 c-11.106,0-21.107-6.603-25.464-16.834c-4.359-10.226-2.189-22.012,5.509-30.026l184.584-191.964L40.743,46.521 c-7.492-8.068-9.496-19.798-5.101-29.899C40.042,6.525,50.005,0,61.014,0h362.188c15.255,0,27.68,12.413,27.68,27.68v69.363 c0,15.259-12.419,27.677-27.68,27.677C407.94,124.72,395.527,112.308,395.527,97.043z"></path> </g> </g></svg>
+                                    </div>
+                                    <div class="mt-6 text-3xl font-semibold leading-8">49 684</div>
+                                    <div class="mt-1 text-base text-slate-500">Расстояние</div>
+                                    </div>
+                                    </div>
+                                    <div class="bg-white  rounded-xl shadow col-span-12 sm:col-span-6 xl:col-span-3">
+                                    <div class="p-5">
+                                    <div class="flex">
+                            <svg class="h-6 w-6" fill="#808080" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#808080" stroke-width="4.608"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M196.267,409.597h-153.6c-4.71,0-8.533,3.823-8.533,8.533s3.823,8.533,8.533,8.533h153.6c4.71,0,8.533-3.823,8.533-8.533 S200.977,409.597,196.267,409.597z"></path> <path d="M25.6,324.263h68.267c4.71,0,8.533-3.823,8.533-8.533s-3.823-8.533-8.533-8.533H25.6c-4.71,0-8.533,3.823-8.533,8.533 S20.89,324.263,25.6,324.263z"></path> <path d="M153.6,366.93c0-4.71-3.823-8.533-8.533-8.533H8.533c-4.71,0-8.533,3.823-8.533,8.533s3.823,8.533,8.533,8.533h136.533 C149.777,375.463,153.6,371.64,153.6,366.93z"></path> <path d="M435.2,375.463H384c-4.71,0-8.533,3.823-8.533,8.533s3.823,8.533,8.533,8.533h51.2c31.13,0,55.202,21.495,59.11,51.2 H353.399L80.333,170.663L209.143,41.853c7.074,22.46,23.33,66.15,49.357,92.177c29.158,29.167,79.761,35.115,99.9,36.326v68.574 h-20.147c-2.961-5.077-8.405-8.533-14.694-8.533c-9.412,0-17.067,7.654-17.067,17.067c0,9.412,7.654,17.067,17.067,17.067 c6.289,0,11.733-3.456,14.694-8.533H358.4v51.2h-20.147c-2.961-5.077-8.405-8.533-14.694-8.533 c-9.412,0-17.067,7.654-17.067,17.067s7.654,17.067,17.067,17.067c6.289,0,11.733-3.456,14.694-8.533H358.4v8.533 c0,2.261,0.896,4.437,2.5,6.033l17.067,17.067c3.337,3.337,8.73,3.337,12.066,0c3.337-3.336,3.337-8.73,0-12.066l-14.566-14.566 V162.13c0-4.71-3.823-8.533-8.533-8.533c-0.649,0-65.092-0.358-96.367-31.633c-32.034-32.034-48.794-97.783-48.956-98.441 c-0.751-2.978-3.038-5.333-5.999-6.153c-2.978-0.802-6.144,0.026-8.311,2.193L62.242,164.622c0,0-0.009,0-0.009,0.009 c-0.008,0-0.008,0.009-0.008,0.009l-11.657,11.665c-10.641,10.633-10.325,29.602,0.666,40.593l266.999,266.999 c1.126,1.126,11.503,11.034,27.768,11.034H486.4c14.353,0,25.6-11.247,25.6-25.6v-17.067 C512,409.196,478.268,375.463,435.2,375.463z M494.933,469.33c0,4.864-3.669,8.533-8.533,8.533H346.001 c-9.31,0-15.693-6.033-15.701-6.033l-266.999-267c-4.403-4.403-4.727-12.407-0.666-16.461l5.632-5.641l275.567,275.567 c1.596,1.604,3.772,2.5,6.033,2.5h145.067V469.33z"></path> <path d="M273.067,230.397v102.4c0,4.71,3.823,8.533,8.533,8.533s8.533-3.823,8.533-8.533v-102.4c0-4.71-3.823-8.533-8.533-8.533 S273.067,225.686,273.067,230.397z"></path> <path d="M332.715,202.971c4.173,0,7.825-3.063,8.431-7.322c0.674-4.659-2.569-8.986-7.236-9.66 c-56.977-8.183-105.634-44.305-130.15-96.614c-1.997-4.267-7.066-6.093-11.349-4.105c-4.267,2.005-6.101,7.083-4.105,11.349 c26.965,57.532,80.495,97.263,143.181,106.266C331.904,202.945,332.305,202.971,332.715,202.971z"></path> </g> </g> </g> </g>
+                            </svg>
+                                    </div>
+                                    <div class="mt-6 text-3xl font-semibold leading-8">5049</div>
+                                    <div class="mt-1 text-base text-slate-500">Время</div>
+                                    </div>
+                                </div>
+
+                                    <div class="bg-white  rounded-xl shadow col-span-12 sm:col-span-6 xl:col-span-3">
+                                    <div class="p-5">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="mt-6 text-3xl font-semibold leading-8">6238</div>
+                                    <div class="mt-1 text-base text-slate-500">Пробежки</div>
+                                    </div>
+                                    </div>
+                                    <div class="bg-white  rounded-xl shadow col-span-12 sm:col-span-6 xl:col-span-3">
+                                    <div class="p-5">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="mt-6 text-3xl font-semibold leading-8">520</div>
+                                    <div class="mt-1 text-base text-slate-500">Участники</div>
+                                    </div>
+                                    </div>
+
+                                </div>
+                    </div>
+                    <!-- Таблица -->
+        <h1 class=" text-left text-lg mt-5 font-semibold truncate"> Статистика по участнику</h1>
+                <div class=" w-full mt-5 bg-white shadow  rounded-xl">
     <div class=" container-fluid statistic ">
 
         <div>
-            <div>
-                <h3 class="text-dark"> Всего  {{ total_runners|okon4 }}</h3>
-
-            </div>
-
-            <div>
-                <p class="text-gray-900  text-lg"> Мужчины - {{ runners_mens|okon4  }}</p>
-                <p class="text-gray-900  text-lg"> Женщины - {{ runners_womens|okon4  }}</p>
+                <div>
+                <h3 class="text-dark"> Всего Участовало  {{ total_runners|okon4 }}</h3>
 
             </div>
             <hr>
@@ -79,11 +185,14 @@
         </div>
 
     </div>
+    </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
-
+    </div>
+  </main>
+</div>
 
 {% endblock %}
 

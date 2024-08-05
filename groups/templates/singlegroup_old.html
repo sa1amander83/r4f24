@@ -1,0 +1,85 @@
+{% extends 'base.html' %} {%load static%} {%load time_tag%} {%block content%}
+
+<div class="container-fluid">
+  {% for team, data in group_data.items %}
+
+  <h1>
+    Статистика {% if flag %} группы <b>{{ team }} </b>{% else %} команды
+    <b>{{ team }}</b>{% endif %}
+  </h1>
+  <p>Участники - {{ data.total_results.tot_users }}</p>
+  <p>Баллы {{ data.total_results.total_balls }}</p>
+  <p>Дистанция {{ data.total_results.total_distance|floatformat:3 }}</p>
+  <p>Время {{ data.total_results.total_time }}</p>
+  <p>Средний темп {{ data.total_results.total_average_temp|smooth_filter }}</p>
+  <p>Дней пробега {{ data.total_results.total_days }}</p>
+  <p>Всего пробежек {{ data.total_results.total_runs }}</p>
+  <table class="table table-striped" id="singlegroup">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>Участник</th>
+        <th>Баллы</th>
+        <th>Дистанция</th>
+        <th>Общее Время</th>
+        <th>Темп</th>
+        <th>Дней пробега</th>
+        <th>Пробежки</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in data.users %} {%for stat in data.user_stats %} {% if stat.runner_stat == user %}
+
+      <tr>
+        <td>
+          <a href="{% url 'profile:profile' user.username %}">
+            {{ user.username }}</a
+          >
+        </td>
+        <td>{{ stat.total_balls }}</td>
+        <td>{{ stat.total_distance|floatformat:3 }}</td>
+        <td>{{ stat.total_time|time:"H:i:s" }}</td>
+        <td>{{ stat.total_average_temp|time:"i:s" }}</td>
+        <td>{{ stat.total_days }}</td>
+        <td>{{ stat.total_runs }}</td>
+      </tr>
+      {% endif %} {% endfor %} {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+</div>
+
+{% endblock %} {% block extrascripts %}
+
+<script>
+  new DataTable("#singlegroup", {
+    order: [1, "desc"],
+
+    columnDefs: [
+      { targets: "_all", className: "dt-body-center  dt-head-center" },
+      {
+        defaultContent: "-",
+        targets: "_all",
+      },
+    ],
+
+    language: {
+      processing: "Подождите...",
+      search: "",
+      lengthMenu: "Показать _MENU_ записей",
+      info: "Записи с _START_ до _END_ из _TOTAL_ записей",
+      infoEmpty: "Записи с 0 до 0 из 0 записей",
+      infoFiltered: "(отфильтровано из _MAX_ записей)",
+      loadingRecords: "Загрузка записей...",
+      zeroRecords: "Записи отсутствуют.",
+      emptyTable: "В таблице отсутствуют данные",
+      paginate: {
+        first: "Первая",
+        previous: "Предыдущая",
+        next: "Следующая",
+        last: "Последняя",
+      },
+      searchPlaceholder: "Поиск участника",
+    },
+  });
+</script>
+{% endblock %}

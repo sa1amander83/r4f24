@@ -1,52 +1,46 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<div class="container-fluid">
+  <h3>Группы и участники</h3>
+  <br />
 
-{% block content %}
- <div class="container-fluid">
-        <h3> Группы и участники</h3>
-        <br>
+  {% for k,v in qs.items %}
 
-        {% for k,v in qs.items %}
+  <table class="table table-striped">
+    <tbody>
+      <tr
+        class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary"
+      >
+        <td colspan="9">{{ k }}</td>
+      </tr>
+      <tr class="text-center table-warning">
+        <td>№п/п</td>
+        <td>Участник</td>
+        <td>баллы</td>
+        <td>дистанция</td>
+        <td>время</td>
+        <td>средний темп</td>
+        <td>всего дней</td>
+        <td>пробежки</td>
+        <td>квалификация</td>
+      </tr>
+      {% for u in v %}
+      <tr class="text-center">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ u }}</td>
+        <td>{{ u.total_balls }}</td>
+        <td>{{ u.total_distance }}</td>
+        <td>{{ u.total_time }}</td>
+        <td>{{ u.total_average_temp }}</td>
+        <td>{{ u.total_days }}</td>
+        <td>{{ u.total_runs }}</td>
+        <td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
+      </tr>
+      <p></p>
+      <p></p>
+      <p>{% endfor %}</p>
+    </tbody>
+  </table>
 
-            <table class="table  table-striped">
-                <tbody>
-                <tr class="bg-white outline text-center text-bg-dark text-lg-center font-extrabold text-bg-secondary">
-                    <td colspan="9"> {{ k }}</td>
-                </tr>
-                <tr class=" text-center table-warning">
-                    <td>№п/п</td>
-                    <td>Участник</td>
-                    <td>баллы</td>
-                    <td>дистанция</td>
-                    <td>время</td>
-                    <td>средний темп</td>
-                    <td>всего дней</td>
-                    <td> пробежки</td>
-                    <td>квалификация</td>
-                </tr>
-                {% for u in v %}
-                    <tr class=" text-center">
-
-                        <td> {{ forloop.counter }}</td>
-                        <td> {{ u }}</td>
-                        <td> {{ u.total_balls }}</td>
-                        <td> {{ u.total_distance }}</td>
-                        <td> {{ u.total_time }}</td>
-                        <td> {{ u.total_average_temp }}</td>
-                        <td> {{ u.total_days }}</td>
-                        <td> {{ u.total_runs }}</td>
-                        <td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
-
-                    </tr>
-                    <p>
-                    <p>
-                    <p>
-                {% endfor %}
-                </tbody>
-            </table>
-
-
-
-        {% endfor %}
-
-    </div>
+  {% endfor %}
+</div>
 {% endblock %}
