@@ -31,7 +31,6 @@ class ProfileUser( ListView, DataMixin):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(calend='calend')
         context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
         try:
@@ -40,8 +39,12 @@ class ProfileUser( ListView, DataMixin):
             context['run_user'] = getuser.username
             context['exists_in_group'] = getuser.runner_group_id
             context['runner_group'] = Group.objects.get(id=getuser.runner_group_id).group_title
+            context['runner_group_id'] = getuser.runner_group_id
+
+
             context['run_user_avg'] = getuser_stat.total_average_temp
             context['run_user_time'] = getuser_stat.total_time
+
         except ObjectDoesNotExist:
             context['runner_group'] = False
             getuser_stat=False
@@ -80,14 +83,13 @@ class ProfileUser( ListView, DataMixin):
         # context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
         if len(obj) > 0:
 
-            return dict(list(context.items()) + list(c_def.items()))
+            return dict(list(context.items()))
 
         else:
             context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
             context['tot_dist'] = {}
 
-            return dict(list(context.items()) + list(c_def.items()))
-
+            return dict(list(context.items()))
 
 class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     model = User
