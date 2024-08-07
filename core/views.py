@@ -686,7 +686,17 @@ class StatisticView(DataMixin, ListView):
         have_run = Statistic.objects.filter(total_distance__gt=0).count()
 
         context['not_run'] = context['total_runners'] - have_run
+        count_of_run_every_day=[]
+        for x in range(1,31):
+            count_of_run_every_day.append(RunnerDay.objects.filter(day_select=x).count())
 
+        context['count_of_run_every_day'] = count_of_run_every_day
+        # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
+        #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
+        #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
+        #     'runner__user__username').annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
+        #                                        total_average_temp=Sum('day_average_temp')).filter(total_dist__gte=400).count()
+        #
         # context['get_finished_2'] = RunnerDay.objects.filter(runner__runner_category=2). \
         #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
         #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(

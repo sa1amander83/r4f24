@@ -20,7 +20,7 @@ from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
 
 
-class ProfileUser( ListView, DataMixin):
+class ProfileUser(ListView, DataMixin):
     model = RunnerDay
     template_name = 'profile.html'
 
@@ -41,13 +41,12 @@ class ProfileUser( ListView, DataMixin):
             context['runner_group'] = Group.objects.get(id=getuser.runner_group_id).group_title
             context['runner_group_id'] = getuser.runner_group_id
 
-
             context['run_user_avg'] = getuser_stat.total_average_temp
             context['run_user_time'] = getuser_stat.total_time
 
         except ObjectDoesNotExist:
             context['runner_group'] = False
-            getuser_stat=False
+            getuser_stat = False
 
         get_category = getuser.runner_category
 
@@ -90,6 +89,7 @@ class ProfileUser( ListView, DataMixin):
             context['tot_dist'] = {}
 
             return dict(list(context.items()))
+
 
 class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     model = User
