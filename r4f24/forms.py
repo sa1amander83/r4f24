@@ -145,12 +145,19 @@ class RunnerDayForm(ModelForm):
 class AddFamilyForm(ModelForm):
     class Meta:
         model = Group
+        group_title = forms.CharField(label='Название группы', widget=forms.TextInput(attrs={'placeholder': "Введите название",
+               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+               'autofocus': 'on'}))
         fields = ['group_title']
 
 
 class FamilyForm(forms.ModelForm):
     class Meta:
         model = Group
+        group_title = forms.CharField(label='Название группы', widget=forms.TextInput(
+        attrs={'placeholder': "Введите название",
+               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+               'autofocus': 'on'}))
         fields = ('group_title',)
 
 
@@ -169,7 +176,7 @@ class FamilyForm(forms.ModelForm):
 #         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(
-        attrs={'placeholder': "Ведите имя",
+        attrs={'placeholder': "Введите имя",
                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                'autofocus': 'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
