@@ -237,12 +237,14 @@
                                         {#const lValues = [60, 49, 44, 24, 20, 49, 44, 24, 20, 49, 44, 24, 15, 49, 44, 24, 20, 49, 44, 24, 20, 24, 15, 49, 44, 24, 20, 49, 44, 24, 20];#}
                                         const lValues = [60, 49, 44, 24, 20, 49, 44, 24, 20, 49, 44, 24, 15, 49, 44, 24, 20, 49, 44, 24, 20, 24, 15, 49, 44, 24, 20, 49, 44, 24, 20];
 
+
                                         new Chart("general-static", {
                                             type: "bar",
                                             options: {
                                                 legend: {display: false}
                                             },
                                             data: {
+
                                                 labels: xValues,
 
 
@@ -266,16 +268,38 @@
                                                 ]
                                             },
 
-                                        });
+
+                                            datasets: [
+                                                {
+                                                    type: "bar",
+                                                    data: yValues,
+                                                    borderColor: 'rgba(0, 99, 132, 0.6)',
+                                                    backgroundColor: 'rgba(0, 99, 132, 0.6)',
+                                                    order: 1
+                                                },
+                                                {
+
+                                                    data: lValues,
+                                                    borderColor: "#0ea5e9",
+                                                    //   backgroundColor: "#0ea5e9",
+                                                    type: 'line',
+                                                    order: 0
+                                                }
+
+                                            ]
+                                        })
+
 
                                     </script>
 
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
+                </div>
+
+
+            </div>
         </main>
     </div>
 
