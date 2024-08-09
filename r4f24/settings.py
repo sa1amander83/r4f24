@@ -66,11 +66,16 @@ INSTALLED_APPS = [
     'authorize',
     'groups',
     'django_cleanup',
-    
+    'django_celery_beat',
+    'django_celery_results',
     "debug_toolbar",
 
-
 ]
+CELERY_IMPORTS = [
+    'core.tasks',
+]
+
+
 
 # from django.core.files.storage import get_storage_class
 

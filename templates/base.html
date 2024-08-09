@@ -44,7 +44,7 @@
   <body class="bg-sky-800">
     {% block main %} {% include 'components/header.html' %} {% endblock main%}
     {% block content %} {% csrf_token %} {% endblock %}
-
+    {% block testcontent%}{% endblock %}
     {% block extrascripts %}{% endblock %}
   </body>
 </html>

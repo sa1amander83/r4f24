@@ -4,247 +4,181 @@
 
     {% csrf_token %}
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
-<div class=" mx-5 md:mx-auto max-w-[40rem] ">
-  
-    <main class="flex flex-col justify-center rounded-2xl pb-3  bg-sky-900 h-full">
-        <div class="flex p-4 rounded-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6 me-2 text-white">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-        </svg>
+    <div class=" mx-5 md:mx-auto max-w-[40rem] ">
 
-        <title class="block bg-sky-900  text-base font-semibold text-white">Группы события</title>
-        </div>
+        <main class="flex flex-col justify-center rounded-2xl pb-3  bg-sky-900 h-full">
+            <div class="flex p-4 rounded-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor" class="size-6 me-2 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                </svg>
+
+                <title class="block bg-sky-900  text-base font-semibold text-white">Группы события</title>
+            </div>
             <div class="flex gap-3 flex-col  bg-gray-200   rounded-2xl  p-3   ">
                 <div class="flex justify-between  items-center">
                     <h5 class="text-lg font-semibold truncate">Все группы</h5>
-                    <button data-modal-target="create-modal" data-modal-toggle="create-modal" class="rounded-md bg-sky-600 py-2 px-4 font-semibold text-white shadow-lg transition duration-150 ease-in-out hover:bg-sky-700 hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Создать группу</button>
+                    {% if request.user.can_create_group %}
+                        <button data-modal-target="create-modal" data-modal-toggle="create-modal"
+                                class="rounded-md bg-sky-600 py-2 px-4 font-semibold text-white shadow-lg transition duration-150 ease-in-out hover:bg-sky-700 hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                            Создать группу
+                        </button>
+                    {% endif %}
                 </div>
                 <div class="flex flex-col bg-white rounded-2xl">
                     {% for group in groups %}
-                <div class="flex justify-between py-2 border-b mx-4  items-center">
-                    <div class="flex items-center bg-center">
-                        <img class="w-16 h-16 me-2" src="{% static 'img/teams.png' %}" alt="">
-                        <div>
-                            <h3 class="text-lg font-semibold">{{ group.group_title }}</h3>
-                            <h6 class="text-xs text-slate-500">123 участников</h6>
+                        <div class="flex justify-between py-2 border-b mx-4  items-center">
+                            <div class="flex items-center bg-center">
+                                <img class="w-16 h-16 me-2" src="{% static 'img/teams.png' %}" alt="">
+                                <div>
+                                    <h3 class="text-lg font-semibold">{{ group.group_title }}</h3>
+{#                                    <h6 class="text-xs text-slate-500">123 участников</h6>#}
+                                </div>
+                            </div>
+                            <button data-modal-target="popup{{ group.id }}-modal"
+                                    data-modal-toggle="popup{{ group.id }}-modal"
+                                    id="group-id"
+                                    class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50">
+                                Вступить
+                            </button>
                         </div>
-                    </div>
-                    <button data-modal-target="popup{{ group.id }}-modal" data-modal-toggle="popup{{ group.id }}-modal" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50">Вступить</button> 
+                        <!-- popup-modal -->
+                        <div id="popup{{ group.id }}-modal" tabindex="-1"
+                             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                            <div class="relative p-4 w-full max-w-md max-h-full">
+                                <div class="relative bg-slate-50 rounded-lg shadow ">
+                                    <button type="button"
+                                            class="  absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
+                                            data-modal-hide="popup{{ group.id }}-modal">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                    <div class="p-4 md:p-5 text-center">
+                                        <!-- <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg> -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="1.5" stroke="currentColor"
+                                             class="mx-auto  text-yellow-400 w-12 h-12 ">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                                        </svg>
+                                        <span class="uppercase font-semibold mb-6 text-xl">Внимание!</span>
+                                        <p class="text-base leading-relaxed text-gray-500">
+                                            Вы можете вступить в группу только один раз.
+                                        </p>
+                                        <p class="text-base mb-2.5 leading-relaxed text-gray-500">
+                                            Будьте внимательны при выборе группы!
+                                        </p>
+                                        <h3 class="mb-5 text-lg font-normal text-gray-600 " id="group-name">Вы
+                                            собираетесь вступить в
+                                            группу <span class="font-semibold">{{ group.group_title }}</span>?</h3>
+                                        <button data-modal-hide="popup{{ group.id }}-modal"
+                                                onclick="showAddToGroupModal('{{ group.id }}', '{{ group.group_title }}')"
+                                                type="button"
+                                                class=" my-button text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            Да, это моя группа!
+                                        </button>
+                                        <button data-modal-hide="popup{{ group.id }}-modal" type="button"
+                                                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">
+                                            Нет, отмена
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <!-- popup-modal -->
-<div id="popup{{ group.id }}-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-md max-h-full">
-        <div class="relative bg-slate-50 rounded-lg shadow ">
-            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center " data-modal-hide="popup{{ group.id }}-modal">
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-                <span class="sr-only">Close modal</span>
-            </button>
-            <div class="p-4 md:p-5 text-center">
-                <!-- <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                </svg> -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto  text-yellow-400 w-12 h-12 ">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
-                <span class="uppercase font-semibold mb-6 text-xl">Внимание!</span>
-                <p class="text-base leading-relaxed text-gray-500">
-                   Вы можете вступить в группу только один раз.
-                </p>
-                <p class="text-base mb-2.5 leading-relaxed text-gray-500">
-                Будьте внимательны при выборе группы!
-                </p>
-                <h3 class="mb-5 text-lg font-normal text-gray-600 ">Вы собираетесь вступить в группу <span class="font-semibold">{{ group.group_title }}</span>?</h3>
-                <button data-modal-hide="popup{{ group.id }}-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                    Да, согласен
-                </button>
-                <button data-modal-hide="popup{{ group.id }}-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">Нет, отмена</button>
-            </div>
-        </div>
-    </div>
-</div>
-                {% endfor %}
-                </div>
-    
+
 
             </div>
-    </main>
-</div>
+        </main>
+    </div>
     <!-- create group modal -->
-<div id="create-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-xl max-h-full">
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow ">
-            <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-                
-                <h3 class="text-xl font-semibold text-gray-900 ">
-                    Придумайте название 
-                </h3>
-                
-                
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center " data-modal-hide="create-modal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <!-- Modal body -->
-             <p class="text-base text-center mx-6 my-5 leading-relaxed text-gray-500 ">Используйте слова, которые передают идею группы.</p>
-        {% if can_create %}
+    <div id="create-modal" tabindex="-1" aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow ">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="mx-6 mb-6">
-                    <label for="group_title" class="block text-sm font-medium text-gray-700"
-                    >Название группы</label
-                    >
-                    <div class="relative mt-1  rounded-md shadow-sm">
+                    <h3 class="text-xl font-semibold text-gray-900 ">
+                        Придумайте название
+                    </h3>
 
-                    <input
-                        id="id_group_title"
-                        name="group_title"
-                        maxlength="100"
-                        required=""
-                        placeholder='Введите название'
-                        class="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
-                        autofocus="on" type="text">
-                    </div>
-                  
+
+                    <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center  "
+                            data-modal-hide="create-modal">
+
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
                 </div>
-                
-                
+                <!-- Modal body -->
+                <p class="text-base text-center mx-6 my-5 leading-relaxed text-gray-500 ">Используйте слова, которые
+                    передают идею группы.</p>
+                {% if can_create %}
 
-            </form>
-            <p class="text-base text-center mx-20 my-5 leading-relaxed text-gray-500 ">Выбранное название возможно позже изменить.</p>
+                    <form method="post" name="myForm">
+                        {% csrf_token %}
+                        <div class="mx-6 mb-6">
+                            <label for="group_title" class="block text-sm font-medium text-gray-700"
+                            >Название группы</label
+                            >
+                            <div class="relative mt-1  rounded-md shadow-sm">
 
-        
-            <!-- Modal footer -->
-            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b ">
-                <button data-modal-hide="create-modal" type="submit" class="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Создать</button>
-                <button data-modal-hide="create-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">Отмена</button>
+                                <input
+                                        id="id_group_title"
+                                        name="group_title"
+                                        maxlength="100"
+                                        required=""
+                                        placeholder='Введите название'
+                                        class="w-full rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                        autofocus="on" type="text">
+                            </div>
+
+                        </div>
+
+
+
+                    <p class="text-base text-center mx-20 my-5 leading-relaxed text-gray-500 ">Выбранное название
+                        возможно позже изменить.</p>
+
+
+                    <!-- Modal footer -->
+                    <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b ">
+                        <button data-modal-hide="create-modal" type="submit"
+                                class="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                            Создать
+                        </button>
+                        <button data-modal-hide="create-modal" type="button"
+                                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">
+                            Отмена
+                        </button>
+                    </div>
+                           </form>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
 
 {% endblock %}
+
 
 {% block extrascripts %}
-    <script>
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        const csrftoken = getCookie('csrftoken');
-
-        function showAddToGroupModal(groupId, groupName) {
-            document.getElementById('group-name').innerText = groupName;
-            document.getElementById('confirm-join-group').setAttribute('data-group-id', groupId);
-            $('#addToGroupModal').modal('show');
-        }
-
-        document.getElementById('confirm-join-group').addEventListener('click', function () {
-            var groupId = this.getAttribute('data-group-id');
-            fetch('{% url "groups:add_user_to_group" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    'group_id': groupId
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-
-                    if (data.status === 'success') {
-
-                        $('#addToGroupModal').modal('hide');
-                        window.location.href = data.redirect_url;
-                    }
-                });
-        });
-    </script>
-{% endblock %}
-{% block  testcontent %}
-
-    {% csrf_token %}
     <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
-
-    <div class="container">
-        <h1>Группы</h1>
-
-        <ul class="list-group  flex-column justify-center ">
-            {% for group in groups %}
-                <li class="list-group-item ">
-                    <h2 class="">  {{ group.group_title }}</h2>
-                    <button class="btn btn-primary float-right"
-                            onclick="showAddToGroupModal('{{ group.id }}', '{{ group.group_title }}')">Вступить
-                    </button>
-                </li>
-            {% endfor %}
-        </ul>
-        {% if can_create %}
-            <h2>Создать свою группу</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-success">Создать</button>
-            </form>
-
-        {% endif %}
-
-
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="addToGroupModal" tabindex="-1" role="dialog" aria-labelledby="addToGroupModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addToGroupModalLabel">Присоединиться</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Вы хотите присоединиться к группе <span id="group-name"></span>?
-                </div>
-                <div class="modal-footer">
-
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-                    <button type="button" class="btn btn-primary" id="confirm-join-group">Да</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-{% endblock %}
-
-{% block testextrascripts %}
     <script>
-
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -263,14 +197,23 @@
 
         const csrftoken = getCookie('csrftoken');
 
-        function showAddToGroupModal(groupId, groupName) {
-            document.getElementById('group-name').innerText = groupName;
-            document.getElementById('confirm-join-group').setAttribute('data-group-id', groupId);
-            $('#addToGroupModal').modal('show');
+        function createUniqueID() {
+            return 'id_' + Math.random().toString(36)
         }
 
-        document.getElementById('confirm-join-group').addEventListener('click', function () {
-            var groupId = this.getAttribute('data-group-id');
+        const buttons = document.querySelectorAll('.my-button');
+        buttons.forEach(button => {
+
+            button.addEventListener('click', function () {
+              let randomID = createUniqueID();
+                button.setAttribute('id', randomID);
+            });
+        })
+        $('.my-button').attr('id',function (index){
+            return createUniqueID()
+        })
+
+        function showAddToGroupModal(groupId) {
             fetch('{% url "groups:add_user_to_group" %}', {
                 method: 'POST',
                 headers: {
@@ -286,10 +229,93 @@
 
                     if (data.status === 'success') {
 
-                        $('#addToGroupModal').modal('hide');
+
                         window.location.href = data.redirect_url;
                     }
                 });
-        });
+        }
+
+            function createGroup() {
+            fetch('{% url "groups:add_user_to_group" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    'group_id': groupId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.status === 'success') {
+
+
+                        window.location.href = data.redirect_url;
+                    }
+                });
+        }
+
+
+
+
     </script>
+
+
+
 {% endblock %}
+{#{% block extrascripts %}#}
+{#    <script>#}
+{#        let myButton = document.getElementById('confirm-join-group')#}
+{##}
+{#        function getCookie(name) {#}
+{#            let cookieValue = null;#}
+{#            if (document.cookie && document.cookie !== '') {#}
+{#                const cookies = document.cookie.split(';');#}
+{#                for (let i = 0; i < cookies.length; i++) {#}
+{#                    const cookie = cookies[i].trim();#}
+{#                    // Does this cookie string begin with the name we want?#}
+{#                    if (cookie.substring(0, name.length + 1) === (name + '=')) {#}
+{#                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));#}
+{#                        break;#}
+{#                    }#}
+{#                }#}
+{#            }#}
+{#            return cookieValue;#}
+{#        }#}
+{##}
+{#        const csrftoken = getCookie('csrftoken');#}
+{##}
+{#        function showAddToGroupModal(groupId, groupName) {#}
+{#            document.getElementById('group-name').innerText = groupName;#}
+{#            myButton.setAttribute('data-group-id', groupId);#}
+{#            $('#addToGroupModal').modal('show');#}
+{#        }#}
+{##}
+{#        document.addEventListener('DOMContentLoaded', function () {#}
+{#            myButton.addEventListener('click', function () {#}
+{#                var groupId = this.getAttribute('data-group-id');#}
+{#                fetch('{% url "groups:add_user_to_group" %}', {#}
+{#                    method: 'POST',#}
+{#                    headers: {#}
+{#                        'Content-Type': 'application/json',#}
+{#                        'X-CSRFToken': csrftoken#}
+{#                    },#}
+{#                    body: JSON.stringify({#}
+{#                        'group_id': groupId#}
+{#                    })#}
+{#                })#}
+{#                    .then(response => response.json())#}
+{#                    .then(data => {#}
+{##}
+{#                        if (data.status === 'success') {#}
+{##}
+{#                            $('#addToGroupModal').modal('hide');#}
+{#                            window.location.href = data.redirect_url;#}
+{#                        }#}
+{#                    });#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+{#{% endblock %}#}

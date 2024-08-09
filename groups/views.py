@@ -26,26 +26,40 @@ from r4f24.forms import FamilyForm, AddFamilyForm
 class MyGroup(ListView, DataMixin):
     model = Group
     template_name = 'mygroup.html'
-    context_object_name = 'data'
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         group_users = {}
-        group_stat = {}
-        try:
+
+        if get_user_model().objects.get(username=self.kwargs['username']):
             obj = get_user_model().objects.get(username=self.kwargs['username'])
             if 'mygroup' in self.request.path_info:
-                group = obj.runner_group
-                users = get_user_model().objects.filter(runner_group=group)
-                group_stat = get_user_model().objects.filter(runner_group=obj.runner_group, not_running=False)
-                flag = True
+                try:
+                    group = obj.runner_group
+                    users = get_user_model().objects.filter(runner_group=group)
+                    group_stat = get_user_model().objects.filter(runner_group=obj.runner_group, not_running=False)
+                    context['group_count'] = GroupsResult.objects.all().count()
+                    flag = True
+                    grp_stats = GroupsResult.objects.all().order_by('-group_total_balls',
+                                                                    'group_total_distance').values_list(
+                        'group__group_title', 'group_total_balls')
+                    group_titles = list(grp_stats.values_list('group__group_title', flat=True))
 
+                    context['rank'] = group_titles.index(group.group_title) + 1
+                except:
+                    pass
             else:
                 group = obj.runner_team
                 users = get_user_model().objects.filter(runner_team=group)
                 group_stat = get_user_model().objects.filter(runner_team=obj.runner_team, not_running=False)
                 flag = False
+                context['group_count'] = Teams.objects.all().count()
+                comand_results = ComandsResult.objects.all().order_by('-comand_total_balls',
+                                                                      'comand_total_distance').values_list('comand__team',
+                                                                                                           'comand_total_balls')
+                group_titles = list(comand_results.values_list('comand__team', flat=True))
 
+                context['rank'] = group_titles.index(group.team) + 1
             if group:
                 # получаем всех пользователей с этой группой или командой
                 group_users[group] = []
@@ -69,10 +83,9 @@ class MyGroup(ListView, DataMixin):
 
                 # Pass the data to the template
 
-                context = {
-                    'flag': flag,
-                    'group_data': group_data
-                }
+                context['flag'] =  flag
+                context['group_data']= group_data
+
 
                 for user in group_stat:
                     try:
@@ -93,57 +106,22 @@ class MyGroup(ListView, DataMixin):
                         continue
 
                 context['qs'] = group_users
+
+
+
+
+
+
             else:
                 context['message'] = 'Вы не состоите в группе'
 
 
 
-        except:
+        else:
             context['qs'] = None
 
         return context
 
-
-# добавляем группу участнику если он в ней состоит
-
-# def addRunnerToGroup(request, username, group):
-#     if request.method == 'POST':
-#         group_id = request.POST.get('group').id
-#         group = get_object_or_404(User, id=request.user.id).runner_group
-#
-#         if group:
-#             messages.warning(request, f'Вы уже входите  в эту группу: {group}.')
-#         else:
-#             group.runner_group = group_id
-#             messages.success(request, f'Вы создали и добавились в группу{group.group_title}.')
-#         return redirect('group_view', group_id=group.id)
-#     else:
-#         form = AddFamilyForm()
-#         grp = group
-#
-#     groups = Group.objects.all()
-#
-#
-#     return render(request, 'add_runner_to_group.html',
-#                   {'groups': groups, 'group': grp, 'username': username, 'form': form})
-
-
-# def join_group_view(request):
-#     if request.method == 'POST':
-#         form = JoinGroupForm(request.POST)
-#         if form.is_valid():
-#             join_group = form.cleaned_data['join_group']
-#             if join_group:
-#                 # Add the user to the group
-#                 # ...
-#                 return redirect('success_url')
-#             else:
-#                 # Do nothing
-#                 return redirect('decline_url')
-#     else:
-#         form = JoinGroupForm()
-#
-#     return render(request, 'join_group.html', {'form': form})
 
 
 class SuccessView(View):
@@ -151,14 +129,6 @@ class SuccessView(View):
         return render(request, 'mygroup.html')
 
 
-# @login_required
-# def add_user_to_group(request, username, group_id):
-#     group = Group.objects.get(id=group_id)
-#     user = request.user
-#     user.runner_group = group
-#     user.save()
-#     calc_comands.delay(username)
-#     return redirect('groups:mygroup', username=username)
 
 
 class GroupsListView(ListView):
@@ -221,13 +191,10 @@ def view_group(request, group):
         group = group_id.group_title
         users = get_user_model().objects.filter(runner_group=group_id)
         group_count = GroupsResult.objects.all().count()
-        # all_groups = Group.objects.all()
         grp_stats = GroupsResult.objects.all().order_by('-group_total_balls', 'group_total_distance').values_list(
             'group__group_title', 'group_total_balls')
         group_titles = list(grp_stats.values_list('group__group_title', flat=True))
 
-        # If you want to see the total balls alongside the titles, you can keep it as is
-        # or create a list of tuples as follows:
         group_stats_list = list(group_titles)
 
         flag = True
@@ -249,11 +216,11 @@ def view_group(request, group):
 
     total_results = user_stats.aggregate(
         total_balls=Sum('total_balls'),
-        total_distance=Sum('total_distance'),
-        total_time=Sum('total_time'),
+        total_distance=Sum('total_distance') ,
+        total_time=Sum('total_time') ,
         total_average_temp=Avg('total_average_temp'),
-        total_days=Sum('total_days'),
-        total_runs=Sum('total_runs'),
+        total_days=Sum('total_days') ,
+        total_runs=Sum('total_runs') ,
         tot_users=Count('runner_stat__username')
 
     )
@@ -268,8 +235,8 @@ def view_group(request, group):
     # Calculate total results for teams
 
     # Sort rankings based on total runs (or any other metric)
-    rankings.sort(key=lambda x: x[1] if x[1] else 0, reverse=True)
-    new_rank = rankings.sort(key=lambda x: x[0])
+    # rankings.sort(key=lambda x: x[1] if x[1] else 0, reverse=True)
+    # new_rank = rankings.sort(key=lambda x: x[0])
 
     # Create a ranking dictionary
     # ranking_data = {name: stats for name, stats in rankings}
@@ -280,17 +247,24 @@ def view_group(request, group):
     return render(request, 'singlegroup.html', context)
 
 
-@login_required
 def group_list_and_create_view(request, username):
     can_create = False
+
+    try:
+        user = get_user_model().objects.get(username=username)
+        if user.runner_group:
+            redirect('groups:mygroup', username)
+    except:
+        pass
+
     if request.method == 'POST':
         form = FamilyForm(request.POST)
         if form.is_valid():
 
             user = request.user
-            if user.runner_group is not None:
+            if user.runner_group:
                 messages.success(request, f'Вы уже состоите в группе{user.runner_group}')
-                return redirect('groups:mygroup', username)
+                return redirect('groups:mygroup', user)
             try:
                 group = Group.objects.get(group_title=form.cleaned_data['group_title'])
                 group = Group.objects.get(id=group.id)

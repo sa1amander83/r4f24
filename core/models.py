@@ -99,16 +99,9 @@ class User(AbstractUser):
         (1, 'Новичок'), (2, 'Любитель'), (3, 'Профи')
     ]
 
-    # STATUS = [
-    #     (1, 'Участник'), (2, 'член семьи участника')
-    # ]
-    #
-    # runner_status = models.IntegerField(choices=STATUS, verbose_name='Ваш статус', default=1)
     email = False
     last_name = False
     first_name = False
-    # user= models.CharField( max_length=12,verbose_name='Номер участника', unique=True)
-    # runner_team = models.ForeignKey(Teams, on_delete=models.DO_NOTHING, verbose_name='команда', db_index=True)
     runner_team = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда', db_index=True)
     runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True, validators=[
         MaxValueValidator(99),
@@ -122,15 +115,9 @@ class User(AbstractUser):
     zabeg22 = models.BooleanField(verbose_name='Участник МыZaБег 2022', default=False)
     zabeg23 = models.BooleanField(verbose_name='Участник МыZaБег 2023', default=False)
     can_create_group = models.BooleanField(verbose_name='Старший группы', default=False, null=True)
-    # family = models.ManyToManyField(to=User, verbose_name='выберите участников',
-    #                                 related_name='family_users', blank=True)
-
-    # category_updated = models.PositiveIntegerField(verbose_name='Начальная группа', choices=CATEGORY, blank=True,
-    #                                                null=True)
-    # completed = models.BooleanField(default=False, verbose_name="Выполнена квал-я", )
     is_staff = models.BooleanField(verbose_name='ответственный', default=False)
     not_running = models.BooleanField(verbose_name='не бегает', default=False)
-    REQUIRED_FIELDS = ['runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
+    REQUIRED_FIELDS = ['runner_team_id', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
     objects = CustomUserManager()
 
     class Meta:

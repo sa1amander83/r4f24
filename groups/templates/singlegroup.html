@@ -57,7 +57,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                         </svg>
 
-                        <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_balls }}</h4>
+                        <h4 class="mt-2 text-lg font-semibold leading-8">{% if data.total_results.total_balls %}{{ data.total_results.total_balls }}{% else %}0{% endif %}</h4>
                         <h5 class="mt-1 text-sm text-slate-500">Баллы</h5>
                     </div>
                     
@@ -67,7 +67,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
                         </svg>
 
-                        <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_distance }}</h4>
+                        <h4 class="mt-2 text-lg font-semibold leading-8">{% if data.total_results.total_distance %}{{ data.total_results.total_distance }}{% else %} 0{% endif %}</h4>
                         <h5 class="mt-1 text-sm text-slate-500">Дистанция</h5>
                     </div>
                     
@@ -83,7 +83,7 @@
                         </svg>
 
 
-                    <h4 class="mt-2 text-lg font-semibold leading-8">{{ data.total_results.total_average_temp|smooth_filter }}</h4>
+                    <h4 class="mt-2 text-lg font-semibold leading-8"> {% if data %}{{ data.total_results.total_average_temp|smooth_filter }} {% else  %}0{% endif %}</h4>
                     <h5 class="mt-1 text-sm text-slate-500">Темп</h5>
 
 
@@ -131,7 +131,7 @@
             <tr class="bg-white border-b ">
               
               <td class="px-6 py-4"><a class="font-semibold text-black" href="{% url 'profile:profile' user.username %}">
-            {{ user.username }}</a</td>
+            {{ user.username }}</a></td>
               <td class="px-6 py-4">{{ stat.total_balls }}</td>
               <td class="px-6 py-4">{{ stat.total_distance|floatformat:3 }}</td>
               <td class="px-6 py-4">{{ stat.total_time|time:"H:i:s" }}</td>

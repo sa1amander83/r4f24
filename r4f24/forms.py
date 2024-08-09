@@ -147,7 +147,7 @@ class AddFamilyForm(ModelForm):
         model = Group
         group_title = forms.CharField(label='Название группы', widget=forms.TextInput(attrs={'placeholder': "Введите название",
                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-               'autofocus': 'on'}))
+               'autofocus': 'on','id':'confirm-join-group'}))
         fields = ['group_title']
 
 
