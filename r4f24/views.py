@@ -24,7 +24,7 @@ def exportcsv_runnerdays(request):
     writer = csv.writer(response, delimiter=";")
     writer.writerow(['uchastnik', 'ball','day', 'distance', 'time', 'average','num_of_run'])
 
-    users = RunnerDay.objects.all().values_list('runner__username', 'vall','day_select', 'day_distance', 'day_time',
+    users = RunnerDay.objects.all().values_list('runner__username', 'ball','day_select', 'day_distance', 'day_time',
                                                 'day_average_temp','number_of_run')
     try:
         for user in users:

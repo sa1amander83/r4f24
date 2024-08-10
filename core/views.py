@@ -2,7 +2,7 @@ import csv
 
 from django.contrib.auth import get_user_model
 from django.db import models, IntegrityError
-from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window
+from django.db.models import Q, Sum, Count, ExpressionWrapper, TimeField, F, Avg, Window, Value, CharField
 
 from django.db.models.functions import Cast, RowNumber
 from django.http import HttpResponse
@@ -19,7 +19,7 @@ class IndexView(DataMixin, ListView):
     model = Statistic
     template_name = 'index.html'
     context_object_name = 'stat'
-
+    from django.db.models import Count, Case, When, IntegerField, Q
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -32,6 +32,7 @@ class IndexView(DataMixin, ListView):
         context['mid'] = get_user_model().objects.filter(not_running=False, runner_category=2).count()
         context['hi'] = get_user_model().objects.filter(not_running=False, runner_category=3).count()
         context['count_of_runners'] = get_user_model().objects.exclude(not_running=True).count()
+
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False). \
             values('runner_stat__username', 'total_time', 'total_distance', 'runner_stat__runner_gender',
                    'runner_stat__runner_category',
@@ -641,6 +642,7 @@ class StatisticView(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['total_registered'] = get_user_model().objects.filter(not_running=False).count()
         context['total_runners'] = Statistic.objects.all().count()
         context['runners_mens'] = get_user_model().objects.filter(runner_gender='м', not_running=False).count()
         context['runners_womens'] = get_user_model().objects.filter(runner_gender='ж', not_running=False).count()
@@ -686,11 +688,26 @@ class StatisticView(DataMixin, ListView):
         have_run = Statistic.objects.filter(total_distance__gt=0).count()
 
         context['not_run'] = context['total_runners'] - have_run
-        count_of_run_every_day=[]
-        for x in range(1,31):
+        count_of_run_every_day = []
+        distance_every_day = []
+        for x in range(1, 31):
             count_of_run_every_day.append(RunnerDay.objects.filter(day_select=x).count())
-
+            if RunnerDay.objects.filter(day_select=x, day_distance__gt=0).aggregate(Sum('day_distance'))[
+                'day_distance__sum'] == None:
+                distance_every_day.append(0)
+            else:
+                distance_every_day.append(
+                    RunnerDay.objects.filter(day_select=x).aggregate(Sum('day_distance'))['day_distance__sum'])
         context['count_of_run_every_day'] = count_of_run_every_day
+        context['distance_every_day'] = distance_every_day
+
+        context['count_of_ages'] = Statistic.objects.aggregate(
+            under_18=Count('id', filter=Q(runner_stat__runner_age__lte=18)),
+            age_18_30=Count('id', filter=Q(runner_stat__runner_age__gt=18, runner_stat__runner_age__lte=30)),
+            age_30_40=Count('id', filter=Q(runner_stat__runner_age__gt=30, runner_stat__runner_age__lte=40)),
+            age_40_50=Count('id', filter=Q(runner_stat__runner_age__gt=40, runner_stat__runner_age__lte=50)),
+            age_over_50=Count('id', filter=Q(runner_stat__runner_age__gt=50)))
+
         # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
         #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
         #            (Q(day_average_temp__gte='00:08:00') & Q(runner__runner_age__gte=60))).values(
@@ -722,9 +739,9 @@ class StatisticView(DataMixin, ListView):
         #                                        total_average_temp=Sum('day_average_temp')).filter(
         #     total_dist__gte=50).count()
 
-        context['runners_cat1'] = get_user_model().objects.filter(runner_category=1).filter(not_running=False).count()
-        context['runners_cat2'] = get_user_model().objects.filter(runner_category=2).filter(not_running=False).count()
-        context['runners_cat3'] = get_user_model().objects.filter(runner_category=3).filter(not_running=False).count()
+        context['runners_cat1'] = Statistic.objects.filter(runner_stat__runner_category=1).count()
+        context['runners_cat2'] = Statistic.objects.filter(runner_stat__runner_category=2).count()
+        context['runners_cat3'] = Statistic.objects.filter(runner_stat__runner_category=3).count()
 
         return context
 
