@@ -702,10 +702,10 @@ class StatisticView(DataMixin, ListView):
         context['distance_every_day'] = distance_every_day
 
         context['count_of_ages'] = Statistic.objects.aggregate(
-            under_18=Count('id', filter=Q(runner_stat__runner_age__lte=18)),
-            age_18_30=Count('id', filter=Q(runner_stat__runner_age__gt=18, runner_stat__runner_age__lte=30)),
-            age_30_40=Count('id', filter=Q(runner_stat__runner_age__gt=30, runner_stat__runner_age__lte=40)),
-            age_40_50=Count('id', filter=Q(runner_stat__runner_age__gt=40, runner_stat__runner_age__lte=50)),
+            under_20=Count('id', filter=Q(runner_stat__runner_age__lte=20)),
+            age_21_30=Count('id', filter=Q(runner_stat__runner_age__gt=21, runner_stat__runner_age__lte=30)),
+            age_31_40=Count('id', filter=Q(runner_stat__runner_age__gt=30, runner_stat__runner_age__lte=40)),
+            age_41_50=Count('id', filter=Q(runner_stat__runner_age__gt=40, runner_stat__runner_age__lte=50)),
             age_over_50=Count('id', filter=Q(runner_stat__runner_age__gt=50)))
 
         # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \

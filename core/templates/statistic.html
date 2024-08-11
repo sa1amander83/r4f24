@@ -129,7 +129,7 @@
                     <!-- Chart category -->
                     <div class="">
                         <div class="flex items-center">
-                            <h2 class="mr-5 text-lg font-semibold truncate">Диаграмма
+                            <h2 class="mr-5 text-lg font-semibold truncate ">Диаграмма
                                 по возрастам</h2></div>
                         <div class="p-5 shadow mt-5 rounded-xl bg-white">
 
@@ -146,11 +146,11 @@
 
                                         type: "doughnut",
                                         data: {
-                                            labels: ["Новичок", "Любитель", "Профи"],
+                                            labels: ["до 20", "21-30", "31-40",'41-50','старше 50'],
                                             datasets: [{
                                                 label: "Кол-во участников",
-                                                backgroundColor: ["#facc15", "#22c55e", "#7899a9","#1e5571","#2b5371",],
-                                                data: [{% for age, value in count_of_ages.items %},{{ value }} {% endfor %}]
+                                                backgroundColor: ["#22c55e", "#0ea5e9",'#f43f5e',"#7899a9","#1e5571"],
+                                                data: [{% for age, value in count_of_ages.items %}{{ value }}, {% endfor %}]
                                             }]
                                         },
                                         options: {
@@ -164,28 +164,31 @@
                                 </script>
 
                                     <div class="mx-auto mt-8 w-52 sm:w-auto">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 mr-3 rounded-full bg-yellow-400"></div>
-                                        <span class="truncate">до 18 лет</span>
-                                        <span class="ml-auto font-medium">{{ count_of_ages.under_18 }} чел.</span>
+                                    <div class="flex items-center justify-content-center">
+
+                                         <div class="w-2 h-2 mr-3 rounded-full bg-green-500 "></div>
+                                        <span class="truncate">до 20 лет</span>
+                                        <span class="ml-auto font-medium">{{ count_of_ages.under_20 }} чел.</span>
                                     </div>
                                     <div class="flex items-center mt-4">
-                                        <div class="w-2 h-2 mr-3 rounded-full bg-green-500"></div>
-                                        <span class="truncate">19-30 лет</span>
-                                        <span class="ml-auto font-medium">{{ count_of_ages.age_18_30 }} чел.</span>
+                                         <div class="w-2 h-2 mr-3 rounded-full bg-sky-500"></div>
+
+                                        <span class="truncate">21-30 лет</span>
+                                        <span class="ml-auto font-medium">{{ count_of_ages.age_21_30 }} чел.</span>
                                     </div>
                                     <div class="flex items-center mt-4">
-                                        <div class="w-2 h-2 mr-3 rounded-full bg-sky-500"></div>
+{#                                        <div class="w-2 h-2 mr-3 rounded-full bg-yellow-400"></div>#}
+                                                <div class="w-2 h-2 mr-3 rounded-full bg-rose-500"></div>
                                         <span class="truncate">31-40 лет</span>
-                                        <span class="ml-auto font-medium">{{ count_of_ages.age_30_40 }} чел.</span>
+                                        <span class="ml-auto font-medium">{{ count_of_ages.age_31_40 }} чел.</span>
                                     </div>
                                     <div class="flex items-center mt-4">
-                                        <div class="w-2 h-2 mr-3 rounded-full bg-green-500"></div>
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-gray-500"></div>
                                         <span class="truncate">41-50 лет</span>
-                                        <span class="ml-auto font-medium">{{ count_of_ages.age_40_50 }} чел.</span>
+                                        <span class="ml-auto font-medium">{{ count_of_ages.age_41_50 }} чел.</span>
                                     </div>
                                     <div class="flex items-center mt-4">
-                                        <div class="w-2 h-2 mr-3 rounded-full bg-sky-500"></div>
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-gray-700"></div>
                                         <span class="truncate">старше 50</span>
                                         <span class="ml-auto font-medium">{{ count_of_ages.age_over_50 }} чел.</span>
                                     </div>

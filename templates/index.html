@@ -31,12 +31,27 @@
     <header
             class="flex flex-wrap items-center justify-between mx-auto p-4 w-full"
     >
-   {%if request.user.is_authenticated and request.user.is_superuser%}
-         {%include 'admin/csv_import_teams.html'%}     
-         {%include 'admin/csv_export_runnerdays.html'%}
-       
-        {%include 'admin/csv_export_stat.html'%}
-        {%endif%}
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+            <form action="{% url 'export_runner_days' %}" method="get">
+                <button type="submit" class="btn btn-primary">пробежки</button>
+            </form>
+
+  <form action="{% url 'export_statistic' %}" method="get">
+                <button type="submit" class="btn btn-primary">статистика</button>
+            </form>
+
+<form method="post" enctype="multipart/form-data" action="{% url 'import_teams' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="file">Выберите CSV файл:</label>
+        <input type="file" name="file" accept=".csv" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Импортировать команды</button>
+</form>
+        {% endif %}
+
+
+
         <div class=" hidden rounded-md shadow-sm md:inline-flex" role="group">
             <a
                     href="{% url 'index' %}"
@@ -80,7 +95,7 @@
                 Новичок
             </a>
             <a
-                    href="{% url 'runner_category_age' 2 0%}"
+                    href="{% url 'runner_category_age' 2 0 %}"
                     class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
             >
                 <svg
@@ -100,7 +115,7 @@
                 Любитель
             </a>
             <a
-                    href="{% url 'runner_category_age' 3 0%}"
+                    href="{% url 'runner_category_age' 3 0 %}"
                     class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
             >
 
@@ -159,100 +174,105 @@
         {% endif %}
         </div>
         <div class="flex w-full justify-between items-center md:block md:w-auto ">
-             <!-- Dropdown возраст -->
-        <button
-                id="dropdown-button"
-                data-dropdown-toggle="dropdown"
-                class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50"
-                type="button"
-        >
-            Возрастная группа
-            <svg
-                    class="w-2.5 h-2.5 ms-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
+            <!-- Dropdown возраст -->
+            <button
+                    id="dropdown-button"
+                    data-dropdown-toggle="dropdown"
+                    class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50"
+                    type="button"
             >
-                <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m1 1 4 4 4-4"
-                />
-            </svg>
-        </button>
-        <div
-                id="dropdown"
-                class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-36 "
-        >
-            <ul
-                    class="py-1 text-sm text-gray-700 "
-                    aria-labelledby="dropdownActionButton"
-            >
-                <li>
-                    <a
-                            href="{% url 'runner_category_age' cat=cat_selected age=1 %}"
-                            class="block px-4 py-2 hover:bg-gray-100 "
-                    >до 17 лет</a
-                    >
-                </li>
-                <li>
-                    <a
-                            href="{% url 'runner_category_age' cat=cat_selected age=2 %}"
-                            class="block px-4 py-2 hover:bg-gray-100 "
-                    >18-35 лет</a
-                    >
-                </li>
-                <li>
-                    <a
-                            href="{% url 'runner_category_age' cat=cat_selected age=3 %}"
-                            class="block px-4 py-2 hover:bg-gray-100 "
-                    >36-49 лет</a
-                    >
-                </li>
-                <li>
-                    <a
-                            href="{% url 'runner_category_age' cat=cat_selected age=4 %}"
-                            class="block px-4 py-2 hover:bg-gray-100 "
-                    >50+</a
-                    >
-                </li>
-            </ul>
-            <div class="py-1">
-                <a
-                        href="{% url 'runner_category_age' cat=cat_selected  age=0 %}"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >Все</a
+                Возрастная группа
+                <svg
+                        class="w-2.5 h-2.5 ms-2.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 10 6"
                 >
+                    <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m1 1 4 4 4-4"
+                    />
+                </svg>
+            </button>
+            <div
+                    id="dropdown"
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-36 "
+            >
+                <ul
+                        class="py-1 text-sm text-gray-700 "
+                        aria-labelledby="dropdownActionButton"
+                >
+                    <li>
+                        <a
+                                href="{% url 'runner_category_age' cat=cat_selected age=1 %}"
+                                class="block px-4 py-2 hover:bg-gray-100 "
+                        >до 17 лет</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'runner_category_age' cat=cat_selected age=2 %}"
+                                class="block px-4 py-2 hover:bg-gray-100 "
+                        >18-35 лет</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'runner_category_age' cat=cat_selected age=3 %}"
+                                class="block px-4 py-2 hover:bg-gray-100 "
+                        >36-49 лет</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                                href="{% url 'runner_category_age' cat=cat_selected age=4 %}"
+                                class="block px-4 py-2 hover:bg-gray-100 "
+                        >50+</a
+                        >
+                    </li>
+                </ul>
+                <div class="py-1">
+                    <a
+                            href="{% url 'runner_category_age' cat=cat_selected  age=0 %}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >Все</a
+                    >
+                </div>
             </div>
-        </div>
-      <!-- Dropdown category -->  
-        <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex md:hidden items-center py-2.5 px-1 text-sm font-medium text-center rounded-lg text-gray-900  hover:bg-gray-50" type="button">
-<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-<path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-</svg>
-        </button>
+            <!-- Dropdown category -->
+            <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
+                    class="inline-flex md:hidden items-center py-2.5 px-1 text-sm font-medium text-center rounded-lg text-gray-900  hover:bg-gray-50"
+                    type="button">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                     viewBox="0 0 4 15">
+                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                </svg>
+            </button>
 
             <!-- Dropdown menu category -->
-            <div id="dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+            <div id="dropdownDots"
+                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-                <li>
-                    <a href="{% url 'runner_category' 1 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
-                </li>
-                <li>
-                    <a href="{% url 'runner_category' 2 %}" class="block px-4 py-2 hover:bg-gray-100">Любитель</a>
-                </li>
-                <li>
-                    <a href="{% url 'runner_category' 3 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
-                </li>
-                <li>
-                    <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>
-                </li>
+                    <li>
+                        <a href="{% url 'runner_category' 1 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category' 2 %}" class="block px-4 py-2 hover:bg-gray-100">Любитель</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category' 3 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>
+                    </li>
                 </ul>
                 <div class="py-2">
-                <a href="{% url 'index' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Общий</a>
+                    <a href="{% url 'index' %}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Общий</a>
                 </div>
             </div>
         </div>
@@ -298,7 +318,7 @@
                           </span
                           >
                             </a>
-                                
+
                             <div class="flex justify-center items-center">
 
                                 {% if s.runner_stat__runner_gender == 'м' %}
@@ -350,13 +370,15 @@
                                     >Профи</span>
                                 {% endif %}
 
-                                {%if s.runner_stat__runner_group%}
-                                    <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                                {% if s.runner_stat__runner_group %}
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                               stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
                                       </svg>
                                       </span>
-                                     
-                                {%endif%}
+
+                                {% endif %}
                             </div>
                     </div>
                     </a>
@@ -372,13 +394,13 @@
                     </td>
 
                     <td class="px-6 py-4">{{ s.total_runs }}</td>
-                </tr>
+                    </tr>
 
                 {% endfor %}
         </tbody>
         </table>
     </div>
-    
+
 
 
 {% endblock %} {% block extrascripts %}
