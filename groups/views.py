@@ -113,7 +113,7 @@ class MyGroup(ListView, DataMixin):
 
 
             else:
-                context['message'] = 'Вы не состоите в группе'
+                context['message'] = 'Вы не состоите в группе! Создайте свою при наличии прав или присоединяйтесь к группе!'
 
 
 

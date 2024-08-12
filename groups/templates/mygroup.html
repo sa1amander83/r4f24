@@ -124,11 +124,14 @@
         {% for message in messages %}
         <h2 class="alert-danger">{{ message }}</h2>
         {% endfor %} {% if message %}
-        <h1>{{ message }}</h1>
+        <h1 class="text-2xl">{{ message }}</h1>
 
-        <a href="{% url  'groups:group_list_and_create' user.username %}"
-          >добавиться в группу</a
-        >
+        <div class="w-75">
+        <button class=" rounded-3xl bg-green-400 w-72 hover:bg-[#1724C9]/90">
+        <a href="{% url  'groups:group_list_and_create' user.username %}" class="w-75 text-2xl"
+          > Добавиться в группу</a
+        ></button>
+        </div>
         {% else %}
 
 
