@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% load static %} {#{% static 'js/table.js' %}#}
 {% load time_tag %} {% load divide_tag %} {% load cat_tag %}
-<link
+<!-- <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
@@ -21,8 +21,8 @@
         src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"
-></script>
-{% include 'components/calendar.html' %} {% block content %}
+></script> -->
+ {% block content %}
 
     <div class="mx-5 md:mx-10">
     <div class="hidden md:flex  text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10">
@@ -155,8 +155,49 @@
         </div>
     </header>
     <!-- Dashboard -->
-    {% include 'components/calendar.html' %}
-    {% include 'components/chart.html' %}
+    <div class="flex  flex-col-reverse bg-gray-200 w-full mb-3 rounded-2xl  lg:flex-row lg:flex-nowrap">
+    <!-- Сайдбар -->
+    <div
+            class="flex flex-col  p-3 mb-3 md:p-6 md:my-0 md:grid-cols-2 md:gap-4 md:grid w-full justify-center  lg:flex lg:max-w-96     lg:border-r border-gray-300 "
+    >
+        <!-- Календарь -->
+        <div class="">
+            <div class="flex items-center h-10"><h2 class="mr-5 text-lg font-semibold truncate">Календарь события</h2>
+            </div>
+            <div class=" rounded-xl shadow bg-white my-5 p-5">
+                <div class="flex ">
+                    <div class="mx-auto text-base font-semibold truncate">Сентябрь</div>
+                </div>
+                <div
+                        class="grid grid-cols-7 gap-4 mt-5 text-center"
+                >
+                    <div class="font-medium">Пн</div>
+                    <div class="font-medium">Вт</div>
+                    <div class="font-medium">Ср</div>
+                    <div class="font-medium">Чт</div>
+                    <div class="font-medium">Пт</div>
+                    <div class="font-medium">Сб</div>
+                    <div class="font-medium">Вс</div>
+                    <div class="py-0.5 rounded relative text-slate-500">26</div>
+                    <div class="py-0.5 rounded relative text-slate-500">27</div>
+                    <div class="py-0.5 rounded relative text-slate-500">28</div>
+                    <div class="py-0.5 rounded relative text-slate-500">29</div>
+                    <div class="py-0.5 rounded relative text-slate-500">30</div>
+                    <div class="py-0.5 rounded relative text-slate-500">31</div>
+                    {% now 'j' as today %} {% for day in 1|range:31 %}
+                    <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
+                       href="{% url 'runner_day_results' day %}">{{ day }}</a>
+                {% endfor %}
+                    <div class="py-0.5 rounded relative text-slate-500">1</div>
+                    <div class="py-0.5 rounded relative text-slate-500">2</div>
+                    <div class="py-0.5 rounded relative text-slate-500">3</div>
+                    <div class="py-0.5 rounded relative text-slate-500">4</div>
+                    <div class="py-0.5 rounded relative text-slate-500">5</div>
+                    <div class="py-0.5 rounded relative text-slate-500">6</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- главный блок -->
     <div class="flex flex-col w-full p-3 my-3 md:p-6 md:my-0">
 
@@ -238,7 +279,7 @@
                 <div class="py-1">
                     <a
                             href="{% url 'runner_category_age' cat=cat_selected  age=0 %}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
                     >Все</a
                     >
                 </div>
@@ -255,8 +296,8 @@
 
             <!-- Dropdown menu category -->
             <div id="dropdownDots"
-                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ">
+                <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownMenuIconButton">
                     <li>
                         <a href="{% url 'runner_category' 1 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
                     </li>
@@ -272,177 +313,156 @@
                 </ul>
                 <div class="py-2">
                     <a href="{% url 'index' %}"
-                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Общий</a>
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">Общий</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div
-            class="flex w-full justify-center mt-5 bg-white shadow flex-col items-center rounded-xl"
-    >
-        <div class="w-full">
-            <table
-                    id="index"
-                    class="display  text-sm text-left px-1  text-gray-500 "
-                    style="width:100%"
-            >
-                <thead
-                        class="text-xs text-gray-700 uppercase bg-gray-50 "
-                >
-                <tr>
-                    <th scope="col" class="px-6 py-3">Место</th>
-                    <th scope="col" class="px-6 py-3">Участник</th>
-                    <th scope="col" class="px-6 py-3">Баллы</th>
-                    <th scope="col" class="px-6 py-3">пробег</th>
-                    <th scope="col" class="px-6 py-3">общее время</th>
-                    <th scope="col" class="px-6 py-3">Темп мин/км</th>
-                    <th scope="col" class="px-6 py-3">Количество пробежек</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for s in tot_dist %}
+    <div class="flex p-1.5 w-full justify-center mt-5 bg-white shadow flex-col items-center rounded-xl">
 
-                    <tr class="bg-white border-b ">
-                        <td class="px-6 py-4">{{ forloop.counter }}</td>
-                        <th
-                                scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-                        >
-                            <a href="/profile/{{ s.runner_stat__username }}">
-                                <div>
-                        <span
-                                class="flex justify-center items-center text-sm font-semibold text-black"
-                        >{{ s.runner_stat__username }}
-                          
-                          </span
-                          >
-                            </a>
+<table  id="selection-table">
+    <thead>
+        <tr>
+            <th>
+                <span class="flex items-center">
+                    Место
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Участник
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Баллы
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Пробег
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Общее время
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Темп мин/км
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Кол-во пробежек
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in tot_dist %}
+        <tr class="hover:bg-gray-50  cursor-pointer">
+            <td >{{ forloop.counter }}</td>
+            <td class="font-medium text-gray-900 whitespace-nowrap">
+                <a   href="/profile/{{ s.runner_stat__username }}">
+                <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
+                    {{ s.runner_stat__username }}
+                
+                {% if s.runner_stat__runner_gender == 'м' %}
+                                            
+                     <svg class="w-5 h-5 me-2 " fill="#0080ff" viewBox="-5.12 -5.12 266.24 266.24" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#0080ff" stroke-width="5.12">
+                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                         <g id="SVGRepo_iconCarrier">
+                          <path d="M219.9209,39.21582c-.02246-.11328-.06519-.21777-.09693-.32715a2.32952,2.32952,0,0,0-.324-.7876c-.05811-.10693-.10522-.21777-.17383-.31982a3.99291,3.99291,0,0,0-.49316-.604l-.0044-.00537h0a4.01587,4.01587,0,0,0-.61108-.499c-.08984-.06006-.1875-.10058-.28076-.15234a3.98009,3.98009,0,0,0-.40918-.21533c-.11646-.04786-.23828-.07422-.35791-.11084a3.89106,3.89106,0,0,0-.38965-.11573,4.05713,4.05713,0,0,0-.64258-.06494C216.09082,36.01221,216.04712,36,216,36H168a4,4,0,0,0,0,8h38.34326L154.83643,95.50635a76.00057,76.00057,0,1,0,5.65673,5.65674L212,49.65674V88a4,4,0,0,0,8,0V40.00146A4.03032,4.03032,0,0,0,219.9209,39.21582ZM152.083,200.084a67.96779,67.96779,0,1,1,0-96.168A68.07554,68.07554,0,0,1,152.083,200.084Z"></path></g>
+                     </svg>
+                    {% else %}
+                    <svg class="w-5 h-5 me-2" fill="#ff80c0" viewBox="0 0 256 256" id="Flat"
+                                                    xmlns="http://www.w3.org/2000/svg" stroke="#ff80c0" stroke-width="5.12">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                    stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path d="M204,96a76,76,0,1,0-80,75.89355V204H88a4,4,0,0,0,0,8h36v28a4,4,0,0,0,8,0V212h36a4,4,0,0,0,0-8H132V171.89355A76.09456,76.09456,0,0,0,204,96ZM60,96a68,68,0,1,1,68,68A68.07728,68.07728,0,0,1,60,96Z"></path>
+                                                    </g>
+                    </svg>
+                    {% endif %}
+                </span>
+                <div class="flex  items-center">
+                    
 
-                            <div class="flex justify-center items-center">
 
-                                {% if s.runner_stat__runner_gender == 'м' %}
-                                    <svg
-                                            class="w-5 h-5"
-                                            fill="#0080ff"
-                                            viewBox="-5.12 -5.12 266.24 266.24"
-                                            id="Flat"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            stroke="#0080ff"
-                                            stroke-width="5.12"
-                                    >
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g
-                                                id="SVGRepo_tracerCarrier"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                        ></g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <path
-                                                    d="M219.9209,39.21582c-.02246-.11328-.06519-.21777-.09693-.32715a2.32952,2.32952,0,0,0-.324-.7876c-.05811-.10693-.10522-.21777-.17383-.31982a3.99291,3.99291,0,0,0-.49316-.604l-.0044-.00537h0a4.01587,4.01587,0,0,0-.61108-.499c-.08984-.06006-.1875-.10058-.28076-.15234a3.98009,3.98009,0,0,0-.40918-.21533c-.11646-.04786-.23828-.07422-.35791-.11084a3.89106,3.89106,0,0,0-.38965-.11573,4.05713,4.05713,0,0,0-.64258-.06494C216.09082,36.01221,216.04712,36,216,36H168a4,4,0,0,0,0,8h38.34326L154.83643,95.50635a76.00057,76.00057,0,1,0,5.65673,5.65674L212,49.65674V88a4,4,0,0,0,8,0V40.00146A4.03032,4.03032,0,0,0,219.9209,39.21582ZM152.083,200.084a67.96779,67.96779,0,1,1,0-96.168A68.07554,68.07554,0,0,1,152.083,200.084Z"
-                                            ></path>
-                                        </g>
-                                    </svg>
-                                {% else %}
-                                    <svg class="w-5 h-5" fill="#ff80c0" viewBox="0 0 256 256" id="Flat"
-                                         xmlns="http://www.w3.org/2000/svg" stroke="#ff80c0" stroke-width="5.12">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                           stroke-linejoin="round"></g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <path d="M204,96a76,76,0,1,0-80,75.89355V204H88a4,4,0,0,0,0,8h36v28a4,4,0,0,0,8,0V212h36a4,4,0,0,0,0-8H132V171.89355A76.09456,76.09456,0,0,0,204,96ZM60,96a68,68,0,1,1,68,68A68.07728,68.07728,0,0,1,60,96Z"></path>
-                                        </g>
-                                    </svg>
-                                {% endif %}
+                                            {% if s.runner_stat__runner_category == 1 %}
+                                                <span
+                                                        class="bg-yellow-100 text-xs text-yellow-600 px-2 py-0.5 rounded text-center"
+                                                >Новичок</span>
+                                            {% elif s.runner_stat__runner_category == 2 %}
+                                                <span
+                                                        class="bg-green-100 text-xs text-green-600 px-2 py-0.5 rounded text-center"
+                                                >Любитель</span>
+                                            {% elif s.runner_stat__runner_category == 3 %}
+                                                <span
+                                                        class="bg-sky-100 text-xs text-sky-600 px-2 py-0.5 rounded text-center"
+                                                >Профи</span>
+                                            {% endif %}
+
+                                            {% if s.runner_stat__runner_group %}
+                                                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
+                                                </svg>
+                                                </span>
+
+                                            {% endif %}
+                </div>
+                </a>
+            </td>
+            <td>{{ s.total_balls }}</td>
+            <td>{{ s.total_distance|floatformat:3 }}</td>
+            <td>{{ s.total_time|time:"H:i:s" }}</td>
+            <td>{{ s.total_average_temp|time:"i:s" }}</td>
+            <td>{{ s.total_runs }}</td>
+        </tr>
+        {%endfor%}
+    
+    </tbody>
+</table>
 
 
-                                {% if s.runner_stat__runner_category == 1 %}
-                                    <span
-                                            class="bg-yellow-100 text-xs text-yellow-600 px-2 py-0.5 rounded text-center"
-                                    >Новичок</span>
-                                {% elif s.runner_stat__runner_category == 2 %}
-                                    <span
-                                            class="bg-green-100 text-xs text-green-600 px-2 py-0.5 rounded text-center"
-                                    >Любитель</span>
-                                {% elif s.runner_stat__runner_category == 3 %}
-                                    <span
-                                            class="bg-sky-100 text-xs text-sky-600 px-2 py-0.5 rounded text-center"
-                                    >Профи</span>
-                                {% endif %}
-
-                                {% if s.runner_stat__runner_group %}
-                                    <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                               stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
-                                      </svg>
-                                      </span>
-
-                                {% endif %}
-                            </div>
-                    </div>
-                    </a>
-                    </th>
-                    <td class="px-6 py-4">{{ s.total_balls }}</td>
-                    <td class="px-6 py-4">
-                        {{ s.total_distance|floatformat:3 }}
-                    </td>
-                    <td class="px-6 py-4">{{ s.total_time|time:"H:i:s" }}</td>
-
-                    <td class="px-6 py-4">
-                        {{ s.total_average_temp|time:"i:s" }}
-                    </td>
-
-                    <td class="px-6 py-4">{{ s.total_runs }}</td>
-                    </tr>
-
-                {% endfor %}
-        </tbody>
-        </table>
     </div>
 
 
 
 {% endblock %} {% block extrascripts %}
 
-    <script>
-        var table = new DataTable("#index", {
-            layout: {
-                topStart: "info",
-                bottom: 'paging',
 
-                bottomStart: null,
-                bottomEnd: null,
-                responsive: true,
-            },
-
-            scrollX: true,
-            columnDefs: [
-                {targets: '_all', className: 'dt-body-center  dt-head-center'}],
-
-            language: {
-                processing: "Подождите...",
-                search: "",
-                lengthMenu: "Показать _MENU_ записей",
-                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                infoEmpty: "Записи с 0 до 0 из 0 записей",
-                infoFiltered: "(отфильтровано из _MAX_ записей)",
-                loadingRecords: "Загрузка записей...",
-                zeroRecords: "Записи отсутствуют.",
-                emptyTable: "В таблице отсутствуют данные",
-                paginate: {
-                    first: "Первая",
-                    previous: "Предыдущая",
-                    next: "Следующая",
-                    last: "Последняя",
-                },
-                searchPlaceholder: "Поиск участника",
-            },
-        });
-    </script>
 {% endblock %}
 </div>
-</div>
+
 
 <!--блок с Таблица -->
 </div>

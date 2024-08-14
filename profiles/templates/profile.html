@@ -245,7 +245,7 @@
                     <h1 class=" text-left text-lg mt-5 font-semibold "> Статистика по участнику</h1>
                     <div class=" w-full mt-5 bg-white shadow  rounded-xl">
                         <div class="flex bg-white items-center  rounded-t-xl justify-between p-4">
-                            {{ run_user }}
+                            
                             {% if request.user.is_authenticated and request.user.username == runner_stat  or equest.user.is_authenticated and request.user == runner_stat %}
                                 <div>
                                     <a href="{% url 'profile:addrunday' runner_stat %}"
@@ -293,68 +293,100 @@
 
                         </div>
 
-                        <table class="display  text-sm text-left px-1  text-gray-500 " style="width: 100%;"
-                               id="profile">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
-                            <tr class="bg">
-
-                                <th scope="col" class="px-6 py-3"> день</th>
-                                <th scope="col" class="px-6 py-3"> баллы</th>
-                                <th scope="col" class="px-6 py-3"> дистанция</th>
-                                <th scope="col" class="px-6 py-3"> время</th>
-                                <th scope="col" class="px-6 py-3"> темп</th>
-                                <th scope="col" class="px-6 py-3"> пробежка</th>
-                                <th scope="col" class="px-6 py-3"> фото</th>
-                                <th scope="col" class="px-6 py-3">Action</th>
-                            </tr>
-                            </thead>
-
-
-                            <tbody>
-
-                            {% for p in runner_day %}
-
-                                <tr class="bg-white border-b ">
-
-
-                                    <td class="px-6 py-4">{{ p.day_select }} </td>
-                                    <td class="px-6 py-4"> {{ p.ball }} </td>
-                                    <td class="px-6 py-4"> {{ p.day_distance|floatformat:3 }}</td>
-                                    <td class="px-6 py-4"> {{ p.day_time|time:'H:i:s' }}</td>
-                                    <td class="px-6 py-4"> {{ p.day_average_temp|time:'i:s' }}</td>
-                                    <td class="px-6 py-4"> {{ p.number_of_run }}</td>
-
-                                    <td class=" py-4">
-
-                                        <div class="flex overflow-hidden flex-shrink-0 -space-x-5">
-                                            {% for image in images %}
-                                                {% if request.user.is_authenticated and p.day_select == image.day_select and p.number_of_run == image.number_of_run %}
-
-
-
-                                                    <a href="{{ image.photo.url }}"
-                                                       data-lightbox="{{ image.day_select }}"
-                                                       class="flex flex-shrink-0">
-                                                        <img class=" w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] "
-                                                             alt="photo" src="{{ image.photo.url }}">
-                                                    </a>
-
-
-
-
-
-
-                                                {% else %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-
-                                    </td>
-
-                                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-
-                                        <td class="px-6 py-4 mx-2">
-                                            <div class="flex justify-center w-full items-center">
+<table id="sorting-table">
+    <thead>
+        <tr>
+            <th>
+                <span class="flex items-center">
+                    день
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    баллы
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    дистанция
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    время
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    темп
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    пробежка
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    фото
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Action
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in runner_day %}
+        <tr>
+            <td>{{ p.day_select }}</td>
+            <td>{{ p.ball }}</td>
+            <td>{{ p.day_distance|floatformat:3 }}</td>
+            <td>{{ p.day_time|time:'H:i:s' }}</td>
+            <td>{{ p.day_average_temp|time:'i:s' }}</td>
+            <td>{{ p.number_of_run }}</td>
+            <td>
+                <div class="flex  -space-x-5">
+                {% for image in images %}
+                {% if request.user.is_authenticated and p.day_select == image.day_select and p.number_of_run == image.number_of_run %}
+                <a href="{{ image.photo.url }}"data-lightbox="{{ image.day_select }}"class="flex flex-shrink-0">
+                   <img class=" w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] "
+                        alt="photo" src="{{ image.photo.url }}">
+                </a>
+                {% else %}
+                {% endif %}
+                {% endfor %}
+             </div>
+            </td>
+            {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
+            <td>
+                <div class="flex justify-start w-full items-center">
                                                 <a class="flex items-center mr-3 text-slate-600"
                                                    href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -380,20 +412,16 @@
                                                     </svg>
                                                     Удалить
                                                 </a>
-                                            </div>
-                                        </td>
-                                    {% else %}
-                                        <td class="px-6 py-4"></td>
-                                    {% endif %}
+                </div>
+            </td>
+            {% else %}
+            <td class="px-6 py-4"></td>
+            {% endif %}
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
 
-                                </tr>
-
-
-                            {% endfor %}
-
-                            </tbody>
-                            <tr></tr>
-                        </table>
                         <div class="flex rounded-b-xl bg-white justify-end p-4">
 
                             <div class="flex items-end gap-2">

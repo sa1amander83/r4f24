@@ -14,47 +14,92 @@
         <span class="text-center text-xl font-semibold truncate">Чемпионат</span>
     </div>
 
-      <div class=" w-full mt-5 bg-white shadow  rounded-xl">
-        <table id="champ" class="display  text-sm text-left px-1  text-gray-500" style="width:100%">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-            <th scope="col" class="px-6 py-3">Место</th>
-            <th scope="col" class="px-6 py-3">Номер команды</th>
-            <th scope="col" class="px-6 py-3">Всего баллов</th>
-            <th scope="col" class="px-6 py-3">до 18 лет</th>
-            <th scope="col" class="px-6 py-3">18-35 лет</th>
-            <th scope="col" class="px-6 py-3">36-49 лет</th>
-            <th scope="col" class="px-6 py-3">50+ лет</th>
-          </thead>
-          <tbody class="text-center">
-            {% for k in qs %}
+      <div class=" w-full mt-5 p-1.5 bg-white shadow  rounded-xl">
 
-            <tr class="bg-white border-b ">
-              <td class="px-6 py-4">{{ forloop.counter }}</td>
-              {% if k.1 != 0 %}
-              <td class="px-6 py-4"><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
-              <td class="px-6 py-4">{{ k.1 }}</td>
-              <td class="px-6 py-4">{{ k.2 }}</td>
-              <td class="px-6 py-4">{{ k.3 }}</td>
-              <td class="px-6 py-4">{{ k.4 }}</td>
-              <td class="px-6 py-4">{{ k.5 }}</td>
-
-              {% else %}
-
-              <td class="px-6 py-4"><a href="/comands/{{ k.1 }}">{{ k.1 }} </a></td>
-              <td class="px-6 py-4">нет пробега</td>
-
-              <td class="px-6 py-4">- - - - - - -</td>
-              <td class="px-6 py-4">- - - - - - -</td>
-              <td class="px-6 py-4">- - - - - - -</td>
-              <td class="px-6 py-4">- - - - - - -</td>
-              {#
-              <td>- - - - - - -</td>
-              #} {% endif %}
-            </tr>
-
-            {% endfor %}
-          </tbody>
-          <tr></tr>
+        <table  id="selection-table">
+    <thead>
+        <tr>
+            <th>
+                <span class="flex items-center">
+                    Место
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Номер команды
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Всего баллов
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    до 18 лет
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    18-35 лет
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    36-49 лет
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    50+ лет
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for k in qs %}
+        <tr class="hover:bg-gray-50  cursor-pointer">
+            <td >{{ forloop.counter }}</td>
+            {% if k.1 != 0 %}
+            <td class="font-semibold text-gray-900 whitespace-nowrap"><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
+            <td>{{ k.1 }}</td>
+            <td>{{ k.2 }}</td>
+            <td>{{ k.3 }}</td>
+            <td>{{ k.4 }}</td>
+            <td>{{ k.5 }}</td>
+            {% else %}
+            <td class="font-semibold text-gray-900 whitespace-nowrap"><a href="/comands/{{ k.1 }}">{{ k.1}} </a></td>
+            <td>нет пробега</td>
+            <td>- - - - - - -</td>
+            <td>- - - - - - -</td>
+            <td>- - - - - - -</td>
+            <td>- - - - - - -</td>
+            {% endif %}
+        </tr>
+        {%endfor%}
+    
+    </tbody>
         </table>
       </div>
     </div>
@@ -70,47 +115,6 @@
 </main>
 </div>
     {% endblock %} {% block extrascripts %}
-
-    <script>
-      new DataTable("#champ", {
-                  order: [[2, 'desc']],
-        columnDefs: [
-          { targets: "_all", className: "dt-body-center  dt-head-center" },
-        ],
-        pageLength: 50,
-        ordering: true,
-        bLengthChange: true,
-        info: true,
-        searching: true,
-
-        layout: {
-          topStart: "info",
-          bottom: "paging",
-          bottomStart: null,
-          bottomEnd: null,
-          responsive: true,
-        },
-        scrollX: true,
-        language: {
-          processing: "Подождите...",
-          search: "",
-          lengthMenu: "Показать _MENU_ записей",
-          info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-          infoEmpty: "Записи с 0 до 0 из 0 записей",
-          infoFiltered: "(отфильтровано из _MAX_ записей)",
-          loadingRecords: "Загрузка записей...",
-          zeroRecords: "Записи отсутствуют.",
-          emptyTable: "В таблице отсутствуют данные",
-          paginate: {
-            first: "Первая",
-            previous: "Предыдущая",
-            next: "Следующая",
-            last: "Последняя",
-          },
-          searchPlaceholder: "поиск участника",
-        },
-      });
-    </script>
     {% endblock %}
   </main>
 </div>

@@ -200,10 +200,10 @@
                 <!-- Dropdown menu category -->
                 <div
                         id="dropdownDots"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 "
                 >
                     <ul
-                            class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                            class="py-2 text-sm text-gray-700 "
                             aria-labelledby="dropdownMenuIconButton"
                     >
                         <li>
@@ -238,37 +238,80 @@
                     <div class="py-2">
                         <a
                                 href="{% url 'runners' %}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
                         >Общий</a
                         >
                     </div>
                 </div>
             </div>
         </div>
-        <!-- mobi таблица -->
-        <div
-                class="w-full md:hidden justify-center mt-5 bg-white shadow flex-col items-center rounded-xl"
-        >
-            <table
-                    class="text-sm text-left px-1 text-gray-500"
-                    id="runners-mobi"
-                    style="width: 100%"
-            >
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">№ п/п</th>
-                    <th scope="col" class="px-6 py-3">Участник</th>
-                    <th scope="col" class="px-6 py-3">возраст</th>
-                </tr>
-                </thead>
 
-                <tbody class="dt-body-center">
-                {% for p in profile %}
-                    <tr class="text-center border-b">
-                        <td class="px-6 py-4">{{ forloop.counter }}</td>
-                        <td class="px-6 py-4">
-                            <a href="/profile/{{ p.username }}"> {{ p.username }}</a>
-                            <div class="flex justify-center items-center">
+        <!-- PC-table -->
+        <div
+                class="w-full flex justify-center mt-5 p-1.5 bg-white shadow flex-col items-center rounded-xl"
+        >
+            <table  id="selection-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="flex items-center">
+                                № п/п
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="flex items-center">
+                                Участник
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th class="hidden md:block">
+                            <span class="flex items-center">
+                                Категория
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="flex items-center">
+                                Возраст
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th class="hidden md:block">
+                            <span class="flex items-center">
+                                Пол
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="flex items-center">
+                                Группа
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                </svg>
+                            </span>
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in profile %}
+                    <tr class="hover:bg-gray-50  cursor-pointer">
+                        <td >{{ forloop.counter }}</td>
+                        <td class="font-medium text-gray-900 whitespace-nowrap">
+                            <a class="text-sm font-semibold text-black"  href="/profile/{{ p.username }}">
+                                {{ p.username }}
+                                <div class="md:hidden flex justify-center items-center">
                                 {% if p.runner_gender == 'м' %}
                                     <svg
                                             class="w-5 h-5"
@@ -330,138 +373,23 @@
                                 >
                             {% endif %}
                             </div>
+                            </a>
                         </td>
-                        <td class="px-6 py-4">{{ p.runner_age }}</td>
+                        <td class="hidden md:block">{{ p.runner_category|cat_tag }}</td>
+                        <td>{{ p.runner_age }}</td>
+                        <td class="hidden md:block">{{ p.runner_gender }}</td>
+                        
+                        <td>{% if p.runner_group__group_title %}{{ p.runner_group__group_title }}{% else %} ------ {% endif %}</td>
                     </tr>
-
-                {% endfor %}
+                    {%endfor%}
+                
                 </tbody>
-                <tr></tr>
-            </table>
-        </div>
-        <!-- PC-table -->
-        <div
-                class="w-full hidden md:block justify-center mt-5 bg-white shadow flex-col items-center rounded-xl"
-        >
-            <table
-                    class="text-sm text-left px-1 text-gray-500"
-                    id="runners"
-                    style="width: 100%"
-            >
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">№ п/п</th>
-                    <th scope="col" class="px-6 py-3">Участник</th>
-                    <th scope="col" class="px-6 py-3">категория</th>
-                    <th scope="col" class="px-6 py-3">возраст</th>
-                    <th scope="col" class="px-6 py-3">пол</th>
-                    <th scope="col" class="px-6 py-3">группа</th>
-                </tr>
-                </thead>
-
-                <tbody class="dt-body-center">
-                {% for p in profile %}
-                    <tr class="text-center border-b">
-                        <td class="px-6 py-4">{{ forloop.counter }}</td>
-                        <td class="px-6 py-4">
-                            <a href="/profile/{{ p.username }}"> {{ p.username }}</a>
-                        </td>
-                        <td class="px-6 py-4">{{ p.runner_category|cat_tag }}</td>
-                        <td class="px-6 py-4">{{ p.runner_age }}</td>
-                        <td class="px-6 py-4">{{ p.runner_gender }}</td>
-                        <td class="px-6 py-4"> {% if p.runner_group__group_title %}{{ p.runner_group__group_title }}
-                        {% else %} ------ {% endif %}</td>
-                    </tr>
-
-                {% endfor %}
-                </tbody>
-                <tr></tr>
             </table>
         </div>
     </div>
 
 {% endblock %} {% block extrascripts %}
-
-    <script>
-        new DataTable("#runners", {
-
-
-            columnDefs: [
-
-                {targets: "_all", className: "dt-body-center  dt-head-center"},
-            ],
-            pageLength: 50,
-            ordering: true,
-            bLengthChange: true,
-            info: true,
-            searching: true,
-
-            layout: {
-                topStart: "info",
-                bottom: "paging",
-                bottomStart: null,
-                bottomEnd: null,
-                responsive: true,
-            },
-            scrollX: true,
-            language: {
-                processing: "Подождите...",
-                search: "",
-                lengthMenu: "Показать _MENU_ записей",
-                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                infoEmpty: "Записи с 0 до 0 из 0 записей",
-                infoFiltered: "(отфильтровано из _MAX_ записей)",
-                loadingRecords: "Загрузка записей...",
-                zeroRecords: "Записи отсутствуют.",
-                emptyTable: "В таблице отсутствуют данные",
-                paginate: {
-                    first: "Первая",
-                    previous: "Предыдущая",
-                    next: "Следующая",
-                    last: "Последняя",
-                },
-                searchPlaceholder: "Поиск участника",
-            },
-        });
-        new DataTable("#runners-mobi", {
-            columnDefs: [
-
-                {targets: "_all", className: "dt-body-center  dt-head-center"},
-            ],
-            pageLength: 50,
-            ordering: true,
-            bLengthChange: true,
-            info: true,
-            searching: true,
-
-            layout: {
-                topStart: "info",
-                bottom: "paging",
-                bottomStart: null,
-                bottomEnd: null,
-                responsive: true,
-            },
-            scrollX: true,
-            language: {
-                processing: "Подождите...",
-                search: "",
-                lengthMenu: "Показать _MENU_ записей",
-                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                infoEmpty: "Записи с 0 до 0 из 0 записей",
-                infoFiltered: "(отфильтровано из _MAX_ записей)",
-                loadingRecords: "Загрузка записей...",
-                zeroRecords: "Записи отсутствуют.",
-                emptyTable: "В таблице отсутствуют данные",
-                paginate: {
-                    first: "Первая",
-                    previous: "Предыдущая",
-                    next: "Следующая",
-                    last: "Последняя",
-                },
-                searchPlaceholder: "Поиск участника",
-            },
-        });
-    </script>
 {% endblock %}
+
 </main>
 </div>

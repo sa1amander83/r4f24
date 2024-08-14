@@ -15,73 +15,95 @@
         {% else %}
             <h1 class="text-left text-lg font-semibold truncate">Статистика команд</h1>
         {% endif %}
-        <div class=" w-full mt-5 bg-white shadow  rounded-xl">
-        <table class="display  text-sm text-left px-1  text-gray-500 "
-                    style="width:100%" id="comanda">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+        <div class=" w-full mt-5 p-1.5 bg-white shadow  rounded-xl">
 
-            <tr>
-                <th scope="col" class="px-6 py-3"> {% if flag %}Группа{% else %} Команда {% endif %}</th>
-                <th scope="col" class="px-6 py-3">Участники</th>
-                <th scope="col" class="px-6 py-3">Баллы</th>
-                <th scope="col" class="px-6 py-3">Дистанция</th>
-                <th scope="col" class="px-6 py-3">Общее Время</th>
-                <th scope="col" class="px-6 py-3">Темп</th>
-                <th scope="col" class="px-6 py-3">Пробежки</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for team in group_data %}
-
-                {##}
-                {#                TODO сделать  дропдаун членов группы или хуй с ним#}
-                {##}
-                <tr class="bg-white border-b ">
-                    <td scope="row"
-                                class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap "> {% if flag %} <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
-                        <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a>
-                    </td>
-                    {% if flag %}
-                        <td class="px-6 py-4">{{ team.group_total_members }}</td>
-                        <td class="px-6 py-4">{{ team.group_total_balls }}</td>
-                        <td class="px-6 py-4">{{ team.group_total_distance }}</td>
-                        <td class="px-6 py-4">{{ team.group_total_time }}</td>
-                        <td class="px-6 py-4">{{ team.group_average_temp|time:"i:s" }}</td>
-                        <td class="px-6 py-4">{{ team.group_total_runs }}</td>
-
-                    {% else %}
-                        <td class="px-6 py-4">{{ team.comands_total_members }}</td>
-                        <td class="px-6 py-4">{{ team.comand_total_balls }}</td>
-                        <td class="px-6 py-4">{{ team.comand_total_distance }}</td>
-                        <td class="px-6 py-4">{{ team.comand_total_time }}</td>
-                        <td class="px-6 py-4">{{ team.comand_average_temp|time:"i:s" }}</td>
-                        <td class="px-6 py-4">{{ team.comand_total_runs }}</td>
-
-
-                    {% endif %}
-                </tr>
-
-                {##}
-                {#            этот кусок можно разкоменнтить для вывода статистики по участникам групп#}
-                {#                {% for user in data.users %}#}
-                {#                    {% for stat in data.user_stats %}#}
-                {#                        {% if stat.runner_stat == user %}#}
-                {#                            <tr>#}
-                {#                                <td>{{ user.username }}</td>#}
-                {#                                <td>{{ stat.total_balls }}</td>#}
-                {#                                <td>{{ stat.total_distance }}</td>#}
-                {#                                <td>{{ stat.total_time|time:"H:i:s" }}</td>#}
-                {#                                <td>{{ stat.total_average_temp|time:"i:s" }}</td>#}
-                {#                                <td>{{ stat.total_days }}</td>#}
-                {#                                <td>{{ stat.total_runs }}</td>#}
-                {#                            </tr>#}
-                {#                        {% endif %}#}
-                {#                    {% endfor %}#}
-                {#                {% endfor %}#}
-            {% endfor %}
-            </tbody>
-        </table>
+        <table  id="selection-table">
+    <thead>
+        <tr>
+            <th>
+                <span class="flex items-center">
+                    {% if flag %}Группа{% else %} Команда {% endif %}
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Участники
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Баллы
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Дистанция (км)
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Общее время
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Темп мин/км
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Кол-во пробежек
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in group_data %}
+        <tr class="hover:bg-gray-50  cursor-pointer">
+            <td class="font-semibold text-gray-900 whitespace-nowrap">{% if flag %} 
+                <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
+                <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a></td>
+                {% if flag %}
+            <td>{{ team.group_total_members }}</td>
+            <td>{{ team.group_total_balls }}</td>
+            <td>{{ team.group_total_distance }}</td>
+            <td>{{ team.group_total_time }}</td>
+            <td>{{ team.group_average_temp|time:"i:s" }}</td>
+            <td>{{ team.group_total_runs }}</td>
+            {% else %}
+            <td >{{ team.comands_total_members }}</td>
+            <td >{{ team.comand_total_balls }}</td>
+            <td>{{ team.comand_total_distance }}</td>
+            <td>{{ team.comand_total_time }}</td>
+            <td>{{ team.comand_average_temp|time:"i:s" }}</td>
+            <td>{{ team.comand_total_runs }}</td>
+            {% endif %}
+        </tr>
+        {%endfor%}
+    
+    </tbody>
+</table>
         </div>
     </div>
 </div>
@@ -91,39 +113,4 @@
 
 {% block extrascripts %}
 
-    <script>
-
-        new DataTable('#comanda', {
-                order: [[2, 'desc']],
-
-            columnDefs: [
-                {targets: '_all', className: 'dt-body-center  dt-head-center'},
-                {
-                    defaultContent: "-",
-                    targets: "_all"
-                }
-
-            ],
-            
-            language: {
-                processing: "Подождите...",
-                search: "",
-                lengthMenu: "Показать _MENU_ записей",
-                info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-                infoEmpty: "Записи с 0 до 0 из 0 записей",
-                infoFiltered: "(отфильтровано из _MAX_ записей)",
-                loadingRecords: "Загрузка записей...",
-                zeroRecords: "Записи отсутствуют.",
-                emptyTable: "В таблице отсутствуют данные",
-                paginate: {
-                    first: "Первая",
-                    previous: "Предыдущая",
-                    next: "Следующая",
-                    last: "Последняя",
-                },
-                searchPlaceholder: "Поиск команды/группы",
-            },
-            
-        });
-    </script>
-{% endblock %}%}
+{% endblock %}

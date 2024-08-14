@@ -141,36 +141,100 @@
         <div class="flex flex-col flex-1 ">
             <h1 class=" text-left text-lg font-semibold truncate"> Участники {% if flag %}группы {% else %} команды {% endif %}</h1>
         <div class=" w-full mt-5 bg-white shadow  rounded-xl">
-        <table class="display  text-sm text-left px-1  text-gray-500 " style="width: 100%;" id="myteam">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50" >
-            <tr>
-              <th scope="col" class="px-6 py-3">№п/п</th>
-              <th scope="col" class="px-6 py-3">Участник</th>
-              <th scope="col" class="px-6 py-3">баллы</th>
-              <th scope="col" class="px-6 py-3">дистанция</th>
-              <th scope="col" class="px-6 py-3">время</th>
-              <th scope="col" class="px-6 py-3">средний темп</th>
-              <th scope="col" class="px-6 py-3">всего дней</th>
-              <th scope="col" class="px-6 py-3">пробежки</th>
-              <th scope="col" class="px-6 py-3">квалификация</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for u in v %}
-            <tr class="bg-white border-b ">
-              <td class="px-6 py-4">{{ forloop.counter }}</td>
-              <td class="px-6 py-4">{{ u.user }}</td>
-              <td class="px-6 py-4">{{ u.total_balls }}</td>
-              <td class="px-6 py-4">{{ u.total_distance }}</td>
-              <td class="px-6 py-4">{{ u.total_time }}</td>
-              <td class="px-6 py-4">{{ u.total_average_temp }}</td>
-              <td class="px-6 py-4">{{ u.total_days }}</td>
-              <td class="px-6 py-4">{{ u.total_runs }}</td>
-              <td class="px-6 py-4">{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        
+        <table id="sorting-table">
+    <thead>
+        <tr>
+            <th>
+                <span class="flex items-center">
+                    №п/п
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    Участник
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    баллы
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    дистанция
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    время
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    средний темп
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    всего дней
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    пробежки
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th>
+                <span class="flex items-center">
+                    квалификация
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for u in v %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ u.user }}</td>
+            <td>{{ u.total_balls }}</td>
+            <td>{{ u.total_distance }}</td>
+            <td>{{ u.total_time }}</td>
+            <td>{{ u.total_average_temp }}</td>
+            <td>{{ u.total_days }}</td>
+            <td>{{ u.total_runs }}</td>
+            <td>{% if u.is_qualificated %} Да {% else %} Нет {% endif %}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
         </div>
         </div>
 

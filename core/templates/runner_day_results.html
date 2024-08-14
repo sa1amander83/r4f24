@@ -6,83 +6,90 @@
   <main
     class="flex flex-col justify-center rounded-2xl pt-5 mb-3 bg-sky-900 h-full"
   >
-    <div class="w-full mt-5 shadow flex-col items-center rounded-xl">
-      <div>{% include 'components/calendar.html' %}</div>
-      <div class="flex flex-col w-full p-3 my-3 md:p-6 md:my-0">
+    <div class="w-full mt-5 mb-3 shadow flex-col items-center rounded-xl">
+      
+      <div class="flex bg-gray-200  rounded-2xl flex-col w-full p-3 my-3 md:p-6 md:my-0">
         <h1 class="text-left text-lg font-semibold truncate">
           Результаты {{ day }} сентября
         </h1>
-        <div class="mt-5 bg-white shadow flex-col items-center rounded-xl">
-          <table
-            id="dayResults"
-            class="display text-sm text-left px-1 text-gray-500"
-          >
-            <thead>
-              <tr>
-                <th scope="col" class="px-6 py-3">Участник</th>
-                <th scope="col" class="px-6 py-3">Дистанция</th>
-                <th scope="col" class="px-6 py-3">Время</th>
-                <th scope="col" class="px-6 py-3">Средний темп</th>
-                <th scope="col" class="px-6 py-3">Баллы</th>
-                <th scope="col" class="px-6 py-3">Номер пробежки</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for result in results %}
-              <tr class="bg-white border-b">
-                <td class="px-6 py-4">
-                  <a href="{% url 'profile:profile' result.runner.username %}">
+        <div class="mt-5 p-1.5  bg-white shadow flex-col items-center rounded-xl">
+
+          <table  id="selection-table">
+      <thead>
+          <tr>
+              <th>
+                  <span class="flex items-center">
+                      Участник
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+              <th>
+                  <span class="flex items-center">
+                      Дистанция
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+              <th>
+                  <span class="flex items-center">
+                      Время
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+              <th>
+                  <span class="flex items-center">
+                      Средний темп
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+              <th>
+                  <span class="flex items-center">
+                      Баллы
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+              <th>
+                  <span class="flex items-center">
+                      Номер пробежки
+                      <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                      </svg>
+                  </span>
+              </th>
+
+          </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+        <tr class="hover:bg-gray-50  cursor-pointer">
+            <td class="font-semibold text-gray-900 whitespace-nowrap">
+              <a href="{% url 'profile:profile' result.runner.username %}">
                     {{ result.runner.username }}
-                  </a>
-                </td>
-                <td class="px-6 py-4">{{ result.day_distance }}</td>
-                <td class="px-6 py-4">{{ result.day_time }}</td>
-                <td class="px-6 py-4">{{ result.day_average_temp }}</td>
-                <td class="px-6 py-4">{{ result.ball }}</td>
-                <td class="px-6 py-4">{{ result.number_of_run }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </a></td>
+            
+            <td>{{ result.day_distance }}</td>
+            <td>{{ result.day_time }}</td>
+            <td>{{ result.day_average_temp }}</td>
+            <td>{{ result.ball }}</td>
+            <td>{{ result.number_of_run }}</td>
+        </tr>
+        {%endfor%}
+    
+    </tbody>
+</table>
         </div>
       </div>
     </div>
   </main>
 </div>
 {% endblock %} {% block extrascripts %}
-<script>
-  let table = new DataTable("#dayResults", {
-    columnDefs: [
-      { targets: "_all", className: "dt-body-center  dt-head-center",
-           },
-              { orderSequence: ['desc'], targets: [4] },
-
-    ],
-
-    language: {
-      processing: "Подождите...",
-      search: "",
-      lengthMenu: "Показать _MENU_ записей",
-      info: "Записи с _START_ до _END_ из _TOTAL_ записей",
-      infoEmpty: "Записи с 0 до 0 из 0 записей",
-      infoFiltered: "(отфильтровано из _MAX_ записей)",
-      loadingRecords: "Загрузка записей...",
-      zeroRecords: "Записи отсутствуют.",
-      emptyTable: "В таблице отсутствуют данные",
-      paginate: {
-        first: "Первая",
-        previous: "Предыдущая",
-        next: "Следующая",
-        last: "Последняя",
-      },
-
-      ordering: true,
-      bLengthChange: false,
-
-      scrollX: true,
-    },
-    searchPlaceholder: "Поиск участника",
-  });
-</script>
-
 {% endblock %}
