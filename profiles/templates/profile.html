@@ -28,8 +28,16 @@
 </div> {% endcomment %}
     <div class=" mx-5 ">
         <div class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"></div>
-        <main class="flex flex-col justify-center rounded-2xl pb-3 pt-10 bg-sky-900 h-full">
-            <div class="flex lg:gap-5 flex-col lg:flex-row  bg-gray-200 mb-3  rounded-2xl w-full p-3 my-3 md:p-6 md:my-0">
+        <main class="flex flex-col justify-center rounded-2xl lg:pb-3 lg:pt-10 bg-sky-900 h-full">
+                                        
+                            {% if request.user.is_authenticated and request.user.username == runner_stat  or equest.user.is_authenticated and request.user == runner_stat %}
+                                <div class="lg:hidden p-4">
+                                    <a href="{% url 'profile:addrunday' runner_stat %}"
+                                       class="rounded-md bg-sky-600 py-2 px-4 font-semibold text-white shadow-lg transition duration-150 ease-in-out hover:bg-sky-700 hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Внести
+                                        сведения</a>
+                                </div>
+                            {% endif %}
+            <div class="flex lg:gap-5 flex-col lg:flex-row  bg-gray-200   rounded-2xl w-full p-3 mb-3 md:p-6 md:my-0">
                 <!-- sidebar  -->
                 <div class="">
                     <h1 class="mx-auto text-left text-lg font-semibold truncate"> Профиль</h1>
@@ -244,10 +252,10 @@
                     <!-- Таблица -->
                     <h1 class=" text-left text-lg mt-5 font-semibold "> Статистика по участнику</h1>
                     <div class=" w-full mt-5 bg-white shadow  rounded-xl">
-                        <div class="flex bg-white items-center  rounded-t-xl justify-between p-4">
+                        <div class="flex bg-white items-center  rounded-t-xl justify-between lg:p-4">
                             
                             {% if request.user.is_authenticated and request.user.username == runner_stat  or equest.user.is_authenticated and request.user == runner_stat %}
-                                <div>
+                                <div class="hidden lg:block">
                                     <a href="{% url 'profile:addrunday' runner_stat %}"
                                        class="rounded-md bg-sky-600 py-2 px-4 font-semibold text-white shadow-lg transition duration-150 ease-in-out hover:bg-sky-700 hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Внести
                                         сведения</a>
@@ -422,16 +430,16 @@
     </tbody>
 </table>
 
-                        <div class="flex rounded-b-xl bg-white justify-end p-4">
+                        <!-- <div class="flex rounded-b-xl bg-white justify-end p-4"> -->
 
-                            <div class="flex items-end gap-2">
+                            <!-- <div class="flex items-end gap-2"> -->
 
                                 {#                        {% for u in tot_dist %}#}
                                 {#                        <span class="text-xl font-bold"> {{ u.avg_temp }}/км</span>#}
                                 {#                        {% endfor %}#}
-                            </div>
+                            <!-- </div> -->
 
-                        </div>
+                        <!-- </div> -->
                     </div>
 
 
