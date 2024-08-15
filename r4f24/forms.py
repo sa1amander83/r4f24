@@ -71,15 +71,15 @@ class UserImportForm(ModelForm):
         fields = ('csv_file',)
 
 
-class MyAverage(forms.TimeInput):
-    input_type = 'time'
-    format = '%M:%S'
-    TIME_INPUT_FORMAT = ['%M:%S']
+# class MyAverage(forms.TimeInput):
+#     input_type = 'time'
+#     format = '%M:%S'
+#     TIME_INPUT_FORMAT = ['%M:%S']
 
 
-class MyTotalTimeInput(forms.TimeInput):
-    input_type = 'time'
-    format = '%H:%M:%S'
+# class MyTotalTimeInput(forms.TimeInput):
+#     input_type = 'time'
+#     format = '%H:%M:%S'
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -102,8 +102,8 @@ class MultipleFileField(forms.FileField):
 
 class RunnerDayForm(ModelForm):
     class Meta:
-        day_time = forms.TimeField(help_text='00:00:00')
-        day_average_temp = forms.TimeField(help_text="00:00:00")
+        # day_time = forms.TimeField(help_text='00:00:00')
+        # day_average_temp = forms.TimeField(help_text="00:00:00")
         model = RunnerDay
 
         # current_date = date.today()
@@ -120,11 +120,11 @@ class RunnerDayForm(ModelForm):
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
                 attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'value': '0'}),
-            'day_time': MyTotalTimeInput(
-                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'time', 'id': 'day_time', 'step': '1', 'value': '00:00:00'}),
-            'day_average_temp': MyAverage(
-                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'time', 'step': '1',
-                       'value': '00:00:00',
+            'day_time': forms.TextInput(
+                attrs={'placeholder': "ЧЧ:ММ:СС",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',  'id': 'day_time', 'step': '1'}),
+            'day_average_temp': forms.TextInput(
+                attrs={'placeholder': "ЧЧ:ММ:СС",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'step': '1',
+                       
                        'id': 'temp'}),
             'ball': forms.NumberInput(
                 attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),

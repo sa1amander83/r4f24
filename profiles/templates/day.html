@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
     <div class="h-full rounded-2xl p-6 pb-12">
+                 <span id="category" hidden="hidden">{{ runner_category }}</span>
         <div class="mx-auto">
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -203,7 +204,7 @@
     </div>
 
 {% endblock %} {% block extrascripts %}
-    <script>
+      <script>
         let avg_temp_koef = 0
         let distance_koef = [
             [4.999, 1, 1], [9.999, 1.1, 2.1],
@@ -375,17 +376,22 @@
             let ball = document.getElementById('ball')
             let alarm = document.getElementById('alarm_message')
             let button = document.getElementById('button')
-
+            let category = document.getElementById('category').innerHTML
 
             if (event.target.tagName === 'INPUT') {
                 let temp = document.getElementById('temp').value
                 let distance = document.getElementById('day_distance').value
                 let total_time = document.getElementById('day_time').value
 
-                for (const key in temp_koef) {
-                    if (temp <= key) {
-                        avg_temp_koef = temp_koef[key]
-                        break
+
+                if (category === '1' || category === '2') {
+                    avg_temp_koef = 1
+                } else {
+                    for (const key in temp_koef) {
+                        if (temp <= key) {
+                            avg_temp_koef = temp_koef[key]
+                            break
+                        }
                     }
                 }
 
@@ -402,6 +408,8 @@
                         }
                         let ost_dist
                         let ost_koef
+
+
                         if (distance >= 5) {
                             ost_dist = distance - distance_koef[need_list_index][0]
                             ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist
@@ -420,7 +428,7 @@
                 let secs = Number(pieces[2]);
                 let totalSecs = hrs * 60;
                 totalSecs += mins;
-                totalSecs += secs;
+                totalSecs += secs * .10;
                 let avg = totalSecs / distance;
 
                 let avgMins = Math.floor(avg / 60);
@@ -447,13 +455,19 @@
 
             }
             if (tot_koef) {
-                ball.value = Math.round(tot_koef)
+                ball.value = Math.round(tot_koef)*10
             } else {
                 ball.value = 0
             }
         }
     </script>
-
-{% endblock %} {#{% block calend %}#} {# {% for value in calend %}#} {##} {#
-<a href="/day_selected/{{ value }}" class="day-selected">{{ value }}</a>#} {##}
-{# {% endfor %}#} {#{% endblock %}#}
+<script>
+//Код jQuery, установливающий маску для ввода телефона элементу input
+//1. После загрузки страницы,  когда все элементы будут доступны выполнить...
+$(function(){
+  //2. Получить элемент, к которому необходимо добавить маску
+  $("#day_time").mask("99:99:99");
+  $("#temp").mask("00:99:99");
+});
+</script>
+{% endblock %}

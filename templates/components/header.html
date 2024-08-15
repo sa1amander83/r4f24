@@ -3,7 +3,7 @@
 <header class="border-b border-sky-700 mb-5">
   <nav class="border-gray-200 uppercase">
     <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
-      <a href="#" class="flex items-center space-x-3">
+      <a href="{% url 'index' %}" class="flex items-center space-x-3">
         <img
           src="https://flowbite.com/docs/images/logo.svg"
           class="h-8"
@@ -231,9 +231,11 @@
         class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
         id="navbar-cta"
       >
+      
         <ul
           class="flex flex-col p-4 md:p-0 mt-4 rounded-lg md:space-x-8 md:flex-row md:mt-0 md:border-0"
         >
+        
           <li>
             <a
               href="{% url 'index' %}"
@@ -278,7 +280,10 @@
             >
           </li>
           <li>
+            {% if request.user.is_authenticated %}
+            {%else%}
             <div class="h-px w-full bg-gray-300 mb-4 md:hidden lg:hidden"></div>
+            
             <div
               class="flex items-center w-full justify-center md:hidden lg:hidden"
             >
@@ -286,19 +291,6 @@
                 href="{% url 'authorize:register' %}"
                 class="text-white bg-sky-800 hover:bg-sky-700 border border-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-700 font-medium rounded-3xl text-sm px-5 py-2 text-center inline-flex items-center me-2"
               >
-                <!-- <svg
-                  class="w-6 h-6 me-2"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
-                    clip-rule="evenodd"
-                  />
-                </svg> -->
 
                 Регистрация
               </a>
@@ -324,6 +316,8 @@
                 Вход
               </a>
             </div>
+            
+           {%endif%}
           </li>
         </ul>
       </div>
