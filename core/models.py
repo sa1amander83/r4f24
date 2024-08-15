@@ -115,6 +115,7 @@ class User(AbstractUser):
     zabeg22 = models.BooleanField(verbose_name='Участник МыZaБег 2022', default=False)
     zabeg23 = models.BooleanField(verbose_name='Участник МыZaБег 2023', default=False)
     can_create_group = models.BooleanField(verbose_name='Старший группы', default=False, null=True)
+    can_add_to_group = models.BooleanField(verbose_name='Участник группы', default=False, null=True)
     is_staff = models.BooleanField(verbose_name='ответственный', default=False)
     not_running = models.BooleanField(verbose_name='не бегает', default=False)
     REQUIRED_FIELDS = ['runner_team_id', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']

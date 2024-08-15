@@ -32,6 +32,8 @@ class Photo(models.Model):
     photo = models.FileField(verbose_name="фото", upload_to=user_directory_path, null=True,
                              blank=True, max_length=300)
     number_of_run = models.IntegerField(verbose_name='номер пробежки', null=True)
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
 
     # def save(self, *args, **kwargs):
     #     super(Photo, self).save(*args, **kwargs)
