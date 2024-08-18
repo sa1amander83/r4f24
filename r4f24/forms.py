@@ -23,8 +23,9 @@ class RegisterUserForm(UserCreationForm):
                               widget=forms.TextInput(attrs={'placeholder': "Введите кодовое слово",
                                                             'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
     runner_age = forms.CharField(label='Возраст',
-                                 widget=forms.TextInput(attrs={'placeholder': "Укажите свой возраст",
-                                                               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+                                 widget=forms.TextInput(attrs={'placeholder': "Укажите свой возраст от 5 до 70",
+                                                               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                                               'type': 'number', 'id':'runner_age'}))
     # runner_status = forms.BooleanField(widget=forms.RadioSelect(choices=(('Участник','Член семьи участника'),), attrs={'class': 'form-control form-control-user', 'id': 'status'}))
     password1 = forms.CharField(label='Пароль',
                                 widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль",
@@ -99,7 +100,7 @@ class MultipleFileField(forms.FileField):
             result = single_file_clean(data, initial)
         return result
 
-
+from datetime import date
 class RunnerDayForm(ModelForm):
     class Meta:
         # day_time = forms.TimeField(help_text='00:00:00')
@@ -116,7 +117,7 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
 
-            'day_select': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_id'}),
+            'day_select': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'date', 'id': 'day_id'}),
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
                 attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'value': '0'}),

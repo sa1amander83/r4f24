@@ -51,7 +51,7 @@ class ProfileUser(ListView, DataMixin):
         get_category = getuser.runner_category
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
-            'day_select', 'number_of_run')
+            'day_select','time_create', 'number_of_run')
 
         photos = get_user_model().objects.get(username=self.kwargs['username'])
         context['images'] = photos.photos.all()
@@ -101,7 +101,7 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     def get_object(self, queryset=None):
         return self.request.user
 
-    fields = ['runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23']
+    fields = ['runner_age', 'runner_gender', 'zabeg22', 'zabeg23']
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):

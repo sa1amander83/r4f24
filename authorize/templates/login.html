@@ -43,7 +43,13 @@
     </div> -->
     <form method="post" class="space-y-6">
       <div class="form-error">{{ form.non_field_errors }}</div>
-
+        {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li с{% if message.tags %} class="{{ message.tags }} flex justify-center items-center gap-3 rounded-md border border-blue-950 bg-blue-400 p-4 mb-2"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
       {% csrf_token %}
       <div>
         <label for="username" class="block text-sm font-medium text-gray-700"

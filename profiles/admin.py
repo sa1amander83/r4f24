@@ -36,9 +36,9 @@ class RunnerAdmin(admin.ModelAdmin):
 
     # fields = ('пробег_за_день', 'дистанция_за_день', 'время_пробега', 'средний_темп',)
     search_fields = (
-    'username', 'runner_team__team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
-    list_editable = ('runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
-    list_display = ('username', 'runner_team', 'runner_age', 'runner_category', 'runner_gender', 'zabeg22', 'zabeg23')
+    'username', 'runner_team__team', 'runner_age', 'runner_category','runner_group', 'runner_gender', 'can_create_group', 'can_add_to_group', 'zabeg22', 'zabeg23')
+    list_editable = ('runner_age', 'runner_category', 'runner_gender','runner_group', 'zabeg22', 'zabeg23','can_create_group', 'can_add_to_group')
+    list_display = ('username', 'runner_team', 'runner_age', 'runner_category','runner_group', 'runner_gender','can_create_group', 'can_add_to_group', 'zabeg22', 'zabeg23')
     # 'пробег_за_день','дистанция_за_день', 'время_пробега', 'средний_темп',)
 
     list_display_links = ('username', 'runner_team')

@@ -34,6 +34,12 @@
             >
                 {% csrf_token %}
 
+{% for message in messages %}
+                {{ message }}
+                {% endfor %}
+
+
+
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700"
                     >День пробега</label

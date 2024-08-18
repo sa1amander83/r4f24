@@ -103,10 +103,7 @@ class User(AbstractUser):
     last_name = False
     first_name = False
     runner_team = models.ForeignKey(Teams, on_delete=models.CASCADE, verbose_name='команда', db_index=True)
-    runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True, validators=[
-        MaxValueValidator(99),
-        MinValueValidator(5)
-    ])
+    runner_age = models.PositiveIntegerField(verbose_name='возраст', db_index=True)
     runner_category = models.PositiveIntegerField(verbose_name='Категория', choices=CATEGORY, default=1,
                                                   db_index=True)
     runner_group = models.ForeignKey(Group, verbose_name='группа участника', on_delete=models.CASCADE, null=True,
