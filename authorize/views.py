@@ -32,7 +32,8 @@ class RegisterUser(CreateView):
 
                 if form.cleaned_data['keyword'].lower() == keyword_of_team.lower() \
                         and int(form.cleaned_data['runner_age']) < 70 and int(form.cleaned_data['runner_age']) > 5 \
-                        and len(form.cleaned_data['username'])==6 and form.cleaned_data['username'][:3]==runner_team:
+                        and len(form.cleaned_data['username'])==6 and form.cleaned_data['username'][:3]==runner_team\
+                        and form.cleaned_data['username'].isnumeric():
                     user = form.save(commit=False)
 
                     user.runner_team_id = get_team.id
@@ -40,8 +41,8 @@ class RegisterUser(CreateView):
                     messages.success(self.request, 'Регистрация прошла успешно! Вы можете войти в систему.')
                     return redirect('authorize:login')
 
-                elif len(form.cleaned_data['username']) != 6:
-                    messages.error(self.request, 'Имя пользователя должно состоять из 6 знаков.')
+                elif form.cleaned_data['username'].isnumeric() is False:
+                    messages.error(self.request, 'Имя пользователя должно состоять только из цифр')
                     return redirect('authorize:register')
                 elif form.cleaned_data['username'][:3] != runner_team:
                     messages.error(self.request, 'Номер участника не соответствует команде')
