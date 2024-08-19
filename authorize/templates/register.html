@@ -438,31 +438,33 @@
       console.log(team.value);
     }
 
-    document.getElementById("status").addEventListener("change", function () {
-      let username = document.getElementById("username");
-      let status = document.getElementById("status");
-      let v = parseInt(username.value);
-      console.log(status);
-      const fruits = document.querySelectorAll('input[name="runner_status"]');
-      for (const f of fruits) {
-        if (f.checked && f.value === 1) {
-          if (v < 100000) username.value = 100000;
-          if (v > 250000) username.value = 250000;
-        } else {
-          if (v < 10000) username.value = 10000;
-          if (v > 99999) username.value = 99999;
-        }
-      }
-      $(document).ready(function() {
-  $('input[type="text"]').on(username, function() {
-    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
-  });
-});
-    });
+
 
   </script>
 <script>
-  
+  $(document).ready(function() {
+    $('#id_runner_gender').change(function() {
+        var selectedGender = $(this).val();
+        var categorySelect = $('#id_runner_category');
+
+        // Clear existing options
+        categorySelect.empty();
+
+        // Check selected gender and update category options accordingly
+        if (selectedGender === 'ж') {
+            // Add "Новичок" and "Любитель" options
+            categorySelect.append('<option value="1">Новичок</option>');
+            categorySelect.append('<option value="2">Любитель</option>');
+            categorySelect.append('<option disabled value="3">Профи</option>');
+        } else {
+            // Add all options for "Муж"
+            categorySelect.append('<option value="1">Новичок</option>');
+            categorySelect.append('<option value="2">Любитель</option>');
+            categorySelect.append('<option value="3">Профи</option>');
+        }
+    });
+});
+</script>
 </script>
 
 
