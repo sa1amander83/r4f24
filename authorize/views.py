@@ -67,6 +67,11 @@ class RegisterUser(CreateView):
     def form_invalid(self, form, **kwargs):
         print(form.cleaned_data)
         runner_age = int(form.cleaned_data.get('runner_age'))
+
+        if len(form.cleaned_data['username']) != 6:
+            messages.error(self.request, 'Имя пользователя должно состоять из 6 цифр.')
+            return redirect('authorize:register')
+
         try:
             get_user = get_user_model().objects.get(username=form.cleaned_data['username'])
 
@@ -77,12 +82,18 @@ class RegisterUser(CreateView):
         except:
             pass
         runner_team = form.cleaned_data.get('runner_team__team')
-        get_team = Teams.objects.get(team=runner_team)
-        keyword_of_team = get_team.keyword
+        try:
+            get_team = Teams.objects.get(team=runner_team)
+            keyword_of_team = get_team.keyword
+            if form.cleaned_data['keyword'].lower() != keyword_of_team.lower():
+                messages.error(self.request, 'Неверно указано кодовое слово.')
+                return redirect('authorize:register')
 
-        if form.cleaned_data['keyword'].lower() != keyword_of_team.lower():
-            messages.error(self.request, 'Неверно указано кодовое слово.')
+        except:
+            messages.error(self.request, 'Такой команды нет.')
             return redirect('authorize:register')
+
+
 
         if runner_age < 5 or runner_age > 70:
             messages.error(self.request, 'Недопустимый возраст.')

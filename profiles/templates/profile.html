@@ -8,24 +8,9 @@
 {% load date_tag %}
     {% csrf_token %}
 
-
-
-
-
     <div class=" container-fluid ">
 
-    {#   шапка личного кабинета с описанием участника#}
 
-    {% comment %}
-<div class="button">
-    {##}
-    {#                        <a href='{% url 'profile:addfamily' username=runner_stat pk=runner_stat.pk %}'>#}
-    {#                            <div class="block w-full rounded-3 bg-blue-600 text-5xl text-stone-50"#}
-    {#                                 style="text-align: center; width: 150px "></i>Добавить семью#}
-    {#                            </div>#}
-    {#                        </a>#}
-    {#                    </div>#}
-</div> {% endcomment %}
     <div class=" mx-5 ">
         <div class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"></div>
         <main class="flex flex-col justify-center rounded-2xl lg:pb-3 lg:pt-10 bg-sky-900 h-full">
@@ -443,9 +428,12 @@
 
                 </div>
             </div>
+
+
         </main>
 
 
+    </div>
     </div>
 
 
@@ -463,7 +451,7 @@
 
     <script>
         lightbox.option({
-
+  'alwaysShowNavOnTouchDevices':true,
             'wrapAround': true
         })
     </script>

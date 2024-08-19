@@ -16,16 +16,16 @@ class RegisterUserForm(UserCreationForm):
                'id': 'username'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
     runner_team__team = forms.CharField(label='Команда',
-                                        widget=forms.TextInput(attrs={'placeholder': "Введите свою команду",
+                                        widget=forms.TextInput(attrs={'placeholder': "Ваша команда",
                                                                       'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-                                                                      'id': 'team'}))
+                                                                      'id': 'team', 'disabled': 'true'}))
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.TextInput(attrs={'placeholder': "Введите кодовое слово",
                                                             'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
     runner_age = forms.CharField(label='Возраст',
                                  widget=forms.TextInput(attrs={'placeholder': "Укажите свой возраст от 5 до 70",
                                                                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-                                                               'type': 'number', 'id':'runner_age'}))
+                                                               'type': 'number', 'id': 'runner_age'}))
     # runner_status = forms.BooleanField(widget=forms.RadioSelect(choices=(('Участник','Член семьи участника'),), attrs={'class': 'form-control form-control-user', 'id': 'status'}))
     password1 = forms.CharField(label='Пароль',
                                 widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль",
@@ -100,7 +100,10 @@ class MultipleFileField(forms.FileField):
             result = single_file_clean(data, initial)
         return result
 
+
 from datetime import date
+
+
 class RunnerDayForm(ModelForm):
     class Meta:
         # day_time = forms.TimeField(help_text='00:00:00')
@@ -117,18 +120,28 @@ class RunnerDayForm(ModelForm):
 
         widgets = {
 
-            'day_select': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'date', 'id': 'day_id'}),
+            'day_select': forms.Select(attrs={
+                'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                'type': 'date', 'id': 'day_id'}),
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
-                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'placeholder': 'Введите значение в км'}),
+                attrs={
+                    'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                    'id': 'day_distance', 'value': '0'}),
             'day_time': forms.TextInput(
-                attrs={'placeholder': "ЧЧ:ММ:СС",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',  'id': 'day_time', 'step': '1'}),
+                attrs={'placeholder': "ЧЧ:ММ:СС",
+                       'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                       'id': 'day_time', 'step': '1'}),
             'day_average_temp': forms.TextInput(
-                attrs={'placeholder': "ЧЧ:ММ:СС",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'step': '1',
-                       
+                attrs={'placeholder': "ЧЧ:ММ:СС",
+                       'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                       'step': '1',
+
                        'id': 'temp'}),
             'ball': forms.NumberInput(
-                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
+                attrs={
+                    'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                    'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
 
         }
         fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball']
@@ -146,9 +159,10 @@ class RunnerDayForm(ModelForm):
 class AddFamilyForm(ModelForm):
     class Meta:
         model = Group
-        group_title = forms.CharField(label='Название группы', widget=forms.TextInput(attrs={'placeholder': "Введите название",
-               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-               'autofocus': 'on','id':'confirm-join-group'}))
+        group_title = forms.CharField(label='Название группы',
+                                      widget=forms.TextInput(attrs={'placeholder': "Введите название",
+                                                                    'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                                                    'autofocus': 'on', 'id': 'confirm-join-group'}))
         fields = ['group_title']
 
 
@@ -156,9 +170,9 @@ class FamilyForm(forms.ModelForm):
     class Meta:
         model = Group
         group_title = forms.CharField(label='Название группы', widget=forms.TextInput(
-        attrs={'placeholder': "Введите название",
-               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-               'autofocus': 'on'}))
+            attrs={'placeholder': "Введите название",
+                   'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                   'autofocus': 'on'}))
         fields = ('group_title',)
 
 
