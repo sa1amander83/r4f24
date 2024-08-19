@@ -1,5 +1,57 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-
+<style type="text/css">
+/* .password {
+	width: 300px;
+	margin: 15px auto;
+	position: relative;
+} */
+#password-input1 {
+	width: 100%;
+	padding: 5px 0;
+	height: 30px;
+	line-height: 40px;
+	text-indent: 10px;
+	margin: 0 0 15px 0;
+	border-radius: 5px;
+	border: 1px solid #999;
+	font-size: 18px;
+}
+.password-control1 {
+	position: absolute;
+	top: 11px;
+	right: 6px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
+}
+.password-control1.view {
+	background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
+}
+#password-input2 {
+	width: 100%;
+	padding: 5px 0;
+	height: 30px;
+	line-height: 40px;
+	text-indent: 10px;
+	margin: 0 0 15px 0;
+	border-radius: 5px;
+	border: 1px solid #999;
+	font-size: 18px;
+}
+.password-control2 {
+	position: absolute;
+	top: 11px;
+	right: 6px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
+}
+.password-control2.view {
+	background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
+}
+</style>
     <div class="">
   <div class="h-full rounded-2xl p-6 pb-12">
     <div class="mx-auto">
@@ -26,11 +78,14 @@
     <div
       class="mx-auto mt-6 w-full max-w-md rounded-2xl bg-white/80 p-6 shadow-xl backdrop-blur-xl sm:mt-10 sm:p-10"
     >
-      {% if form.non_field_errors %}
-      <div
-        class="flex justify-center items-center gap-3 rounded-md border border-red-500 bg-red-50 p-4 mb-2"
-      >
-        <svg
+
+     
+      <form action="#" method="post" autocomplete="off" class="space-y-6">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }} flex justify-center items-center text-sm gap-3 rounded-md border border-red-500 bg-red-50 p-4 mb-2"{% endif %}>
+              <svg
           class="h-5 w-5 text-red-400 shrink-0"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -42,14 +97,7 @@
             clip-rule="evenodd"
           />
         </svg>
-
-      </div>
-      {% endif %}
-      <form action="#" method="post" autocomplete="off" class="space-y-6">
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li с{% if message.tags %} class="{{ message.tags }} flex justify-center items-center gap-3 rounded-md border border-red-500 bg-red-50 p-4 mb-2"{% endif %}>{{ message }}</li>
+              {{ message }}</li>
         {% endfor %}
     </ul>
 {% endif %}
@@ -57,11 +105,23 @@
         {% csrf_token %}
         <div>
 
-          <label for="username" class="block text-sm font-medium text-gray-700"
-            >Имя</label
-          >
-
-
+          <label
+            for="username"
+            class="flex items-center text-sm font-medium text-gray-700"
+            >Имя
+            <button data-popover-target="popover-name-description" data-popover-placement="bottom-end" type="button">
+              <svg class="w-5 h-5 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+              <span class="sr-only">Show information</span>
+            </button></label>
+            <div data-popover id="popover-name-description" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 ">
+    <div class="p-3 space-y-2">
+        <h3 class="font-semibold text-gray-900 ">Пояснение</h3>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        
+       
+    </div>
+    <div data-popper-arrow></div>
+</div>
           <div class="relative mt-1 rounded-md shadow-sm">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
@@ -84,7 +144,7 @@
           </div>
         </div>
 
-        <div class="flex items-center mb-4">{{form.runner_status}}</div>
+       
 
         <div>
           <label for="team" class="block text-sm font-medium text-gray-700"
@@ -222,11 +282,11 @@
             for="id_runner_age"
             class="flex items-center text-sm font-medium text-gray-700"
             >Категория
-            <button data-popover-target="popover-description" data-popover-placement="bottom-end" type="button">
+            <button data-popover-target="popover-cat-description" data-popover-placement="bottom-end" type="button">
               <svg class="w-5 h-5 ms-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
               <span class="sr-only">Show information</span>
             </button></label>
-            <div data-popover id="popover-description" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 ">
+            <div data-popover id="popover-cat-description" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 ">
     <div class="p-3 space-y-2">
         <h3 class="font-semibold text-gray-900 ">Новичок</h3>
         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
@@ -280,8 +340,14 @@
                   d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
                 />
               </svg>
+              
             </div>
             {{form.password1}}
+            
+            <a href="#" class="password-control1 mr-2 " onclick="return show_hide_password1(this);">
+              
+            </a>
+            
             <!-- <input type="password" id="id_password1" name="id_password1" required minlength="3" class="w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500" placeholder="Minimum 8 characters" /> -->
           </div>
         </div>
@@ -310,6 +376,9 @@
               </svg>
             </div>
             {{form.password2}}
+            <a href="#" class="password-control2 mr-2 " onclick="return show_hide_password2(this);">
+              
+            </a>
             <!-- <input type="password" id="id_password2" name="id_password2" minlength="3" class="w-full rounded-md border-gray-300 pl-10 text-sm focus:border-green-500 focus:ring-green-500" placeholder="Minimum 8 characters" /> -->
           </div>
         </div>
@@ -391,11 +460,10 @@
 });
     });
 
-
-
-
   </script>
-
+<script>
+  
+</script>
 
 
 

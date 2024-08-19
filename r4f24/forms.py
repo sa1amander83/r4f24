@@ -120,7 +120,7 @@ class RunnerDayForm(ModelForm):
             'day_select': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 py-2 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'type': 'date', 'id': 'day_id'}),
             # 'number_of_run': forms.Select(attrs={'label':'False','class': 'form-control form-control-user', 'id': 'number_of_run_id'}),
             'day_distance': forms.NumberInput(
-                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'value': '0'}),
+                attrs={'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500', 'id': 'day_distance', 'placeholder': 'Введите значение в км'}),
             'day_time': forms.TextInput(
                 attrs={'placeholder': "ЧЧ:ММ:СС",'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',  'id': 'day_time', 'step': '1'}),
             'day_average_temp': forms.TextInput(
