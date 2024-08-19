@@ -373,107 +373,127 @@
             "00:10:00": 0.39
         }
 
-        document.querySelector('form').addEventListener('change', calcball);
-        document.querySelector('form').addEventListener('input', calcball);
+         $(document).ready(function() {
+            $('form').on('change input', calcball);
 
+            function calcball(event) {
+                let tot_koef;
+                let $ball = $('#ball');
+                let $alarm = $('#alarm_message');
+                let $button = $('#button');
+                let category = $('#category').text();
 
-        function calcball(event) {
-            let tot_koef, ost_dist, ost_koef
-            let ball = document.getElementById('ball')
-            let alarm = document.getElementById('alarm_message')
-            let button = document.getElementById('button')
-            let category = document.getElementById('category').innerHTML
+                if (event.target.tagName === 'INPUT') {
+                    let temp = $('#temp').val();
+                    let distance = $('#day_distance').val();
+                    let total_time = $('#day_time').val();
 
-            if (event.target.tagName === 'INPUT') {
-                let temp = document.getElementById('temp').value
-                let distance = document.getElementById('day_distance').value
-                let total_time = document.getElementById('day_time').value
+                    if (!distance || !total_time) {
+                        $('#temp').val('00:00:00');
+                        $button.prop('disabled', true);
+                        return;
+                    }
 
-
-                if (category === '1' || category === '2') {
-                    avg_temp_koef = 1
-                } else {
-                    for (const key in temp_koef) {
-                        if (temp <= key) {
-                            avg_temp_koef = temp_koef[key]
-                            break
+                    let avg_temp_koef = 1;
+                    if (category !== '1' && category !== '2') {
+                        for (const key in temp_koef) {
+                            if (temp <= key) {
+                                avg_temp_koef = temp_koef[key];
+                                break;
+                            }
                         }
+                    }
+
+                    for (let d of distance_koef) {
+                        if (distance <= d[0]) {
+                            let need_list_index;
+                            if (distance < 5) {
+                                need_list_index = 0;
+                            } else if (distance >= 5 && distance < 10) {
+                                need_list_index = 1;
+                            } else {
+                                need_list_index = distance_koef.indexOf(d) - 1;
+                            }
+
+                            let ost_dist;
+                            let ost_koef;
+
+                            if (distance >= 5) {
+                                ost_dist = distance - distance_koef[need_list_index][0];
+                                ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist;
+                                tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef;
+                            } else {
+                                ost_koef = distance_koef[need_list_index][1] * distance;
+                                tot_koef = ost_koef * avg_temp_koef;
+                            }
+                            break;
+                        }
+                    }
+
+                    let pieces = total_time.split(':');
+                    if (pieces.length !== 3) {
+                        $('#temp').val('00:00:00');
+                        $button.prop('disabled', true);
+                        return;
+                    }
+
+                    let hrs = Number(pieces[0]);
+                    let mins = Number(pieces[1]);
+                    let secs = Number(pieces[2]);
+                    if (isNaN(hrs) || isNaN(mins) || isNaN(secs)) {
+                        $('#temp').val('00:00:00');
+                        $button.prop('disabled', true);
+                        return;
+                    }
+
+                    let totalSecs = hrs * 3600 + mins * 60 + secs;
+                    let avg = totalSecs / distance;
+
+                    let avgHrs = Math.floor(avg / 3600);
+                    let avgMins = Math.floor((avg % 3600) / 60);
+                    let avgSecs = Math.floor(avg % 60);
+                    let avgTime = `${avgHrs.toString().padStart(2, '0')}:${avgMins.toString().padStart(2, '0')}:${avgSecs.toString().padStart(2, '0')}`;
+                    $('#temp').val(avgTime);
+
+                    let temp_pieces = avgTime.split(':');
+                    let temp_hrs = Number(temp_pieces[0]);
+                    let temp_mins = Number(temp_pieces[1]);
+                    let temp_secs = Number(temp_pieces[2]);
+                    let total_avg = temp_hrs * 3600 + temp_mins * 60 + temp_secs;
+
+                    if (total_avg <= 210) {
+                        $button.prop('disabled', true);
+                        $alarm.html('⚠️ Проверьте корректность ввода среднего темпа!');
+                    } else if (Math.abs(avg - total_avg) > 60) {
+                        $button.prop('disabled', true);
+                        $alarm.html('⚠️ Средний темп не соответствует расчетным показателям');
+                    } else if (total_time === '' || temp === '' || distance === '') {
+                        $button.prop('disabled', true);
+                    } else {
+                        $button.prop('disabled', false);
+                        $alarm.html('');
                     }
                 }
 
-                for (let d of distance_koef) {
-                    if (distance <= d[0]) {
-                        let need_list_index
-                        if (distance < 5) {
-                            need_list_index = 0
-                        } else if (distance >= 5 && distance < 10) {
-                            need_list_index = 1
-                        } else {
-                            need_list_index = distance_koef.indexOf(d) - 1
-
-                        }
-                        let ost_dist
-                        let ost_koef
-
-
-                        if (distance >= 5) {
-                            ost_dist = distance - distance_koef[need_list_index][0]
-                            ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist
-                            tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef;
-                        } else {
-
-                            ost_koef = distance_koef[need_list_index][1] * distance
-                            tot_koef = ost_koef * avg_temp_koef;
-                        }
-                        break;
-                    }
-                }
-                let pieces = total_time.split(':');
-                let hrs = Number(pieces[0]);
-                let mins = Number(pieces[1]);
-                let secs = Number(pieces[2]);
-                let totalSecs = hrs * 60;
-                totalSecs += mins;
-                totalSecs += secs * .10;
-                let avg = totalSecs / distance;
-
-                let avgMins = Math.floor(avg / 60);
-                let avgSecs = avg - (60 * avgMins);
-
-                let temp_pieces = temp.split(':')
-                let temp_hrs = Number(temp_pieces[0]);
-                let temp_mins = Number(temp_pieces[1]);
-                let temp_secs = Number(temp_pieces[2]);
-                let total_avg = temp_mins * 60 + temp_secs
-
-                if (total_avg <= 210) {
-                    button.disabled = true
-                    alarm.innerHTML = '⚠️ Проверьте корректность ввода среднего темпа!'
-                } else if (Math.abs(avg * 60 - total_avg) > 60) {
-                    button.disabled = true
-                    alarm.innerHTML = '⚠️ Средний темп не соответствует расчетным показателям'
-                } else if (total_time === '' || temp === '' || distance === '') {
-                    button.disabled = true
+                if (tot_koef) {
+                    $ball.val(Math.round(tot_koef) * 10);
                 } else {
-                    button.disabled = false
-                    alarm.innerHTML = ''
+                    $ball.val(0);
                 }
+            }
+        });
 
-            }
-            if (tot_koef) {
-                ball.value = Math.round(tot_koef)*10
-            } else {
-                ball.value = 0
-            }
-        }
+
     </script>
+
+
 <script>
 //Код jQuery, установливающий маску для ввода телефона элементу input
 //1. После загрузки страницы,  когда все элементы будут доступны выполнить...
 $(function(){
   //2. Получить элемент, к которому необходимо добавить маску
   $("#day_time").mask("99:99:99");
-  $("#temp").mask("00:99:99");
+  {#$("#temp").mask("00:99:99");#}
 });
 </script>
 {% endblock %}
