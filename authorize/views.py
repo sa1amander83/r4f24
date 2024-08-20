@@ -27,7 +27,7 @@ class RegisterUser(CreateView):
             try:
                 get_team = Teams.objects.get(team=runner_team)
                 keyword_of_team = get_team.keyword
-                print(form.cleaned_data['username'][:3])
+
 
 
                 if form.cleaned_data['keyword'].lower() == keyword_of_team.lower() \

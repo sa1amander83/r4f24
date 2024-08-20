@@ -1,0 +1,772 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+    <ul>
+        <li><h3> Регистрация</h3>
+            <p>
+                Участнику соревнований присваивается шестизначный номер, в котором первые три цифры это номер команды
+                участника.
+                Поле "Команда" заполняется автоматически.
+                Кодовое слово предоставляет ответственный от команды.
+                Минимальный возраст участника -5 лет, максимальный - 70 лет.
+
+            </p>
+
+        </li>
+
+        <li><h3> Квалификации</h3>
+            <p>
+                Участники в зависимости от пола, возраста и уровня физической подготовки распределяются в квалификации:
+            <table class="iksweb">
+                <tbody>
+                <tr>
+                    <td rowspan="2"></td>
+                    <td colspan="3">Мужчины</td>
+                </tr>
+                <tr>
+                    <td colspan="2">Женщины</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Возраст</td>
+                    <td>Новичок</td>
+                    <td>Любитель</td>
+                    <td>Профи</td>
+                </tr>
+                <tr>
+                    <td>до 18 лет</td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z"
+                                      fill="#ffffff"></path>
+                            </g>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>18-35 лет</td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>35-50 лет</td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>50+ лет</td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                    <td>
+                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            </p>
+            <p>ЗАПРЕЩАЕТСЯ использование программных средств, влияющих на результат;
+                представление результатов пробежки третьих лиц за свои;
+                иные способы, манипуляции, влияющие на результаты соревнований.
+                В случае выявления нарушений участник Соревнований немедленно дисквалифицируется</p>
+        </li>
+
+        <br>
+        <br>
+        <li><h3> Требования к пробежкам</h3>
+            <p>
+            <table class="iksweb">
+                <tbody>
+                <tr>
+                    <td>квалификация</td>
+                    <td>общие требования</td>
+                    <td>требования к категории</td>
+                </tr>
+                <tr>
+                    <td>новичок</td>
+                    <td rowspan="3">• дистанция пробежки не менее 1 км;
+                        • количество пробежек в сутки – не более 2;
+                        • перед забегом в спортивном приложении должен быть выбран вид спорта «бег»;
+                        • скриншоты результатов пробежки должны включать в себя дистанцию, продолжительность пробежки и
+                        средний темп;
+                        • Внесение результатов тренировки должна производиться
+                        не позднее 1 дня с момента ее окончания.
+
+                    </td>
+                    <td>• допускаются пробежки на беговой дорожке;</td>
+                </tr>
+                <tr>
+                    <td>любитель</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>профи</td>
+                    <td>• результаты пробежек допускается фиксировать только фитнес-устройствами Coros, Garmin, Polar,
+                        Suunto;
+                        • во время пробежки устройство, с которого фиксируются результаты пробежек, должно иметь
+                        постоянное подключение к GPS/Глонасс. Исключение составляют официальные забеги при наличии
+                        протокола;
+                        • скриншоты результатов пробежки должны включать
+                        в себя дистанцию, продолжительность пробежки, средний темп, частоту пульса, каденс, карту
+                        пробежки, сведения за каждый километр.
+                        Внесение результатов тренировки должна производиться в день пробежки
+                        .
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+        <li><h3> Внесение сведений о пробежках</h3>
+            <p>Результаты пробежек фиксируются в любом спортивном приложении при помощи фитнес-браслетов, смарт-часов,
+                смартфонов и других устройств, обладающих необходимым функционалом.</p></li>
+        </li>
+        <li><h3>Номинации</h3>
+            <p>«Мужской зачет по возрастной группе» – победитель и призеры определяются среди участников в каждой
+                возрастной группе по наибольшему числу баллов, набранных за период проведения Соревнований;
+                «Женский зачет по возрастной группе» – победитель и призеры определяются среди участников в каждой
+                возрастной группе по наибольшему числу баллов, набранных за период проведения Соревнований;
+                «Чемпионат» – подразделение-победитель и подразделения-призеры определяются по сумме баллов пяти лучших
+                участников подразделения
+                в каждой возрастной группе;
+                «Лучший марафонец» – победитель и призеры определяются среди всех участников, пробежавших марафонскую
+                дистанцию, по наиболее быстрому прохождению дистанции;
+                «Самая спортивная группа» - группа-победитель и группы-призеры определяются по наибольшей сумме баллов
+                всех участников-членов одной группы;
+            </p></li>
+        </li>
+
+
+        <li><h3> Расчет баллов</h3>
+
+            <p> Расчет баллов производится по формуле:
+                <img src="{% static 'formula.png' %}" alt=""> где
+                           l<sub>n</sub> – коэффициент умножения за каждые 5 км;
+                           t<sub>n</sub> – коэффициент умножения среднего темпа;
+
+            </p>
+            <p> Средний темп для категорий новичок/любитель не учитывается и равен 1</p>
+            <p> Например участник в категории новичок/любитель совершил пробежку с дистанцией 11.6 км</p>
+
+            <p> тогда сумма баллов будет расчитываться следующим образом:
+
+             S= 10*(5*1 + 5*1,1 + 1,6*1,2) где 1,1.1, 1.2 коэфициенты за каждые 5 км пробежки
+                S= 120 баллов
+            </p>
+
+            <p>  для участника в категории профи, такая же пробежка будет расчитываться с учетом среднего темпа:
+            например, средний темп составил 3.30 мин/км, тогда</p>
+            S= 10*(5*1 + 5*1,1 + 1,6*1,2)*2,22, где 2.40 -коэфициент за средний темп 3.30 мин/км исходя из таблицы
+                S= 290 баллов
+
+            <p>
+
+                Таблицы коэфициентов
+            <table>
+                <thead>
+                <tr>
+                    <th>Средний темп</th>
+                    <th>Коэффициент</th>
+                    <th>Средний темп</th>
+                    <th>Коэффициент</th>
+                    <th>Средний темп</th>
+                    <th>Коэффициент</th>
+                    <th>Средний темп</th>
+                    <th>Коэффициент</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>2:38</td>
+                    <td>2,71</td>
+                    <td>4:29</td>
+                    <td>2,00</td>
+                    <td>6:20</td>
+                    <td>1,26</td>
+                    <td>8:11</td>
+                    <td>0,76</td>
+                </tr>
+                <tr>
+                    <td>2:41</td>
+                    <td>2,72</td>
+                    <td>4:32</td>
+                    <td>1,98</td>
+                    <td>6:23</td>
+                    <td>1,24</td>
+                    <td>8:14</td>
+                    <td>0,75</td>
+                </tr>
+                <tr>
+                    <td>2:44</td>
+                    <td>2,70</td>
+                    <td>4:35</td>
+                    <td>1,96</td>
+                    <td>6:26</td>
+                    <td>1,22</td>
+                    <td>8:17</td>
+                    <td>0,74</td>
+                </tr>
+                <tr>
+                    <td>2:47</td>
+                    <td>2,68</td>
+                    <td>4:38</td>
+                    <td>1,94</td>
+                    <td>6:29</td>
+                    <td>1,20</td>
+                    <td>8:20</td>
+                    <td>0,73</td>
+                </tr>
+                <tr>
+                    <td>2:50</td>
+                    <td>2,66</td>
+                    <td>4:41</td>
+                    <td>1,92</td>
+                    <td>6:32</td>
+                    <td>1,18</td>
+                    <td>8:23</td>
+                    <td>0,72</td>
+                </tr>
+                <tr>
+                    <td>2:53</td>
+                    <td>2,64</td>
+                    <td>4:44</td>
+                    <td>1,90</td>
+                    <td>6:35</td>
+                    <td>1,16</td>
+                    <td>8:26</td>
+                    <td>0,71</td>
+                </tr>
+                <tr>
+                    <td>2:56</td>
+                    <td>2,62</td>
+                    <td>4:47</td>
+                    <td>1,88</td>
+                    <td>6:38</td>
+                    <td>1,14</td>
+                    <td>8:29</td>
+                    <td>0,70</td>
+                </tr>
+                <tr>
+                    <td>2:59</td>
+                    <td>2,60</td>
+                    <td>4:50</td>
+                    <td>1,86</td>
+                    <td>6:41</td>
+                    <td>1,12</td>
+                    <td>8:32</td>
+                    <td>0,69</td>
+                </tr>
+                <tr>
+                    <td>3:02</td>
+                    <td>2,58</td>
+                    <td>4:53</td>
+                    <td>1,84</td>
+                    <td>6:44</td>
+                    <td>1,10</td>
+                    <td>8:35</td>
+                    <td>0,68</td>
+                </tr>
+                <tr>
+                    <td>3:05</td>
+                    <td>2,56</td>
+                    <td>4:56</td>
+                    <td>1,82</td>
+                    <td>6:47</td>
+                    <td>1,08</td>
+                    <td>8:38</td>
+                    <td>0,67</td>
+                </tr>
+                <tr>
+                    <td>3:08</td>
+                    <td>2,54</td>
+                    <td>4:59</td>
+                    <td>1,80</td>
+                    <td>6:50</td>
+                    <td>1,06</td>
+                    <td>8:41</td>
+                    <td>0,66</td>
+                </tr>
+                <tr>
+                    <td>3:11</td>
+                    <td>2,52</td>
+                    <td>5:02</td>
+                    <td>1,78</td>
+                    <td>6:53</td>
+                    <td>1,04</td>
+                    <td>8:44</td>
+                    <td>0,65</td>
+                </tr>
+                <tr>
+                    <td>3:14</td>
+                    <td>2,50</td>
+                    <td>5:05</td>
+                    <td>1,76</td>
+                    <td>6:56</td>
+                    <td>1,02</td>
+                    <td>8:47</td>
+                    <td>0,64</td>
+                </tr>
+                <tr>
+                    <td>3:17</td>
+                    <td>2,48</td>
+                    <td>5:08</td>
+                    <td>1,74</td>
+                    <td>6:59</td>
+                    <td>1,00</td>
+                    <td>8:50</td>
+                    <td>0,63</td>
+                </tr>
+                <tr>
+                    <td>3:20</td>
+                    <td>2,46</td>
+                    <td>5:11</td>
+                    <td>1,72</td>
+                    <td>7:02</td>
+                    <td>0,99</td>
+                    <td>8:53</td>
+                    <td>0,62</td>
+                </tr>
+                <tr>
+                    <td>3:23</td>
+                    <td>2,44</td>
+                    <td>5:14</td>
+                    <td>1,70</td>
+                    <td>7:05</td>
+                    <td>0,98</td>
+                    <td>8:56</td>
+                    <td>0,61</td>
+                </tr>
+                <tr>
+                    <td>3:26</td>
+                    <td>2,42</td>
+                    <td>5:17</td>
+                    <td>1,68</td>
+                    <td>7:08</td>
+                    <td>0,97</td>
+                    <td>8:59</td>
+                    <td>0,60</td>
+                </tr>
+                <tr>
+                    <td>3:29</td>
+                    <td>2,40</td>
+                    <td>5:20</td>
+                    <td>1,66</td>
+                    <td>7:11</td>
+                    <td>0,96</td>
+                    <td>9:02</td>
+                    <td>0,59</td>
+                </tr>
+                <tr>
+                    <td>3:32</td>
+                    <td>2,38</td>
+                    <td>5:23</td>
+                    <td>1,64</td>
+                    <td>7:14</td>
+                    <td>0,95</td>
+                    <td>9:05</td>
+                    <td>0,58</td>
+                </tr>
+                <tr>
+                    <td>3:35</td>
+                    <td>2,36</td>
+                    <td>5:26</td>
+                    <td>1,62</td>
+                    <td>7:17</td>
+                    <td>0,94</td>
+                    <td>9:08</td>
+                    <td>0,57</td>
+                </tr>
+                <tr>
+                    <td>3:38</td>
+                    <td>2,34</td>
+                    <td>5:29</td>
+                    <td>1,60</td>
+                    <td>7:20</td>
+                    <td>0,93</td>
+                    <td>9:11</td>
+                    <td>0,56</td>
+                </tr>
+                <tr>
+                    <td>3:41</td>
+                    <td>2,32</td>
+                    <td>5:32</td>
+                    <td>1,58</td>
+                    <td>7:23</td>
+                    <td>0,92</td>
+                    <td>9:14</td>
+                    <td>0,55</td>
+                </tr>
+                <tr>
+                    <td>3:44</td>
+                    <td>2,30</td>
+                    <td>5:35</td>
+                    <td>1,56</td>
+                    <td>7:26</td>
+                    <td>0,91</td>
+                    <td>9:17</td>
+                    <td>0,54</td>
+                </tr>
+                <tr>
+                    <td>3:47</td>
+                    <td>2,28</td>
+                    <td>5:38</td>
+                    <td>1,54</td>
+                    <td>7:29</td>
+                    <td>0,90</td>
+                    <td>9:20</td>
+                    <td>0,53</td>
+                </tr>
+                <tr>
+                    <td>3:50</td>
+                    <td>2,26</td>
+                    <td>5:41</td>
+                    <td>1,52</td>
+                    <td>7:32</td>
+                    <td>0,89</td>
+                    <td>9:23</td>
+                    <td>0,52</td>
+                </tr>
+                <tr>
+                    <td>3:53</td>
+                    <td>2,24</td>
+                    <td>5:44</td>
+                    <td>1,50</td>
+                    <td>7:35</td>
+                    <td>0,88</td>
+                    <td>9:26</td>
+                    <td>0,51</td>
+                </tr>
+                <tr>
+                    <td>3:56</td>
+                    <td>2,22</td>
+                    <td>5:47</td>
+                    <td>1,48</td>
+                    <td>7:38</td>
+                    <td>0,87</td>
+                    <td>9:29</td>
+                    <td>0,50</td>
+                </tr>
+                <tr>
+                    <td>3:59</td>
+                    <td>2,20</td>
+                    <td>5:50</td>
+                    <td>1,46</td>
+                    <td>7:41</td>
+                    <td>0,86</td>
+                    <td>9:32</td>
+                    <td>0,49</td>
+                </tr>
+                <tr>
+                    <td>4:02</td>
+                    <td>2,18</td>
+                    <td>5:53</td>
+                    <td>1,44</td>
+                    <td>7:44</td>
+                    <td>0,85</td>
+                    <td>9:35</td>
+                    <td>0,48</td>
+                </tr>
+                <tr>
+                    <td>4:05</td>
+                    <td>2,16</td>
+                    <td>5:56</td>
+                    <td>1,42</td>
+                    <td>7:47</td>
+                    <td>0,84</td>
+                    <td>9:38</td>
+                    <td>0,47</td>
+                </tr>
+                <tr>
+                    <td>4:08</td>
+                    <td>2,14</td>
+                    <td>5:59</td>
+                    <td>1,40</td>
+                    <td>7:50</td>
+                    <td>0,83</td>
+                    <td>9:41</td>
+                    <td>0,46</td>
+                </tr>
+                <tr>
+                    <td>4:11</td>
+                    <td>2,12</td>
+                    <td>6:02</td>
+                    <td>1,38</td>
+                    <td>7:53</td>
+                    <td>0,82</td>
+                    <td>9:44</td>
+                    <td>0,45</td>
+                </tr>
+                <tr>
+                    <td>4:14</td>
+                    <td>2,10</td>
+                    <td>6:05</td>
+                    <td>1,36</td>
+                    <td>7:56</td>
+                    <td>0,81</td>
+                    <td>9:45</td>
+                    <td>0,44</td>
+                </tr>
+                <tr>
+                    <td>4:17</td>
+                    <td>2,08</td>
+                    <td>6:08</td>
+                    <td>1,34</td>
+                    <td>7:59</td>
+                    <td>0,80</td>
+                    <td>9:48</td>
+                    <td>0,43</td>
+                </tr>
+                <tr>
+                    <td>4:20</td>
+                    <td>2,06</td>
+                    <td>6:11</td>
+                    <td>1,32</td>
+                    <td>8:02</td>
+                    <td>0,79</td>
+                    <td>9:51</td>
+                    <td>0,42</td>
+                </tr>
+                <tr>
+                    <td>4:23</td>
+                    <td>2,04</td>
+                    <td>6:14</td>
+                    <td>1,30</td>
+                    <td>8:05</td>
+                    <td>0,78</td>
+                    <td>9:54</td>
+                    <td>0,41</td>
+                </tr>
+                <tr>
+                    <td>4:26</td>
+                    <td>2,02</td>
+                    <td>6:17</td>
+                    <td>1,28</td>
+                    <td>8:08</td>
+                    <td>0,77</td>
+                    <td>9:57</td>
+                    <td>0,40</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>10:00</td>
+                    <td>0,39</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            </p>
+            <br>
+            <p>
+            <table>
+                <thead>
+                <tr>
+                    <th>Расстояние пробежки<br>(км)</th>
+                    <th>Коэффициент</th>
+                    <th>Расстояние пробежки<br>(км)</th>
+                    <th>Коэффициент</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>от 1 до 4.999</td>
+                    <td>1</td>
+                    <td>от 5 до 9.999</td>
+                    <td>1.1</td>
+                </tr>
+                <tr>
+                    <td>от 10 до 14.999</td>
+                    <td>1.2</td>
+                    <td>от 15 до 19.999</td>
+                    <td>1.3</td>
+                </tr>
+                <tr>
+                    <td>от 20 до 24.999</td>
+                    <td>1.4</td>
+                    <td>от 25 до 29.999</td>
+                    <td>1.5</td>
+                </tr>
+                <tr>
+                    <td>от 30 до 34.999</td>
+                    <td>1.6</td>
+                    <td>от 35 до 39.999</td>
+                    <td>1.7</td>
+                </tr>
+                <tr>
+                    <td>от 40 до 44.999</td>
+                    <td>1.8</td>
+                    <td>от 45 до 49.999</td>
+                    <td>1.9</td>
+                </tr>
+                <tr>
+                    <td>от 50</td>
+                    <td>2</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+            </p>
+
+        </li>
+        </li>
+        <li><h3> Группа</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda dolor earum harum quis sapiente!
+                Aliquam, consequatur deleniti dolor dolores fugit hic itaque iure laudantium neque nisi quibusdam rerum
+                sapiente vel.</p></li>
+        </li>
+        <li><h3> Остальное </h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda dolor earum harum quis sapiente!
+                Aliquam, consequatur deleniti dolor dolores fugit hic itaque iure laudantium neque nisi quibusdam rerum
+                sapiente vel.</p></li>
+        </li>
+
+
+    </ul>
+
+
+
+    <style>
+        table.iksweb {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            height: auto;
+        }
+
+        table.iksweb, table.iksweb td, table.iksweb th {
+            border: 1px solid #595959;
+        }
+
+        table.iksweb td, table.iksweb th {
+            padding: 3px;
+            width: 30px;
+            height: 35px;
+        }
+
+        table.iksweb th {
+            background: #347c99;
+            color: #fff;
+            font-weight: normal;
+        }
+    </style>
+{% endblock %}

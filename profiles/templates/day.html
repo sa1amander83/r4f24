@@ -67,7 +67,7 @@
 
                 <div>
                     <label for="team" class="block text-sm font-medium text-gray-700"
-                    >Дистанция за день</label
+                    >Дистанция за день в км</label
                     >
                     <div class="relative mt-1 rounded-md shadow-sm">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -400,9 +400,11 @@
                             if (temp <= key) {
                                 avg_temp_koef = temp_koef[key];
                                 break;
+
                             }
                         }
                     }
+
 
                     for (let d of distance_koef) {
                         if (distance <= d[0]) {

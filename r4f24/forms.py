@@ -18,7 +18,7 @@ class RegisterUserForm(UserCreationForm):
     runner_team__team = forms.CharField(label='Команда',
                                         widget=forms.TextInput(attrs={'placeholder': "Ваша команда",
                                                                       'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-                                                                      'id': 'team', 'disabled': 'true'}))
+                                                                      'id': 'team', 'readonly': 'true'}))
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.TextInput(attrs={'placeholder': "Введите кодовое слово",
                                                             'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
@@ -127,7 +127,7 @@ class RunnerDayForm(ModelForm):
             'day_distance': forms.NumberInput(
                 attrs={
                     'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
-                    'id': 'day_distance', 'value': '0'}),
+                    'id': 'day_distance', 'placeholder': 'например 12,1'}),
             'day_time': forms.TextInput(
                 attrs={'placeholder': "ЧЧ:ММ:СС",
                        'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',

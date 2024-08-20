@@ -94,7 +94,10 @@ class ProfileUser(ListView, DataMixin):
 class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     model = User
     template_name = 'editprofile.html'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        return context
     def get_success_url(self):
         return reverse_lazy('profile:profile', kwargs={'username': self.object.username})
 
@@ -110,6 +113,13 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('profile:profile')
     model = RunnerDay
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        getuser = get_user_model().objects.get(username=self.kwargs['username'])
+
+        context['runner_category'] = getuser.runner_category
+
+        return context
     def form_valid(self, form):
 
         dayselected = form.cleaned_data['day_select']

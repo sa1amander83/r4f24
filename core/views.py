@@ -854,3 +854,6 @@ def exportcsv(request):
         writer.writerow(user)
 
     return response
+
+def faq(request):
+    return render(request, 'faq.html')

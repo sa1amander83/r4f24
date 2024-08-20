@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.views import IndexView, CatListView, RunnersCatView, Championate, \
+from core.views import IndexView, CatListView, RunnersCatView, Championate, faq, \
     StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view, \
     exportcsv
 from groups.views import view_group
@@ -17,10 +17,12 @@ urlpatterns = [
     path('comands/', group_statistics_view, name='allComandsView'),
     path('groups/', group_statistics_view, name='allGroupsView'),
     path('groups/<int:group>/', view_group, name='viewGroup'),
+    path('faq/', faq, name='faq'),
     path('statistic/', StatisticView.as_view(), name='statistic'),
     path('runners/', RunnersView.as_view(), name='runners'),
     path('runners/<slug:cat>/', RunnersView.as_view(), name='runners'),
     path('runner-day-results/<int:day>/', runner_day_results_view, name='runner_day_results'),
+
 
     path('exportcsv/', exportcsv, name='exportcsv'),
 ]
