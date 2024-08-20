@@ -77,7 +77,7 @@
 
                         <h4 class="mt-2 text-lg font-semibold leading-8">
                             {% if data.total_results.total_distance %}
-                            {{ data.total_results.total_distance }}</h4>
+                            {{ data.total_results.total_distance|floatformat:3 }}</h4>
                         {% else %} 0
                             {% endif %}
                         <h5 class="mt-1 text-sm text-slate-500">Дистанция</h5>
@@ -225,7 +225,7 @@
             <td>{{ forloop.counter }}</td>
             <td>{{ u.user }}</td>
             <td>{{ u.total_balls }}</td>
-            <td>{{ u.total_distance }}</td>
+            <td>{{ u.total_distance|floatformat:3 }}</td>
             <td>{{ u.total_time }}</td>
             <td>{{ u.total_average_temp }}</td>
             <td>{{ u.total_days }}</td>
