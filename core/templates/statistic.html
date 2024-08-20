@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load time_tag %}
+{% load cache %}
 {% load translate %}
 {% block content %}
+
     {% load okon4_tag %}
     {% csrf_token %}
+
+
+    {% cache 600 statistic %}
     <div class=" mx-5 ">
         <div class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"></div>
         <main class="flex flex-col justify-center rounded-2xl pb-3 pt-10 bg-sky-900 h-full">
@@ -354,6 +359,6 @@
             </div>
         </main>
     </div>
-
+{% endcache %}
 {% endblock %}
 
