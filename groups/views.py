@@ -94,6 +94,9 @@ class MyGroup(ListView, DataMixin):
                         group_users[group].append({
                             'group': str(group),
                             'user': user.username,
+                            'runner_gender': user.runner_gender,
+                            'runner_category':user.runner_category,
+                            'runner_group': user.runner_group,
                             'total_distance': stats_obj.total_distance,
                             'total_time': stats_obj.total_time,
                             'total_average_temp': stats_obj.total_average_temp,
