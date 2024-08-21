@@ -463,7 +463,7 @@
                     let temp_secs = Number(temp_pieces[2]);
                     let total_avg = temp_hrs * 3600 + temp_mins * 60 + temp_secs;
 
-                    if (total_avg <= 165) {
+                    if (total_avg <= 164) {
                         $button.prop('disabled', true);
                         $alarm.html('⚠️ Проверьте корректность ввода среднего темпа!');
                     } else if (Math.abs(avg - total_avg) > 60) {

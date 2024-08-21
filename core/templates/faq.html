@@ -1,5 +1,7 @@
 {% extends 'base.html' %} {% load static %}
+{% load cache %}
 {% block content %}
+{#    {% cache 300 faq %}#}
 <div class=" mx-5 ">
         <div class="hidden md:flex text-center bg-sky-700 flex-col rounded-t-2xl pb-10 mx-10"></div>
         <main class="flex flex-col justify-center rounded-2xl lg:pb-3  bg-sky-900 h-full">  
@@ -123,7 +125,7 @@
                         
    
                 
-            <table class="iksweb text-xs md:text-sm text-gray-500">
+            <table class="iksweb text-xs md:text-sm text-gray-500 text-center ">
                 <tbody>
                 <tr>
                     <td rowspan="2"></td>
@@ -152,9 +154,7 @@
                         </svg>
                     </td>
                     <td>
-                        <svg class="w-8 h-8 mx-auto text-gray-500  flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                        </svg>
+                       <svg  class="w-8 h-8 mx-auto text-green-500  flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="#fe0b0b"  viewBox="0 0 22 22" stroke="#fe0b0b" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.192"></g><g id="SVGRepo_iconCarrier"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"></path></g></svg>
                     </td>
                 </tr>
                 <tr>
@@ -1064,4 +1064,5 @@
             font-weight: normal;
         }
     </style>
+{#{% endcache %}#}
 {% endblock %}
