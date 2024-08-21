@@ -19,32 +19,32 @@
             <h1 class="mx-auto text-left text-lg font-semibold truncate">Ваша {% if flag %}группа {% else %} команда {% endif %}</h1>
             <div class="lg:w-[429px] p-5 shadow my-5 rounded-xl bg-white">
               <div class="flex flex-row  items-center mb-5">
-              <div class="flex w-full  justify-center  items-center gap-5">
+              <div class="flex w-1/2  justify-center  items-center gap-3">
                     <img
-          class="w-20 h-20 shrink-0"
+          class="w-16 h-16 md:w-20 md:h-20 shrink-0"
           src="{% if flag %}{% static 'img/teams.png' %}{% else %}{% static 'img/group.png' %}{% endif %}"
           alt="User Avatar"
         />
                <div class="flex flex-col">
-                <div class="text-lg font-semibold truncate">{{ runner_stat }}
+                <div class="text-md md:text-lg text-center font-semibold ">{{ runner_stat }}
                     <div class="flex items-center">
            
-                    <span class="text-lg font-semibold text-slate-500 truncate">{% for k,v in qs.items %}
+                    <span class=" font-semibold text-slate-500 ">{% for k,v in qs.items %}
                         {{ k }} {%endfor%}</span>
                     </div>
                   </div>
 
                 </div>
             </div>
-            <div class="flex w-full flex-col border-l p-3 justify-center items-center text-xl font-bold">
+            <div class="flex w-1/2 flex-col border-l p-3 justify-center items-center text-xl font-bold">
                 <div>
                     <span class=" text-2xl font-semibold leading-8">{{ rank }}</span>
                     <span class=" text-slate-500 text-2xl font-semibold leading-8">/ {{ group_count }}</span>
                 </div>
-                <div>
-                  <span class="text-base text-slate-500">Место среди {% if flag %}групп {% else %} команд {% endif %} </span>
+                
+                  <span class="text-sm text-center md:text-base text-slate-500">Место среди {% if flag %}групп {% else %} команд {% endif %} </span>
 
-                </div>
+                
 
             </div>
               </div>

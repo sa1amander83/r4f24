@@ -20,14 +20,14 @@
             <h1 class="mx-auto text-left text-lg font-semibold truncate">Статистика {% if flag %}группы {% else %} команды {% endif %}</h1>
             <div class="lg:w-[429px] p-5 shadow my-5 rounded-xl bg-white">
               <div class="flex flex-row  items-center mb-5">
-              <div class="flex w-1/2  justify-center  items-center gap-5">
+              <div class="flex w-1/2  justify-center  items-center gap-3">
                     <img
           class="w-16 h-16 md:w-20 md:h-20 shrink-0"
           src="{% if flag %}{% static 'img/teams.png' %}{% else %}{% static 'img/group.png' %}{% endif %}"
           alt="User Avatar"
         />
                <div class="flex flex-col">    
-                <div class="text-md md:text-lg font-semibold text-slate-500">{{ team }} 
+                <div class="text-md md:text-lg text-center font-semibold text-slate-500">{{ team }} 
 
                   </div>
                 
