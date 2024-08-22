@@ -36,6 +36,11 @@
                 <button type="submit" class="btn btn-primary">пробежки</button>
             </form>
 
+
+
+            <button id="recalcButton" class="recalc-button">Пересчитать</button>
+
+
   <form action="{% url 'export_statistic' %}" method="get">
                 <button type="submit" class="btn btn-primary">статистика</button>
             </form>
@@ -455,7 +460,25 @@
 
 {% endblock %} {% block extrascripts %}
 
-
+ <script>
+    $(document).ready(function() {
+      $('#recalcButton').click(function() {
+        $.ajax({
+          url: '{% url "recalc_all_groups_and_teams" %}',
+          type: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            alert('Пересчет групп и команд запущен успешно!');
+          },
+          error: function(xhr, status, error) {
+            alert('Произошла ошибка при запуске пересчета: ' + error);
+          }
+        });
+      });
+    });
+  </script>
 {% endblock %}
 </div>
 

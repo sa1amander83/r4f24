@@ -4,7 +4,7 @@ from core.views import IndexView, CatListView, RunnersCatView, Championate, faq,
     StatisticView, RunnersView, RunnersCatGenderView, RunnersCatAgeView, runner_day_results_view, group_statistics_view, \
     exportcsv
 from groups.views import view_group
-
+from core.tasks import recalc_all_groups_and_teams
 urlpatterns = [
 
     path('', IndexView.as_view(), name='index'),
@@ -22,7 +22,7 @@ urlpatterns = [
     path('runners/', RunnersView.as_view(), name='runners'),
     path('runners/<slug:cat>/', RunnersView.as_view(), name='runners'),
     path('runner-day-results/<int:day>/', runner_day_results_view, name='runner_day_results'),
-
+    path('recalc-groups-and-teams/', recalc_all_groups_and_teams, name='recalc_all_groups_and_teams'),
 
     path('exportcsv/', exportcsv, name='exportcsv'),
 ]
