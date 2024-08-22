@@ -44,8 +44,11 @@
     <script src="{% static 'litebox/js/lightbox-plus-jquery.min.js' %}"></script>
 
     <!-- <script src="https://cdn.datatables.net/plug-ins/2.0.8/sorting/natural.js"></script> -->
+
    <style>
-    
+       table{text-align: center !important;}
+
+
         body {
       margin: 0;
     }
@@ -125,6 +128,7 @@ if (document.getElementById("selection-table") && typeof simpleDatatables.DataTa
 },
     classes: {
         selector: "datatable-selector p-2",
+        sorter: "datatable-sorter -mx-5"
 
     },
 
@@ -198,8 +202,14 @@ if (document.getElementById("selection-table") && typeof simpleDatatables.DataTa
     const dataTable = new simpleDatatables.DataTable("#sorting-table", {
         searchable: false,
         perPageSelect: false,
-        sortable: true
+        sortable: true,
+        classes: {
+        selector: "datatable-selector p-2",
+        sorter: "datatable-sorter -mx-5"
+
+    },
     });
+
 }
 
   </script>

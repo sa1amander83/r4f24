@@ -219,7 +219,8 @@
       {% for u in v %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>
+            <td ><a  class="font-semibold text-gray-900 whitespace-nowrap flex flex-col justify-center items-center" href="{% url 'profile:profile' u.user %}">
+
                 <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
                     {{ u.user }}
             
@@ -272,6 +273,7 @@
 
                                             {% endif %}
                 </div>
+            </a>
             </td>
             <td>{{ u.total_balls }}</td>
             <td>{{ u.total_distance|floatformat:3 }}</td>

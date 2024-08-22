@@ -390,8 +390,8 @@
         <tr class="hover:bg-gray-50  cursor-pointer">
             <td >{{ forloop.counter }}</td>
             <td class="font-medium text-gray-900 whitespace-nowrap">
-                <a   href="/profile/{{ s.runner_stat__username }}">
-                <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
+                <a  class="flex flex-col justify-center items-center" href="/profile/{{ s.runner_stat__username }}">
+                <span class="flex flex-row  flex-nowrap  text-sm font-semibold text-black">
                     {{ s.runner_stat__username }}
                 
                 {% if s.runner_stat__runner_gender == 'м' %}

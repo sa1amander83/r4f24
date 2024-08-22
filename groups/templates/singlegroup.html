@@ -178,7 +178,7 @@
     <tbody>
       {% for user in data.users %} {%for stat in data.user_stats %} {% if stat.runner_stat == user %}
         <tr>
-            <td><a  class="font-semibold text-gray-900 whitespace-nowrap" href="{% url 'profile:profile' user.username %}">
+            <td><a  class="font-semibold text-gray-900 whitespace-nowrap flex flex-col justify-center items-center" href="{% url 'profile:profile' user.username %}">
             
                 <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
                     {{ user.username }} 
