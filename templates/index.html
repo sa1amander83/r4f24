@@ -53,15 +53,15 @@
     </div>
     <button type="submit" class="btn btn-primary">Импортировать команды</button>
 </form>
-            
+
              <form action="{% url 'recalc_func' %}" method="get">
                 <button type="submit" class="btn btn-primary">Пересчитать пробежки</button>
             </form>
 
-            
-            
-            
-            
+
+
+
+
         {% endif %}
 
 
@@ -402,9 +402,9 @@
                 <a  class="flex flex-col justify-center items-center" href="/profile/{{ s.runner_stat__username }}">
                 <span class="flex flex-row  flex-nowrap  text-sm font-semibold text-black">
                     {{ s.runner_stat__username }}
-                
+
                 {% if s.runner_stat__runner_gender == 'м' %}
-                                            
+
                      <svg class="w-5 h-5 me-2 " fill="#0080ff" viewBox="-5.12 -5.12 266.24 266.24" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#0080ff" stroke-width="5.12">
                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -424,7 +424,7 @@
                     {% endif %}
                 </span>
                 <div class="flex  items-center">
-                    
+
 
 
                                             {% if s.runner_stat__runner_category == 1 %}
@@ -458,7 +458,7 @@
             <td>{{ s.total_runs }}</td>
         </tr>
         {%endfor%}
-    
+
     </tbody>
 </table>
 

@@ -43,7 +43,7 @@ def recalc_all_groups_and_teams(request):
             group_total_members=total_group_results.get('tot_members')
         )
         group_total_members = total_group_results.get('tot_members')
-        if group_total_members==0:
+        if group_total_members == 0:
             GroupsResult.objects.filter(group_id=group_id).delete()
 
     for team in teams:
@@ -63,7 +63,7 @@ def recalc_all_groups_and_teams(request):
 
         ComandsResult.objects.create(
             comand_id=team_id,
-      
+
             comands_total_members=total_comand_results.get('tot_members'),
             comand_total_distance=total_comand_results.get('total_distance'),
             comand_total_balls=total_comand_results.get('total_balls'),
@@ -76,19 +76,17 @@ def recalc_all_groups_and_teams(request):
     return redirect(reverse('index'))
 
 
-
-
 def recalc_func(request):
-
     records = RunnerDay.objects.all()
 
     for record in records:
-        recalc_runnerdays(record.id, record.day_distance, record.day_average_temp, record.day_time, record.runner.runner_category)
-
+        recalc_runnerdays(record.id, record.day_distance, record.day_average_temp, record.day_time,
+                          record.runner.runner_category)
 
     return redirect(reverse('index'))
-def recalc_runnerdays( rec_id, distance, temp, total_time, category):
 
+
+def recalc_runnerdays(rec_id, distance, temp, total_time, category):
     distance_koef = [
         [4.9, 1, 1], [9.9, 1.1, 2.1],
         [14.9, 1.2, 3.3], [19.9, 1.3, 4.6],
@@ -541,11 +539,10 @@ def recalc_runnerdays( rec_id, distance, temp, total_time, category):
         "00:10:00": 0.39
     }
 
-
     tot_koef = None
     avg_temp_koef = 1
 
-    if category not in [1,2]:
+    if category not in [1, 2]:
         for key in temp_koef:
             if temp.strftime("%H:%M:%S") == key:
                 avg_temp_koef = temp_koef[key]
