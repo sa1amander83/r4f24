@@ -103,6 +103,8 @@
       </path>
     </svg>
   </div>
+
+
     {% block main %} {% include 'components/header.html' %} {% endblock main%}
     {% block content %} {% csrf_token %} {% endblock %}
     {% block testcontent%}{% endblock %}
@@ -214,7 +216,7 @@ if (document.getElementById("selection-table") && typeof simpleDatatables.DataTa
 
   </script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-      <script>
+  <script>
       window.onload = function () {
         document.body.classList.add('loaded_hiding');
         window.setTimeout(function () {
@@ -222,7 +224,32 @@ if (document.getElementById("selection-table") && typeof simpleDatatables.DataTa
           document.body.classList.remove('loaded_hiding');
         }, 500);
       }
-    </script>
+  </script>
+  <script>
+    // Получаем элементы
+    const toggleButton = document.getElementById('toggleButton');
+    const actionMenu = document.getElementById('actionMenu');
+    const overlay = document.getElementById('overlay');
+    const menuIcon = document.getElementById('menuIcon');
+
+    // Функция для открытия/закрытия меню
+    function toggleMenu() {
+        actionMenu.classList.toggle('hidden');
+        overlay.classList.toggle('hidden'); // Показываем/скрываем оверлей
+        menuIcon.classList.toggle('rotate-45'); // Вращаем иконку
+    }
+
+    // Обработчик события для кнопки
+    toggleButton.addEventListener('click', function(event) {
+        event.stopPropagation(); // Останавливаем всплытие события
+        toggleMenu();
+    });
+
+    // Обработчик события для оверлея
+    overlay.addEventListener('click', function() {
+        toggleMenu(); // Закрываем меню при клике на оверлей
+    });
+  </script>
     <script src="{% static 'mask/jquery.maskedinput.min.js' %}"></script>
   </body>
 </html>
