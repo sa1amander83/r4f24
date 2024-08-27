@@ -145,7 +145,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                 runner_id=userid.id,
                 day_select=form.cleaned_data['day_select'],
                 day_distance=form.cleaned_data['day_distance'],
-                day_time=form.cleaned_data['day_time'],
+                day_time=form.cleaned_data['day_time'].strftime('%H:%M:%S'),
                 day_average_temp=form.cleaned_data['day_average_temp'],
                 ball=form.cleaned_data['ball'],
                 number_of_run=number_of_run,
@@ -220,17 +220,23 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView, DataMixin):
         self.object = self.get_object()
         get_runday = RunnerDay.objects.get(pk=self.kwargs['pk']).day_select
         get_number_run = self.object.number_of_run
-        self.object.delete()
-        old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)
-
-        for im in old_image:
-            Photo.objects.get(pk=im.pk).delete()
-            if os.path.exists(im.photo.path):
-                os.remove(im.photo.path)
-
         success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
         success_msg = 'Запись удалена!'
+        try:
+            self.object.delete()
+            old_image = Photo.objects.filter(day_select=get_runday).filter(number_of_run=get_number_run)
 
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            for im in old_image:
+                Photo.objects.get(pk=im.pk).delete()
+                if os.path.exists(im.photo.path):
+                    os.remove(im.photo.path)
 
-        return redirect(success_url, success_msg)
+
+
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
+            return redirect(success_url, success_msg)
+
+        except ObjectDoesNotExist:
+            return redirect(success_url, success_msg)
+
