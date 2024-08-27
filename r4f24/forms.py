@@ -143,10 +143,14 @@ class RunnerDayForm(ModelForm):
                     'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                     'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
 
-        }
-        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball']
+            'run_url': forms.URLInput(attrs={
+                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                'id': 'run_url', 'placeholder': 'например https://www.runkeeper.com/app'}),
 
-    photo = MultiFileField(min_num=1, max_num=6, max_file_size=2048 * 2048 * 5)
+        }
+        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'run_url']
+
+    photo = MultiFileField(min_num=1, max_num=6, max_file_size=32048 * 32048 * 5)
 
     # def save(self, commit=True):
     #     instance = super(RunnerDayForm, self).save(commit)

@@ -51,7 +51,7 @@ class ProfileUser(ListView, DataMixin):
         get_category = getuser.runner_category
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
-            'day_select','time_create', 'number_of_run')
+            'day_select','time_create', 'number_of_run', 'run_url')
 
         photos = get_user_model().objects.get(username=self.kwargs['username'])
         context['images'] = photos.photos.all()
@@ -148,7 +148,8 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                 day_time=form.cleaned_data['day_time'],
                 day_average_temp=form.cleaned_data['day_average_temp'],
                 ball=form.cleaned_data['ball'],
-                number_of_run=number_of_run
+                number_of_run=number_of_run,
+                run_url=form.cleaned_data['run_url']
 
             )
 

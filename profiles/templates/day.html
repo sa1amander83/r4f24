@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
     <div class="h-full rounded-2xl p-6 pb-12">
-                 <span id="category" hidden="hidden">{{ runner_category }}</span>
+        <span id="category" hidden="hidden">{{ runner_category }}</span>
         <div class="mx-auto">
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -34,8 +34,8 @@
             >
                 {% csrf_token %}
 
-{% for message in messages %}
-                {{ message }}
+                {% for message in messages %}
+                    {{ message }}
                 {% endfor %}
 
 
@@ -152,12 +152,35 @@
 
                 <div>
                     <label
+                            for="run_url"
+                            class="block text-sm font-medium text-gray-700"
+                    >Ссылка на пробежку</label
+                    >
+                    <div class="relative mt-1 rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke-width="1.5" stroke="currentColor"  class="h-5 w-5 text-gray-400 size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5
+                                       4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622
+                                      1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5
+                                       4.5 0 0 0 1.242 7.244"/>
+                            </svg>
+
+                        </div>
+                        {{ form.run_url }}
+                    </div>
+                </div>
+
+
+                <div>
+                    <label
                             for="ball"
                             class="block text-sm font-medium text-gray-700"
                     >Баллы за пробежку</label
                     >
-                    <div class="relative mt-1 rounded-md shadow-sm" >
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3" >
+                    <div class="relative mt-1 rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -210,7 +233,7 @@
     </div>
 
 {% endblock %} {% block extrascripts %}
-      <script>
+    <script>
 
         let distance_koef = [
             [4.9, 1, 1], [9.9, 1.1, 2.1],
@@ -664,7 +687,7 @@
             "00:10:00": 0.39
         }
         let avg_temp_koef = 0
-         $(document).ready(function() {
+        $(document).ready(function () {
             $('form').on('change input', calcball);
 
             function calcball(event) {
@@ -692,8 +715,8 @@
                                 avg_temp_koef = temp_koef[key];
                                 break;
 
-                            }else {
-                                avg_temp_koef =0.3;
+                            } else {
+                                avg_temp_koef = 0.3;
                             }
                         }
                     }
@@ -716,10 +739,10 @@
                             if (distance >= 5) {
                                 ost_dist = distance - distance_koef[need_list_index][0];
                                 ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist;
-                                tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef)*10;
+                                tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10;
                             } else {
                                 ost_koef = distance_koef[need_list_index][1] * distance;
-                                tot_koef = (ost_koef * avg_temp_koef)*10;
+                                tot_koef = (ost_koef * avg_temp_koef) * 10;
                             }
                             break;
                         }
@@ -782,17 +805,17 @@
     </script>
 
 
-<script>
-//Код jQuery, установливающий маску для ввода телефона элементу input
-//1. После загрузки страницы,  когда все элементы будут доступны выполнить...
-$(function(){
-  //2. Получить элемент, к которому необходимо добавить маску
-  $.mask.definitions['5'] = "[0-2]";
-  $.mask.definitions['3'] = "[0-3]";
-  $.mask.definitions['2'] = "[0-5]";
-  
-  $("#day_time").mask("53:29:29");
-  {#$("#temp").mask("00:99:99");#}
-});
-</script>
+    <script>
+        //Код jQuery, установливающий маску для ввода телефона элементу input
+        //1. После загрузки страницы,  когда все элементы будут доступны выполнить...
+        $(function () {
+            //2. Получить элемент, к которому необходимо добавить маску
+            $.mask.definitions['5'] = "[0-2]";
+            $.mask.definitions['3'] = "[0-3]";
+            $.mask.definitions['2'] = "[0-5]";
+
+            $("#day_time").mask("53:29:29");
+            {#$("#temp").mask("00:99:99");#}
+        });
+    </script>
 {% endblock %}

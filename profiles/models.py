@@ -14,7 +14,7 @@ DAYS = ((6, '06.09'), (7, '07.09'), (8, '08.09'), (9, '09.09'), (10, '10.09'),
         (11, '11.09'), (12, '12.09'), (13, '13.09'), (14, '14.09'), (15, '15.09'),
         (16, '16.09'), (17, '17.09'), (18, '18.09'), (19, '19.09'), (20, '20.09'),
         (21, '21.09'), (22, '22.09'), (23, '23.09'), (24, '24.09'), (25, '25.09'),
-        (26, '26.09'), (27, '27.09'),  (28, '28.09'), (29, '29.09'), (30, '30.09'),
+        (26, '26.09'), (27, '27.09'), (28, '28.09'), (29, '29.09'), (30, '30.09'),
         (1, '01.10'), (2, '02.10'), (3, '03.10'), (4, '04.10'), (5, '05.10'),)
 
 
@@ -59,7 +59,10 @@ class Photo(models.Model):
     def __str__(self):
         return str(self.photo)
 
+
 from datetime import date
+
+
 class RunnerDay(models.Model):
     class Meta:
         verbose_name = 'ежедневный забег'
@@ -71,8 +74,8 @@ class RunnerDay(models.Model):
     ]
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
-    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default= date.today().day,
-                                  db_index=True)
+    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
+                                     db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1), MaxValueValidator(300)], db_index=True)
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
@@ -82,6 +85,7 @@ class RunnerDay(models.Model):
         MaxValueValidator(2),
         MinValueValidator(1)
     ], db_index=True)
+    run_url = models.URLField(null=True, blank=True, verbose_name="Ссылка на пробег")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время внесения пробежки")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения пробежки")
 
