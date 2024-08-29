@@ -232,11 +232,10 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView, DataMixin):
                     os.remove(im.photo.path)
 
 
-
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
-
-            return redirect(success_url, success_msg)
-
         except ObjectDoesNotExist:
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
             return redirect(success_url, success_msg)
 
+        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
+        return redirect(success_url, success_msg)

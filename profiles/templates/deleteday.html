@@ -2,12 +2,20 @@
 {% load static %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
+
+    <div class="flex flex-wrap items-center justify-between  max-w-md  text-sky-500  mx-auto p-4">
+    <br>
+    <form method="post">{% csrf_token %}
 
 
-<p CLASS="text-danger col-lg-auto text-900">Вы действительно хотите удалить запись за  {{ runday.day_select }} день ?</p>
-<a href="{% url 'profile:profile' username=user %}" class="btn btn-outline">Отмена</a>
+<p  class="block bg-sky-900 font-semibold  text-2xl text-white">Вы действительно хотите удалить запись за  {{ runday.day_select }} день ?</p>
+<br>
+        <div class="flex  wrap justify-around">
+        <a href="{% url 'profile:profile' username=user %}" class="py-2.5 px-5 ms-3 text-xl font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">Отмена</a>
 
-    <input type="submit" value="Удалить">
-</form>
+    <input type="submit" value="Удалить"  class=" my-button text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-xl inline-flex items-center px-5 py-2.5 text-center">
+</div>
+    </form>
+
+    </div>
 {% endblock %}
