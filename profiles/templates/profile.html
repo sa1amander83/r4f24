@@ -239,38 +239,38 @@
                                 </div>
                             {% endif %}
                             <div class="hidden lg:flex items-center gap-2">
-                                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <path d="M12 8V12L15 15" stroke="#878787" stroke-width="2"
-                                              stroke-linecap="round"></path>
-                                        <circle cx="12" cy="12" r="9" stroke="#878787" stroke-width="2"></circle>
-                                    </g>
-                                </svg>
-                                <span class="text-sm">Общее время пробега</span>
-
-                                <span class="text-xl font-bold"> {{ run_user_time }}</span>
+{#                                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">#}
+{#                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>#}
+{#                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>#}
+{#                                    <g id="SVGRepo_iconCarrier">#}
+{#                                        <path d="M12 8V12L15 15" stroke="#878787" stroke-width="2"#}
+{#                                              stroke-linecap="round"></path>#}
+{#                                        <circle cx="12" cy="12" r="9" stroke="#878787" stroke-width="2"></circle>#}
+{#                                    </g>#}
+{#                                </svg>#}
+{#                                <span class="text-sm">Общее время пробега</span>#}
+{##}
+{#                                <span class="text-xl font-bold"> {{ run_user_time }}</span>#}
                                 {#                            {% for u in tot_dist %}#}
                                 {#                          <span class="text-xl font-bold">{{ u.total_time }}</span>#}
                                 {#                            {% endfor %}#}
-                            </div>
-                            <div class="hidden lg:flex items-center gap-2">
-                                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g id="Calendar / Timer">
-                                            <path id="Vector"
-                                                  d="M12 13V9M21 6L19 4M10 2H14M12 21C7.58172 21 4 17.4183 4 13C4 8.58172 7.58172 5 12 5C16.4183 5 20 8.58172 20 13C20 17.4183 16.4183 21 12 21Z"
-                                                  stroke="#808080" stroke-width="2" stroke-linecap="round"
-                                                  stroke-linejoin="round"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <span class="text-sm">Средний темп</span>
-
-                                <span class="text-xl font-bold"> {{ run_user_avg }}</span>
+{#                            </div>#}
+{#                            <div class="hidden lg:flex items-center gap-2">#}
+{#                                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">#}
+{#                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>#}
+{#                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>#}
+{#                                    <g id="SVGRepo_iconCarrier">#}
+{#                                        <g id="Calendar / Timer">#}
+{#                                            <path id="Vector"#}
+{#                                                  d="M12 13V9M21 6L19 4M10 2H14M12 21C7.58172 21 4 17.4183 4 13C4 8.58172 7.58172 5 12 5C16.4183 5 20 8.58172 20 13C20 17.4183 16.4183 21 12 21Z"#}
+{#                                                  stroke="#808080" stroke-width="2" stroke-linecap="round"#}
+{#                                                  stroke-linejoin="round"></path>#}
+{#                                        </g>#}
+{#                                    </g>#}
+{#                                </svg>#}
+{#                                <span class="text-sm">Средний темп</span>#}
+{##}
+{#                                <span class="text-xl font-bold"> {{ run_user_avg }}</span>#}
                                 {#                            {% for u in tot_dist %}#}
                                 {#                          <span class="text-xl font-bold">{{ u.total_time }}</span>#}
                                 {#                            {% endfor %}#}

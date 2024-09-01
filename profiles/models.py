@@ -60,9 +60,17 @@ class Photo(models.Model):
         return str(self.photo)
 
 
-from datetime import date
+from datetime import date, timedelta
 
-
+def get_days():
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+    day_before_yesterday = today - timedelta(days=2)
+    return [
+        (today.day, today.day),
+        (yesterday.day, yesterday.day),
+        # (day_before_yesterday.day, day_before_yesterday.day)
+    ]
 class RunnerDay(models.Model):
     class Meta:
         verbose_name = 'ежедневный забег'
@@ -74,7 +82,7 @@ class RunnerDay(models.Model):
     ]
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
-    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
+    day_select = models.IntegerField(verbose_name='день пробега', choices=get_days(), default=date.today().day,
                                      db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1), MaxValueValidator(300)], db_index=True)

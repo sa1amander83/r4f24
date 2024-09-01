@@ -114,14 +114,17 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     model = RunnerDay
 
     def get_context_data(self, *, object_list=None, **kwargs):
+
         context = super().get_context_data(**kwargs)
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
 
+
         context['runner_category'] = getuser.runner_category
-
         return context
-    def form_valid(self, form):
 
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
         dayselected = form.cleaned_data['day_select']
         first_run = RunnerDay.objects.filter(runner__username=self.kwargs['username']).filter(
             day_select=dayselected).count()
@@ -164,7 +167,13 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
             calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
             return redirect('profile:profile', username=self.kwargs['username'])
+    def form_invalid(self, form):
+        messages.error(self.request, 'В день учитываются только две пробежки, '
+                                     'обновите сведения по одной из пробежек')
+        print(form.cleaned_data)
+        calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
+        return redirect('profile:profile', username=self.kwargs['username'])
 
 class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
     form_class = RunnerDayForm
@@ -175,8 +184,13 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
 
     login_url = reverse_lazy('index')
 
-    def get_queryset(self):
-        return RunnerDay.objects.all()
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        getuser = get_user_model().objects.get(username=self.kwargs['username'])
+
+        context['runner_category'] = getuser.runner_category
+
+        return context
 
     def get_success_url(self):
         return reverse_lazy('profile:profile', kwargs={'runner': self.object})
