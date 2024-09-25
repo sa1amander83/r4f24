@@ -151,6 +151,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                 day_time=form.cleaned_data['day_time'].strftime('%H:%M:%S'),
                 day_average_temp=form.cleaned_data['day_average_temp'],
                 ball=form.cleaned_data['ball'],
+                ball_for_champ=form.cleaned_data['ball_for_champ'],
                 number_of_run=number_of_run,
                 run_url=form.cleaned_data['run_url']
 

@@ -10,12 +10,13 @@ from django.urls import reverse
 import core
 from core.models import User, Teams
 
-DAYS = ((6, '06.09'), (7, '07.09'), (8, '08.09'), (9, '09.09'), (10, '10.09'),
-        (11, '11.09'), (12, '12.09'), (13, '13.09'), (14, '14.09'), (15, '15.09'),
-        (16, '16.09'), (17, '17.09'), (18, '18.09'), (19, '19.09'), (20, '20.09'),
-        (21, '21.09'), (22, '22.09'), (23, '23.09'), (24, '24.09'), (25, '25.09'),
-        (26, '26.09'), (27, '27.09'), (28, '28.09'), (29, '29.09'), (30, '30.09'),
-        (1, '01.10'), (2, '02.10'), (3, '03.10'), (4, '04.10'), (5, '05.10'),)
+DAYS = ((30, '30 сентября'), (1, '1 октября'), (2, '2 октября'), (3, '3 октября'), (4, '04 октября'),
+        (5, '05 октября'), (6, '06 октября'), (7, '07 октября'), (8, '08 октября'), (9, '09 октября'),
+        (10, '10 октября'), (11, '11 октября'), (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),
+        (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
+        (20, '20 октября'), (21, '21 октября'), (22, '22 октября'), (23, '23 октября'), (24, '24 октября'),
+        (25, '25 октября'), (26, '26 октября'), (27, '27 октября'), (28, '28 октября'), (29, '29 октября'),
+        (30, '30 октября'), (31, '31 октября'))
 
 
 class UserImport(models.Model):
@@ -89,6 +90,7 @@ class RunnerDay(models.Model):
     day_time = models.TimeField(verbose_name='введите время пробега', help_text='введите в формате 00:00:00')
     day_average_temp = models.TimeField(verbose_name='средний темп', help_text='введите в формате 00:00:00')
     ball = models.IntegerField(verbose_name='баллы за пробежку', blank=True, null=True, db_index=True)
+    ball_for_champ = models.IntegerField(verbose_name='баллы с коэффициентом', blank=True, null=True, db_index=True)
     number_of_run = models.IntegerField(verbose_name='номер пробежки', default=1, choices=NUM_OF_RUN, validators=[
         MaxValueValidator(2),
         MinValueValidator(1)
@@ -114,6 +116,7 @@ class Statistic(models.Model):
     total_days = models.IntegerField(verbose_name='дни пробега', null=True, db_index=True)
     total_runs = models.IntegerField(verbose_name='количество пробежек', null=True, db_index=True)
     total_balls = models.IntegerField(verbose_name='общая сумма баллов', null=True, db_index=True)
+    total_balls_for_champ = models.IntegerField(verbose_name='общая сумма баллов для чемпионата', null=True, db_index=True)
     is_qualificated = models.BooleanField(verbose_name='прошел квалификацию', default=False)
 
     def __str__(self):

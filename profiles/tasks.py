@@ -33,12 +33,12 @@ def get_best_five_summ(team_id):
             ranked_stats = filtered_stats.annotate(
                 rank=Window(
                     expression=RowNumber(),
-                    order_by=F('total_balls').desc()
+                    order_by=F('total_balls_for_champ').desc()
                 )
             )
 
             top_five_stats = ranked_stats.filter(rank__lte=5)
-            total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls'))
+            total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls_for_champ'))
             total_balls_sum = total_balls.get('total_balls_sum')
             team_results[category_name] = total_balls_sum
             grand_total += total_balls_sum
@@ -133,6 +133,9 @@ def calc_start(self, runner_id, username):
         tot_days = runner_days.filter(day_select__gte=0).distinct('day_select').count()
 
         tot_balls = runner_days.aggregate(Sum('ball'))
+        tot_balls_champ = runner_days.aggregate(Sum('ball_for_champ'))
+
+
         balls = tot_balls['ball__sum'] or 0
 
         is_qual = dist >= 30
@@ -146,6 +149,7 @@ def calc_start(self, runner_id, username):
                 'total_days': tot_days,
                 'total_runs': tot_runs,
                 'total_balls': balls,
+                'total_balls_for_champ': tot_balls_champ,
                 'is_qualificated': is_qual
             }
         )

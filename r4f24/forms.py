@@ -142,13 +142,18 @@ class RunnerDayForm(ModelForm):
                 attrs={
                     'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                     'readonly': 'True', 'id': 'ball', 'placeholder': '00'}),
+            'ball_for_champ': forms.NumberInput(
+                attrs={
+                    'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                    'readonly': 'True', 'id': 'ball_for_champ', 'placeholder': '00'}),
+
 
             'run_url': forms.URLInput(attrs={
                 'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                 'id': 'run_url', 'placeholder': 'например https://www.runkeeper.com/app'}),
 
         }
-        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'run_url']
+        fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'ball_for_champ','run_url']
 
     photo = MultiFileField(min_num=1, max_num=6, max_file_size=32048 * 32048 * 5)
 
