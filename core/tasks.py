@@ -541,12 +541,12 @@ def recalc_runnerdays(rec_id, distance, temp, total_time, category):
 
     tot_koef = None
     avg_temp_koef = 1
-
-    if category not in [1, 2]:
-        for key in temp_koef:
-            if temp.strftime("%H:%M:%S") == key:
-                avg_temp_koef = temp_koef[key]
-                break
+    ball_coef=None
+    # if category not in [1, 2]:
+    for key in temp_koef:
+        if temp.strftime("%H:%M:%S") == key:
+            avg_temp_koef = temp_koef[key]
+            break
 
     if not distance or not total_time:
         return '00:00:00', None
@@ -560,16 +560,31 @@ def recalc_runnerdays(rec_id, distance, temp, total_time, category):
             else:
                 need_list_index = distance_koef.index(d) - 1
 
+
+
+
             if distance >= 5:
                 ost_dist = distance - distance_koef[need_list_index][0]
                 ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist
-                tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10
+                if category not in [1, 2]:
+                    tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10
+
+                else:
+                    tot_koef = (5 * distance_koef[need_list_index][2] + ost_koef) * 10
+                    ball_coef=(5 * distance_koef[need_list_index][2] + ost_koef)*avg_temp_koef * 10
             else:
                 ost_koef = distance_koef[need_list_index][1] * distance
-                tot_koef = (ost_koef * avg_temp_koef) * 10
+                if category not in [1, 2]:
+                    tot_koef = (ost_koef * avg_temp_koef) * 10
+                else:
+                    tot_koef = ost_koef  * 10
+                    ball_coef=(ost_koef * avg_temp_koef) * 10
+
+
             break
     runnerday = RunnerDay.objects.get(pk=rec_id)
     runnerday.ball = tot_koef
+    runnerday.ball_koef = ball_coef
     runnerday.save()
 
     return

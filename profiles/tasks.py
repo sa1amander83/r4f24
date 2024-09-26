@@ -39,7 +39,8 @@ def get_best_five_summ(team_id):
 
             top_five_stats = ranked_stats.filter(rank__lte=5)
             total_balls = top_five_stats.aggregate(total_balls_sum=Sum('total_balls_for_champ'))
-            total_balls_sum = total_balls.get('total_balls__sum')
+
+            total_balls_sum = total_balls.get('total_balls_sum')
             team_results[category_name] = total_balls_sum
             grand_total += total_balls_sum
 
