@@ -190,12 +190,16 @@
                     <div class="font-medium">Пт</div>
                     <div class="font-medium">Сб</div>
                     <div class="font-medium">Вс</div>
+                    <div class="py-0.5 rounded relative text-slate-500">23</div>
+                    <div class="py-0.5 rounded relative text-slate-500">24</div>
+                    <div class="py-0.5 rounded relative text-slate-500">25</div>
                     <div class="py-0.5 rounded relative text-slate-500">26</div>
                     <div class="py-0.5 rounded relative text-slate-500">27</div>
                     <div class="py-0.5 rounded relative text-slate-500">28</div>
                     <div class="py-0.5 rounded relative text-slate-500">29</div>
-                    <div class="py-0.5 rounded relative text-slate-500">30</div>
-                    <div class="py-0.5 rounded relative text-slate-500">31</div>
+                    <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
+                       href="{% url 'runner_day_results' 30  %}">30</a>
+
                     {% now 'j' as today %} {% for day in 1|range:31 %}
                     <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
                        href="{% url 'runner_day_results' day %}">{{ day }}</a>

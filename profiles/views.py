@@ -254,3 +254,6 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView, DataMixin):
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
         return redirect(success_url, success_msg)
+
+def zaglushka(request,username):
+    return render(request, 'zaglushka.html')
