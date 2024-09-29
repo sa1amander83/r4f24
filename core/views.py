@@ -719,7 +719,7 @@ class StatisticView(DataMixin, ListView):
             under_20=Count('id', filter=Q(runner_age__lte=20, not_running=False)),
             age_21_30=Count('id', filter=Q(runner_age__gt=21, runner_age__lte=30, not_running=False)),
             age_31_40=Count('id', filter=Q(runner_age__gt=30, runner_age__lte=40,not_running=False)),
-            age_41_50=Count('id', filter=Q(runner_age__gt=41, runner_age__lte=50, not_running=False)),
+            age_41_50=Count('id', filter=Q(runner_age__gt=40, runner_age__lte=50, not_running=False)),
             age_over_50=Count('id', filter=Q(runner_age__gt=50,  not_running=False)))
 
         # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
