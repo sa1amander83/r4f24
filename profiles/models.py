@@ -39,7 +39,7 @@ class Photo(models.Model):
     number_of_run = models.IntegerField(verbose_name='номер пробежки', null=True)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
-
+    runner_day = models.ForeignKey('RunnerDay', on_delete=models.CASCADE, verbose_name='день пробежки', null=True)
     # def save(self, *args, **kwargs):
     #     super(Photo, self).save(*args, **kwargs)
     #     img = Image.open(self.photo.path)

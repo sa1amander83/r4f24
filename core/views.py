@@ -124,10 +124,10 @@ class RunnersCatAgeView(DataMixin, ListView):
             last_age = 17
         elif get_age == 2:
             start_age = 18
-            last_age = 34
+            last_age = 35
 
         elif get_age == 3:
-            start_age = 35
+            start_age = 36
             last_age = 49
 
         elif get_age == 4:
