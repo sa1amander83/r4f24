@@ -25,6 +25,7 @@ def recalc_all_groups_and_teams(request):
         user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
         total_group_results = user_group_stats.aggregate(
             total_balls=Sum('total_balls', default=0),
+
             total_distance=Sum('total_distance', default=0),
             total_time=Sum('total_time', default=Value('00:00:00', output_field=DurationField())),
             total_average_temp=Avg('total_average_temp', default=Value('00:00:00', output_field=DurationField())),
@@ -52,27 +53,28 @@ def recalc_all_groups_and_teams(request):
         users = get_user_model().objects.filter(runner_team_id=team_id)
         user_stats = Statistic.objects.filter(runner_stat__in=users)
         total_comand_results = user_stats.aggregate(
-            total_balls=Sum('total_balls', default=0),
-            total_distance=Sum('total_distance', default=0),
-            total_time=Sum('total_time', default=Value('00:00:00', output_field=DurationField())),
-
-            total_average_temp=Avg('total_average_temp', default=Value('00:00:00', output_field=DurationField())),
-            total_days=Sum('total_days', default=0),
-            total_runs=Sum('total_runs', default=0),
-            tot_members=Count('runner_stat__username'))
-
-        ComandsResult.objects.create(
-            comand_id=team_id,
-
-            comands_total_members=total_comand_results.get('tot_members'),
-            comand_total_distance=total_comand_results.get('total_distance'),
-            comand_total_balls=total_comand_results.get('total_balls'),
-            comand_total_time=str(total_comand_results.get('total_time')),
-            comand_average_temp=str(total_comand_results.get('total_average_temp')),
-            comand_total_runs=total_comand_results.get('total_runs')
-
+            total_balls=Coalesce(Sum('total_balls', default=0), 0),
+            total_distance=Coalesce(Sum('total_distance', default=0), 0),
+            total_time=Coalesce(Sum('total_time'), Value('00:00:00', output_field=DurationField())),
+            total_average_temp=Coalesce(Avg('total_average_temp'), Value('00:00:00', output_field=DurationField())),
+            total_days=Coalesce(Sum('total_days', default=0), 0),
+            total_runs=Coalesce(Sum('total_runs', default=0), 0),
+            tot_members=Count('runner_stat__username')
         )
+        try:
+            ComandsResult.objects.create(
+                comand_id=team_id,
 
+                comands_total_members=total_comand_results.get('tot_members'),
+                comand_total_distance=total_comand_results.get('total_distance'),
+                comand_total_balls=total_comand_results.get('total_balls'),
+                comand_total_time=str(total_comand_results.get('total_time')),
+                comand_average_temp=str(total_comand_results.get('total_average_temp')),
+                comand_total_runs=total_comand_results.get('total_runs')
+
+            )
+        except Exception as e:
+            print(e)
     return redirect(reverse('index'))
 
 
@@ -576,6 +578,7 @@ def recalc_runnerdays(rec_id, distance, temp, total_time, category):
                 ost_koef = distance_koef[need_list_index][1] * distance
                 if category not in [1, 2]:
                     tot_koef = (ost_koef * avg_temp_koef) * 10
+                    ball_coef = (ost_koef * avg_temp_koef) * 10
                 else:
                     tot_koef = ost_koef  * 10
                     ball_coef=(ost_koef * avg_temp_koef) * 10
@@ -584,7 +587,9 @@ def recalc_runnerdays(rec_id, distance, temp, total_time, category):
             break
     runnerday = RunnerDay.objects.get(pk=rec_id)
     runnerday.ball = tot_koef
-    runnerday.ball_koef = ball_coef
+    runnerday.ball_for_champ = ball_coef
+
+
     runnerday.save()
 
     return

@@ -10,6 +10,8 @@ from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
 
 
 class RegisterUserForm(UserCreationForm):
+
+
     username = forms.CharField(label='Логин', widget=forms.TextInput(
         attrs={'placeholder': "Введите номер",
                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
@@ -33,6 +35,14 @@ class RegisterUserForm(UserCreationForm):
     password2 = forms.CharField(label='Повтор пароля',
                                 widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль еще раз",
                                                                   'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
+
+
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if get_user_model().objects.filter(username=username).exists():
+            raise forms.ValidationError('Пользователь с таким номером уже зарегистрирован.')
+        return username
 
     class Meta:
         model = User
@@ -155,7 +165,7 @@ class RunnerDayForm(ModelForm):
         }
         fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'ball_for_champ','run_url']
 
-    photo = MultiFileField(min_num=1, max_num=6, max_file_size=32048 * 32048 * 5)
+    photo = MultiFileField(min_num=1, max_num=10, max_file_size=32048 * 32048 * 5)
 
     # def save(self, commit=True):
     #     instance = super(RunnerDayForm, self).save(commit)

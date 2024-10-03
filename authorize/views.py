@@ -14,93 +14,77 @@ from django.views.generic import CreateView
 from core.models import Teams
 from r4f24.forms import RegisterUserForm, LoginUserForm, ResetForm
 
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'register.html'
     success_url = reverse_lazy('authorize:login')
 
+
     def form_valid(self, form, **kwargs):
         runner_team = form.cleaned_data.get('runner_team__team')
 
+        username = form.cleaned_data.get('username')
+        if get_user_model().objects.filter(username=username).exists():
+            messages.error(self.request, 'Пользователь с таким номером уже зарегистрирован.')
+            return self.form_invalid(form)
         if runner_team:
             try:
                 get_team = Teams.objects.get(team=runner_team)
                 keyword_of_team = get_team.keyword
 
+                # Get the username from cleaned data
+                username = form.cleaned_data['username']
 
 
-                if form.cleaned_data['keyword'].lower() == keyword_of_team.lower() \
-                        and int(form.cleaned_data['runner_age']) < 70 and int(form.cleaned_data['runner_age']) > 5 \
-                        and len(form.cleaned_data['username'])==6 and form.cleaned_data['username'][:3]==runner_team\
-                        and form.cleaned_data['username'].isnumeric():
+                # Proceed with other validations and registration
+                if (form.cleaned_data['keyword'].lower() == keyword_of_team.lower() and
+                        5 < int(form.cleaned_data['runner_age']) < 70 and
+                        username[:3] == runner_team and
+                        username.isnumeric()):
+
                     user = form.save(commit=False)
-
                     user.runner_team_id = get_team.id
                     user.save()
                     messages.success(self.request, 'Регистрация прошла успешно! Вы можете войти в систему.')
                     return redirect('authorize:login')
 
-                elif form.cleaned_data['username'].isnumeric() is False:
+                # Additional validation checks...
+                elif not username.isnumeric():
                     messages.error(self.request, 'Имя пользователя должно состоять только из цифр')
-                    return redirect('authorize:register')
-                elif form.cleaned_data['username'][:3] != runner_team:
+                elif username[:3] != runner_team:
                     messages.error(self.request, 'Номер участника не соответствует команде')
-                    return redirect('authorize:register')
                 elif form.cleaned_data.get('keyword').lower() != keyword_of_team.lower():
                     messages.error(self.request, 'Неверно указано кодовое слово.')
-                    return redirect('authorize:register')
-                elif int(form.cleaned_data['runner_age']) > 70 or int(form.cleaned_data['runner_age']) < 5:
+                elif not (5 < int(form.cleaned_data['runner_age']) < 70):
                     messages.error(self.request, 'Неверно указан возраст. Возраст должен быть от 5 до 70.')
-                    return redirect('authorize:register')
-
-
                 else:
                     messages.error(self.request, 'Неверно указано имя пользователя.')
-                    return redirect('authorize:register')
-
 
             except Teams.DoesNotExist:
                 messages.error(self.request, 'Неверная команда.')
-                return redirect('authorize:register')
 
-    def form_invalid(self, form, **kwargs):
-        print(form.cleaned_data)
-        runner_age = int(form.cleaned_data.get('runner_age'))
+        return redirect('authorize:register')  # Redirect if any validation fails
 
-        if len(form.cleaned_data['username']) != 6:
-            messages.error(self.request, 'Имя пользователя должно состоять из 6 цифр.')
-            return redirect('authorize:register')
-
-        try:
-            get_user = get_user_model().objects.get(username=form.cleaned_data['username'])
-
-            if get_user:
-                messages.error(self.request, 'Пользователь с таким именем уже существует.')
-                return redirect('authorize:register')
-
-        except:
-            pass
-        runner_team = form.cleaned_data.get('runner_team__team')
-        try:
-            get_team = Teams.objects.get(team=runner_team)
-            keyword_of_team = get_team.keyword
-            if form.cleaned_data['keyword'].lower() != keyword_of_team.lower():
-                messages.error(self.request, 'Неверно указано кодовое слово.')
-                return redirect('authorize:register')
-
-        except:
-            messages.error(self.request, 'Такой команды нет.')
-            return redirect('authorize:register')
-
-
-
-        if runner_age < 5 or runner_age > 70:
-            messages.error(self.request, 'Недопустимый возраст.')
-
-        return redirect('authorize:register')
-
-
+    #
+    # def form_invalid(self, form):
+    #     print(form.cleaned_data)
+    #
+    #
+    #     username = form.cleaned_data.get('username')
+    #
+    #     if username:
+    #         if get_user_model().objects.filter(username=username).exists():
+    #             messages.error(self.request, 'Пользователь с таким именем уже существует.')
+    #     else:
+    #         messages.error(self.request, 'Имя пользователя не указано.')
+    #
+    #     return self.render_to_response(self.get_context_data(form=form))
 class LoginUser(LoginView):
     authentication_form = LoginUserForm
     template_name = 'login.html'

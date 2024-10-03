@@ -140,7 +140,7 @@ def calc_start(self, runner_id, username):
         balls = tot_balls['ball__sum'] or 0
         balls_champ = tot_balls_champ['ball_for_champ__sum'] or 0
 
-        is_qual = dist >= 30
+        is_qual = dist >= 50
 
         Statistic.objects.update_or_create(
             runner_stat_id=runner_id,
@@ -157,7 +157,7 @@ def calc_start(self, runner_id, username):
         )
 
     except CreateError:
-        raise
+        pass
 
     calc_comands(username)
 

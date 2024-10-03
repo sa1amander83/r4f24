@@ -3,10 +3,12 @@ from django.forms import ModelForm
 from django.shortcuts import redirect
 from core.models import Teams
 from profiles.models import RunnerDay, Statistic, UserImport
-import pandas as pd
+
 import csv
 from django.http import HttpResponse
 
+
+import pandas as pd
 
 def export_runner_days(request):
     data = RunnerDay.objects.all().values('runner__username', 'day_select', 'day_distance', 'day_time',

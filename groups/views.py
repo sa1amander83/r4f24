@@ -219,6 +219,7 @@ def view_group(request, group):
 
     total_results = user_stats.aggregate(
         total_balls=Sum('total_balls'),
+        total_balls_for_champ=Sum('total_balls_for_champ'),
         total_distance=Sum('total_distance') ,
         total_time=Sum('total_time') ,
         total_average_temp=Avg('total_average_temp'),
