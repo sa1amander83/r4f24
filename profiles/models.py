@@ -27,25 +27,19 @@ def user_directory_path(instance, filename):
     runner = instance.runner.username
 
     subdiv = runner[:3]
-    return 'day_of_month/{0}/{1}/{2}/{3}/{4}'.format(subdiv, runner, instance.day_select, instance.number_of_run,
+    return 'day_of_month/{0}/{1}/{2}/{3}/{4}'.format(subdiv, runner, instance.runner_day.day_select,
+                                                     instance.runner_day.number_of_run,
                                                      filename)
 
 
 class Photo(models.Model):
-    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='photos')
-    day_select = models.IntegerField(verbose_name='день пробежки', null=True)
+    runner = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name="Участник", related_name='photos')
     photo = models.FileField(verbose_name="фото", upload_to=user_directory_path, null=True,
                              blank=True, max_length=300)
-    number_of_run = models.IntegerField(verbose_name='номер пробежки', null=True)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
+    runner_day = models.ForeignKey('RunnerDay', on_delete=models.CASCADE, related_name='photos', verbose_name='день пробежки', null=True)
 
-    # def save(self, *args, **kwargs):
-    #     super(Photo, self).save(*args, **kwargs)
-    #     img = Image.open(self.photo.path)
-    #     if img.height > 1125 or img.width > 1125:
-    #         img.thumbnail((1125, 1125))
-    #     img.save(self.photo.path, quality=70, optimize=True)
     def delete(self, *args, **kwargs):
         # До удаления записи получаем необходимую информацию
         storage, path = self.photo.storage, self.photo.path

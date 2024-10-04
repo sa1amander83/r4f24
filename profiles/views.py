@@ -19,6 +19,15 @@ from profiles.tasks import calc_start, get_best_five_summ, calc_comands
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
 
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import ListView
+from django.contrib.auth import get_user_model
+from .models import RunnerDay, Statistic, Photo
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import ListView
+from django.contrib.auth import get_user_model
+from .models import RunnerDay, Statistic
 
 
 class ProfileUser(ListView, DataMixin):
@@ -34,6 +43,7 @@ class ProfileUser(ListView, DataMixin):
         context = super().get_context_data(**kwargs)
         context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
+
         try:
             getuser_stat = Statistic.objects.get(runner_stat__username=self.kwargs['username'])
 
@@ -52,11 +62,10 @@ class ProfileUser(ListView, DataMixin):
         get_category = getuser.runner_category
 
         context['runner_day'] = RunnerDay.objects.filter(runner__username=self.kwargs['username']).order_by(
-            'day_select','time_create', 'number_of_run', 'run_url')
+            'day_select', 'time_create', 'number_of_run', 'run_url')
 
-        photos = get_user_model().objects.get(username=self.kwargs['username'])
-        context['images'] = photos.photos.all()
-
+        photos = Photo.objects.filter(runner_day__runner__username=self.kwargs['username'])
+        context['images'] = photos
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat'] = self.kwargs['username']
 
@@ -64,6 +73,9 @@ class ProfileUser(ListView, DataMixin):
             context['haverun'] = 1
         else:
             context['haverun'] = 0
+
+
+        #Всего бегунов
         context['total_runners'] = Statistic.objects.all().count()
         context['total_runners_category'] = Statistic.objects.filter(runner_stat__runner_category=get_category).count()
 
@@ -75,7 +87,7 @@ class ProfileUser(ListView, DataMixin):
                 'runner_stat__username', flat=True))
 
         age_of_user = getuser.runner_age
-
+        user_category= getuser.runner_category or None
         # Create a list of runners based on age categories
         runners_list_age_category = []
 
@@ -85,56 +97,82 @@ class ProfileUser(ListView, DataMixin):
                 Statistic.objects.filter(runner_stat__runner_age__lt=17).order_by('-total_balls').values_list(
                     'runner_stat__username', flat=True))
 
+            # Count participants in this age group
+            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__lt=18
+                                                                       , runner_stat__runner_category=user_category).count()
+
         elif 18 <= age_of_user <= 35:
             runners_list_age_category = list(
                 Statistic.objects.filter(runner_stat__runner_age__gte=18, runner_stat__runner_age__lte=35).order_by(
-                    '-total_balls').values_list(
-                    'runner_stat__username', flat=True))
+                    '-total_balls').values_list('runner_stat__username', flat=True))
+
+            # Count participants in this age group
+            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=18,
+                                                                        runner_stat__runner_age__lte=35,
+                                                                        runner_stat__runner_category=user_category).count()
+
         elif 36 <= age_of_user <= 49:
             runners_list_age_category = list(
                 Statistic.objects.filter(runner_stat__runner_age__gte=36, runner_stat__runner_age__lte=49).order_by(
-                    '-total_balls').values_list(
-                    'runner_stat__username', flat=True))
+                    '-total_balls').values_list('runner_stat__username', flat=True))
+
+            # Count participants in this age group
+            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=36,
+                                                                        runner_stat__runner_age__lte=49,
+                                                                        runner_stat__runner_category=user_category).count()
+
         else:  # age_of_user >= 50
             runners_list_age_category = list(
                 Statistic.objects.filter(runner_stat__runner_age__gte=50).order_by('-total_balls').values_list(
                     'runner_stat__username', flat=True))
 
+            # Count participants in this age group
+            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=50,
+                                                                         runner_stat__runner_category=user_category).count()
 
         try:
-            context['category_age_count']=len(runners_list_age_category)
-            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1
-            context['place_in_age_category'] = runners_list_age_category.index(self.kwargs['username']) + 1
-            context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1
-        except  BaseException:
-            context['place'] = ''
-        obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
-        context['tot_dist'] = Statistic.objects.all().order_by('-total_balls', 'total_distance')
-        # place = stats.index(user_stat) + 1
-        # context['runner_status'] = get_user_model().objects.filter(runner_status__gt=0)
+            # Calculate places in different categories
+            context['category_age_count'] = len(runners_list_age_category)
 
+            # Place in total runners list
+            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1
+
+            # Place in age category
+            if self.kwargs['username'] in runners_list_age_category:
+                context['place_in_age_category'] = runners_list_age_category.index(self.kwargs['username']) + 1
+            else:
+                context['place_in_age_category'] = None
+
+            # Place in category (general category)
+            if self.kwargs['username'] in runners_list_category:
+                context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1
+            else:
+                context['place_in_category'] = None
+
+        except ValueError:
+            # Handle case where username not found in lists
+            context['place_in_total'] = None
+            context['place_in_age_category'] = None
+            context['place_in_category'] = None
+
+        obj = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
 
         if len(obj) > 0:
-
             return dict(list(context.items()))
 
         else:
             context['user_data'] = get_user_model().objects.filter(username=self.kwargs['username'])
             context['tot_dist'] = {}
 
-            return dict(list(context.items()))
-
-
+        return dict(list(context.items()))
 
 class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
     model = User
     template_name = 'editprofile.html'
-
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
         return context
-
     def get_success_url(self):
         return reverse_lazy('profile:profile', kwargs={'username': self.object.username})
 
@@ -142,23 +180,6 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
         return self.request.user
 
     fields = ['runner_age', 'runner_gender', 'zabeg22', 'zabeg23']
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
@@ -177,58 +198,78 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         print(form.cleaned_data)
         dayselected = form.cleaned_data['day_select']
 
-        # Проверяем количество пробежек за день
-        first_run_count = RunnerDay.objects.filter(runner__username=self.kwargs['username'],
-                                                   day_select=dayselected).count()
+        # Проверяем количество пробежек на выбранный день
+        runs_today = RunnerDay.objects.filter(
+            runner__username=self.kwargs['username'],
+            day_select=dayselected
+        )
 
-        if first_run_count < 2:  # Если пробежек меньше двух
-            new_item = form.save(commit=False)
-            userid = get_user_model().objects.get(username=self.kwargs['username'])
-            new_item.runner_id = userid.id
+        first_run = runs_today.count()
 
-            # Номер пробежки
-            number_of_run = first_run_count + 1
+        if first_run < 2:
+            try:
+                userid = get_user_model().objects.get(username=self.kwargs['username'])
+                number_of_run = first_run + 1  # Соответствующий номер пробежки (1 или 2)
 
-            # Сохраняем фотографии
-            for each in form.cleaned_data['photo']:
-                Photo.objects.create(
+                # Создание самой пробежки
+                runner_day = RunnerDay.objects.create(
                     runner_id=userid.id,
+                    day_select=form.cleaned_data['day_select'],
+                    day_distance=form.cleaned_data['day_distance'],
+                    day_time=form.cleaned_data['day_time'].strftime('%H:%M:%S'),
+                    day_average_temp=form.cleaned_data['day_average_temp'],
+                    ball=form.cleaned_data['ball'],
+                    ball_for_champ=form.cleaned_data['ball_for_champ'],
                     number_of_run=number_of_run,
-                    day_select=dayselected,
-                    photo=each
+                    run_url=form.cleaned_data['run_url']
                 )
 
-            # Сохраняем данные о пробежке
-            RunnerDay.objects.create(
-                runner_id=userid.id,
-                day_select=form.cleaned_data['day_select'],
-                day_distance=form.cleaned_data['day_distance'],
-                day_time=form.cleaned_data['day_time'].strftime('%H:%M:%S'),
-                day_average_temp=form.cleaned_data['day_average_temp'],
-                ball=form.cleaned_data['ball'],
-                ball_for_champ=form.cleaned_data['ball_for_champ'],
-                number_of_run=number_of_run,
-                run_url=form.cleaned_data['run_url']
-            )
+                # Обновляем существующие фотографии и создаем новые при необходимости
+                existing_photos = Photo.objects.filter(runner_day=runner_day)
 
-            # Вызываем асинхронную задачу
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+                for index, each in enumerate(form.cleaned_data.get('photo', [])):
+                    if index < len(existing_photos):
+                        # Обновляем существующую фотографию
+                        existing_photos[index].photo = each
+                        existing_photos[index].save()
+                    else:
+                        # Создаем новую фотографию
+                        Photo.objects.create(
+                            runner=userid,
 
-            return redirect('profile:profile', username=self.kwargs['username'])
+                            runner_day=runner_day,
+                            photo=each
+                        )
+
+                # Удаляем лишние фотографии
+                if len(existing_photos) > len(form.cleaned_data.get('photo', [])):
+                    for excess_photo in existing_photos[len(form.cleaned_data.get('photo', [])):]:
+                        if os.path.exists(excess_photo.photo.path):
+                            try:
+                                os.remove(excess_photo.photo.path)  # Удаляем файл из файловой системы
+                            except Exception as e:
+                                messages.error(self.request, f'Ошибка при удалении файла: {str(e)}')
+                        excess_photo.delete()  # Удаляем запись из базы данных
+
+                # Запуск задачи
+                calc_start.delay(self.request.user.pk, self.kwargs['username'])
+
+                messages.success(self.request, 'Пробежка успешно добавлена!')
+                return redirect('profile:profile', username=self.kwargs['username'])
+            except Exception as e:
+                messages.error(self.request, f'Произошла ошибка: {str(e)}')
+                return redirect('profile:profile', username=self.kwargs['username'])
         else:
             messages.error(self.request, 'В день учитываются только две пробежки. '
                                          'Обновите сведения по одной из пробежек.')
-
             return redirect('profile:profile', username=self.kwargs['username'])
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Произошла ошибка при обработке формы.')
+        messages.error(self.request, 'Ошибка при обработке формы.')
         print(form.cleaned_data)
-
         return redirect('profile:profile', username=self.kwargs['username'])
 
-
-class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
+class EditRunnerDayData(LoginRequiredMixin, UpdateView):
     form_class = RunnerDayForm
     model = RunnerDay
     template_name = 'day.html'
@@ -254,63 +295,73 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView, DataMixin):
         dayselected = self.obj.day_select
         runs = self.obj.number_of_run
 
-        # Fetch existing images for this run
-        old_images = Photo.objects.filter(day_select=dayselected, number_of_run=runs)
+        # Получаем существующие фотографии для этой пробежки
+        existing_photos = Photo.objects.filter(runner_day=self.obj)
 
-        # Delete old images if necessary
-        for im in old_images:
-            if os.path.exists(im.photo.path):
-                os.remove(im.photo.path)  # Remove file from filesystem
-            im.delete()  # Delete the photo instance
+        # Обновляем существующие фотографии и создаем новые при необходимости
+        for index, each in enumerate(form.cleaned_data.get('photo', [])):
+            if index < len(existing_photos):
+                # Обновляем существующую фотографию
+                existing_photos[index].photo = each
+                existing_photos[index].save()
+            else:
+                # Создаем новую фотографию
+                Photo.objects.create(
+                    runner_day=self.obj,
+                    photo=each
+                )
 
-        # Create new photos from the form data
-        for each in form.cleaned_data['photo']:
-            Photo.objects.create(
-                runner_id=userid.id,
-                day_select=dayselected,
-                number_of_run=runs,
-                photo=each
-            )
+        # Удаляем лишние фотографии, если их больше чем загруженных
+        if len(existing_photos) > len(form.cleaned_data.get('photo', [])):
+            for excess_photo in existing_photos[len(form.cleaned_data.get('photo', [])):]:
+                if os.path.exists(excess_photo.photo.path):
+                    try:
+                        os.remove(excess_photo.photo.path)  # Удаляем файл из файловой системы
+                    except Exception as e:
+                        messages.error(self.request, f'Ошибка при удалении файла: {str(e)}')
+                excess_photo.delete()  # Удаляем запись из базы данных
 
         new_item.save()
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
-        return redirect('profile:profile', username=self.request.user)
+        messages.success(self.request, 'Запись успешно обновлена!')
+        return redirect('profile:profile', username=self.request.user.username)
 
 
-class DeleteRunnerDayData(LoginRequiredMixin, DeleteView, DataMixin):
+class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
     model = RunnerDay
     template_name = 'deleteday.html'
     context_object_name = 'runday'
 
-    def form_valid(self, form):
+    def get_success_url(self):
+        return reverse_lazy('profile:profile', kwargs={'username': self.request.user.username})
+
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        get_runday = self.object.day_select  # Get day_select from the object being deleted
+
+        # Получаем day_select и number_of_run для удаления связанных фотографий
+        get_runday = self.object.day_select
         get_number_run = self.object.number_of_run
-        success_url = reverse_lazy('profile:profile', kwargs={'username': self.request.user})
-        success_msg = 'Запись удалена!'
 
-        try:
-            # Delete the RunnerDay instance
-            self.object.delete()
+        # Находим и удаляем все фотографии, связанные с этой пробежкой
+        old_images = Photo.objects.filter(runner_day=self.object)
 
-            # Find and delete all photos associated with this specific run
-            old_images = Photo.objects.filter(day_select=get_runday, number_of_run=get_number_run)
+        for old_image in old_images:
+            if os.path.exists(old_image.photo.path):
+                try:
+                    os.remove(old_image.photo.path)  # Удаляем файл из файловой системы
+                except Exception as e:
+                    messages.error(request, f'Ошибка при удалении файла: {str(e)}')
+            old_image.delete()  # Удаляем запись из базы данных
 
-            for old_image in old_images:
-                if os.path.exists(old_image.photo.path):
-                    os.remove(old_image.photo.path)  # Remove the file from the filesystem
-                old_image.delete()  # Delete the photo instance
-
-        except ObjectDoesNotExist:
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
-            return redirect(success_url)  # Removed success_msg as it won't work with redirect
+        # Удаляем объект RunnerDay
+        self.object.delete()
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
 
-        return redirect(success_url)  # Removed success_msg as it won't work with redirect
+        messages.success(request, 'Запись успешно удалена!')
+        return redirect(self.get_success_url())
 
-
-def zaglushka(request, username):
+def zaglushka(request,username):
     return render(request, 'zaglushka.html')

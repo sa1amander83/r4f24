@@ -173,8 +173,7 @@ class RunnerDayAdmin(admin.ModelAdmin):
                      )
     list_editable = ('day_select', 'day_distance', 'day_time', 'day_average_temp',
                      )
-    list_display = ('runner', 'day_select', 'day_distance', 'day_time', 'day_average_temp',
-                    'get_photo_url',)
+    list_display = ('runner', 'day_select', 'day_distance', 'day_time', 'day_average_temp',                    )
     list_display_links = ('runner',)
 
     list_filter = ('day_select',)
@@ -182,11 +181,11 @@ class RunnerDayAdmin(admin.ModelAdmin):
     list_per_page = 100
     list_max_show_all = 100
 
-    def get_photo_url(self, object):
-        if object.photo:
-            return mark_safe(f"<img src='{object.photo.url}' width=50>")
-
-    get_photo_url.short_description = 'Миниатюра'
+    # def get_photo_url(self, object):
+    #     if object.photo:
+    #         return mark_safe(f"<img src='{object.photo.url}' width=50>")
+    #
+    # get_photo_url.short_description = 'Миниатюра'
 
 
 class StatisticAdmin(admin.ModelAdmin):

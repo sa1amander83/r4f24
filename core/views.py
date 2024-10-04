@@ -124,10 +124,10 @@ class RunnersCatAgeView(DataMixin, ListView):
             last_age = 17
         elif get_age == 2:
             start_age = 18
-            last_age = 34
+            last_age = 35
 
         elif get_age == 3:
-            start_age = 35
+            start_age = 36
             last_age = 49
 
         elif get_age == 4:
@@ -493,6 +493,7 @@ class OneTeamStat(DataMixin, ListView):
 #
 #         return context
 
+
 class Championate(DataMixin, ListView):
     model = User
     template_name = 'championat.html'
@@ -509,80 +510,6 @@ class Championate(DataMixin, ListView):
     # ).order_by('-total_balls').annotate(
     #     rank=Window(expression=RowNumber(), order_by=[-F('total_balls')])
     # ).values('age_group', 'team', 'runner_stat', 'total_balls', 'rank').order_by('age_group', 'team', 'rank')[:5]
-    # def get_queryset(self):
-    #     age_categories = [
-    #         ('cat1', 5, 17),  # Age group 5-17
-    #         ('cat2', 18, 35),  # Age group 18-35
-    #         ('cat3', 36, 49),  # Age group 36-49
-    #         ('cat4', 50, 99)  # Age group 50+
-    #     ]
-
-    #     team_results = {}
-
-    #     # Iterate over each age category
-    #     for category_name, age_start, age_end in age_categories:
-    #         # Get all statistics for runners in this age range
-    #         filtered_stats = Statistic.objects.filter(
-    #             runner_stat__runner_age__gte=age_start,
-    #             runner_stat__runner_age__lte=age_end
-    #         )
-
-    #         # Rank runners based on total balls scored for championship
-    #         ranked_stats = filtered_stats.annotate(
-    #             rank=Window(
-    #                 expression=RowNumber(),
-    #                 order_by=F('total_balls_for_champ').desc()
-    #             )
-    #         )
-
-    #         # Get top five participants in this category
-    #         top_five_stats = ranked_stats.filter(rank__lte=5)
-
-    #         # Calculate total balls scored by these top five participants per team
-    #         team_totals = top_five_stats.values('runner_stat__runner_team').annotate(
-    #             total_balls_sum=Sum('total_balls_for_champ')
-    #         )
-
-    #         # Store results by team number (assuming 'team' is a field in User model)
-    #         for team_total in team_totals:
-    #             team = team_total['runner_stat__runner_team']  # Replace with actual field if different
-    #             total_balls_sum = team_total['total_balls_sum'] or 0
-
-    #             if team not in team_results:
-    #                 team_results[team] = {
-    #                     'team_number': team,
-    #                     'results': {category_name: total_balls_sum},
-    #                     'total_sum': total_balls_sum  # Initialize total sum with current category's sum
-    #                 }
-    #             else:
-    #                 team_results[team]['results'][category_name] = total_balls_sum
-    #                 team_results[team]['total_sum'] += total_balls_sum  # Add to the overall total sum
-
-    #     # Ensure all teams are represented even if they have no participants in some categories
-    #     all_teams = User.objects.values('runner_team__team').distinct()  # Assuming 'team' is a field in User model
-
-    #     for team in all_teams:
-    #         team_number = team['runner_team__team']
-    #         if team_number not in team_results:
-    #             team_results[team_number] = {
-    #                 'team_number': team_number,
-    #                 'results': {cat[0]: 0 for cat in age_categories},  # Initialize all categories to zero
-    #                 'total_sum': 0  # Initialize total sum to zero
-    #             }
-
-    #     # Convert results into a list and sort by total sum in descending order
-    #     sorted_results = sorted(
-    #         [{'team_number': result['team_number'], 'results': result['results'], 'total_sum': result['total_sum']}
-    #          for result in team_results.values()],
-    #         key=lambda x: x['total_sum'],
-    #         reverse=True
-    #     )
-
-    #     return sorted_results
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     return context
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -593,123 +520,120 @@ class Championate(DataMixin, ListView):
         except:
             context['qs'] = []
 
+
+
         return context
 
-    #     return context
+        # team_scores = Statistic.objects.annotate(
+        #     age_group=F('runner_stat__runner_age')// 18 ,
+        #
+        #     adjusted_points=Coalesce(F('total_balls'), Value(0)) - 1,
+        # ).values('runner_stat__runner_team', 'age_group').order_by('runner_stat__runner_team', '-adjusted_points')[:5].annotate(
+        #     total_points=Sum('adjusted_points')
+        # ).order_by('runner_stat__runner_team', 'age_group').annotate(
+        #     total_points=Sum('total_points'))
+        #
+        # # Now, let's aggregate the scores for each team and age group
+        # team_aggregated_scores = team_scores.values('runner_stat__runner_team', 'age_group').annotate(
+        #     total_points=Sum('adjusted_points')
+        # ).order_by('runner_stat__runner_team', 'age_group')
+        #
+        # # Finally, we can calculate the total scores for each team across all age groups
+        # total_scores = team_aggregated_scores.values('runner_stat__runner_team').annotate(
+        #     total_points=Sum('total_points')
+        # )
+        # print(team_scores)
+        #
+        #
+        #
+        # queryset = Statistic.objects.values('runner_stat__runner_team', 'runner_stat__runner_age').annotate(
+        #     under_18_points=Coalesce(Sum('total_balls', filter=Q(runner_stat__runner_age__lt=18)), Value(0)),
+        #     age_18_to_35_points=Coalesce(
+        #         Sum('total_balls', filter=Q(runner_stat__runner_age__gte=18, runner_stat__runner_age__lt=36)),
+        #         Value(0)),
+        #     age_36_to_49_points=Coalesce(
+        #         Sum('total_balls', filter=Q(runner_stat__runner_age__gte=36, runner_stat__runner_age__lt=50)),
+        #         Value(0)),
+        #     above_49_points=Coalesce(Sum('total_balls', filter=Q(runner_stat__runner_age__gte=50)), Value(0)),
+        #     total_points=Sum('total_balls')
+        # ).order_by('runner_stat__runner_team')
 
-    # team_scores = Statistic.objects.annotate(
-    #     age_group=F('runner_stat__runner_age')// 18 ,
-    #
-    #     adjusted_points=Coalesce(F('total_balls'), Value(0)) - 1,
-    # ).values('runner_stat__runner_team', 'age_group').order_by('runner_stat__runner_team', '-adjusted_points')[:5].annotate(
-    #     total_points=Sum('adjusted_points')
-    # ).order_by('runner_stat__runner_team', 'age_group').annotate(
-    #     total_points=Sum('total_points'))
-    #
-    # # Now, let's aggregate the scores for each team and age group
-    # team_aggregated_scores = team_scores.values('runner_stat__runner_team', 'age_group').annotate(
-    #     total_points=Sum('adjusted_points')
-    # ).order_by('runner_stat__runner_team', 'age_group')
-    #
-    # # Finally, we can calculate the total scores for each team across all age groups
-    # total_scores = team_aggregated_scores.values('runner_stat__runner_team').annotate(
-    #     total_points=Sum('total_points')
-    # )
-    # print(team_scores)
-    #
-    #
-    #
-    # queryset = Statistic.objects.values('runner_stat__runner_team', 'runner_stat__runner_age').annotate(
-    #     under_18_points=Coalesce(Sum('total_balls', filter=Q(runner_stat__runner_age__lt=18)), Value(0)),
-    #     age_18_to_35_points=Coalesce(
-    #         Sum('total_balls', filter=Q(runner_stat__runner_age__gte=18, runner_stat__runner_age__lt=36)),
-    #         Value(0)),
-    #     age_36_to_49_points=Coalesce(
-    #         Sum('total_balls', filter=Q(runner_stat__runner_age__gte=36, runner_stat__runner_age__lt=50)),
-    #         Value(0)),
-    #     above_49_points=Coalesce(Sum('total_balls', filter=Q(runner_stat__runner_age__gte=50)), Value(0)),
-    #     total_points=Sum('total_balls')
-    # ).order_by('runner_stat__runner_team')
+        # TODO запрос работает но будет жрать много ресурсов
 
-    # TODO запрос работает но будет жрать много ресурсов
-
-    #
-    #
-    # for team in teams:
-    #     total_run_sum = 0
-    #     my_list.append(team)
-    #     #
-    #     # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
-    #     #                     order_by('-total_balls')[:4].annotate(total_ball=Sum('total_balls')).aggregate(
-    #     #     Sum('total_ball'))
-    #
-    #     # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
-    #     #                     order_by('-total_balls')[:4]
-    #     # print(best18runners)
-    #     # best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
-    #     #     runner_stat__runner_age__lte=34).order_by('-total_balls')[:4].annotate(
-    #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
-    #     best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #                         filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
-    #         runner_stat__runner_age__lte=34).order_by('-total_balls')[:5]
-    #
-    #     print(best34runners)
-    #     # best49runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=35).filter(
-    #     #     runner_stat__runner_age__lte=49).order_by('-total_balls')[:4].annotate(
-    #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
-    #     # print(best49runners)
-    #     # best50runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
-    #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=50).order_by(
-    #     #     '-total_balls')[:4].annotate(
-    #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
-    #     #
-    #     # print(best50runners)
-    #
-    #     for i in range(1, 4):
-    #         best1cat = Statistic.objects.filter(runner_stat__runner_team=team).filter(
-    #             runner_stat__runner_category=i). \
-    #                        filter(total_distance__gt=0).values(
-    #             'runner_stat__username', 'runner_stat__runner_category').annotate(total_ball=Sum('total_balls')) \
-    #                        .order_by('-total_ball')[:4].aggregate(Sum('total_ball'))
-    #
-    #         my_list.append(i)
-    #
-    #         if best1cat['total_ball__sum'] == None:
-    #             my_list.append(0)
-    #         else:
-    #             my_list.append(best1cat['total_ball__sum'])
-    #             total_run_sum += best1cat['total_ball__sum']
-    #
-    #     my_list.append('total_ball_sum')
-    #     my_list.append(total_run_sum)
-    # #
-    # new_list = []
-    #
-    # for i in range(0, len(my_list), 9):
-    #     new_list.append(my_list[i:i + 9])
-    #
-    # list_of_lists = sorted(new_list, key=lambda x: x[8], reverse=True)
-    #
-    # for item in list_of_lists:
-    #     my_dict[item[0]] = {
-    #         'cat1': item[2],
-    #         'cat2': item[4],
-    #         'cat3': item[6],
-    #         'total_run_sum': item[8]
-    #     }
-    #
-    # context['qs'] = my_dict
-    #
-    # return context
-
-
+        #
+        #
+        # for team in teams:
+        #     total_run_sum = 0
+        #     my_list.append(team)
+        #     #
+        #     # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
+        #     #                     order_by('-total_balls')[:4].annotate(total_ball=Sum('total_balls')).aggregate(
+        #     #     Sum('total_ball'))
+        #
+        #     # best18runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__lte=17). \
+        #     #                     order_by('-total_balls')[:4]
+        #     # print(best18runners)
+        #     # best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
+        #     #     runner_stat__runner_age__lte=34).order_by('-total_balls')[:4].annotate(
+        #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+        #     best34runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #                         filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=18).filter(
+        #         runner_stat__runner_age__lte=34).order_by('-total_balls')[:5]
+        #
+        #     print(best34runners)
+        #     # best49runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=35).filter(
+        #     #     runner_stat__runner_age__lte=49).order_by('-total_balls')[:4].annotate(
+        #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+        #     # print(best49runners)
+        #     # best50runners = Statistic.objects.filter(runner_stat__runner_team=team).filter(total_distance__gt=0). \
+        #     #                     filter(runner_stat__not_running=False).filter(runner_stat__runner_age__gte=50).order_by(
+        #     #     '-total_balls')[:4].annotate(
+        #     #     total_ball=Sum('total_balls')).aggregate(Sum('total_ball'))
+        #     #
+        #     # print(best50runners)
+        #
+        #     for i in range(1, 4):
+        #         best1cat = Statistic.objects.filter(runner_stat__runner_team=team).filter(
+        #             runner_stat__runner_category=i). \
+        #                        filter(total_distance__gt=0).values(
+        #             'runner_stat__username', 'runner_stat__runner_category').annotate(total_ball=Sum('total_balls')) \
+        #                        .order_by('-total_ball')[:4].aggregate(Sum('total_ball'))
+        #
+        #         my_list.append(i)
+        #
+        #         if best1cat['total_ball__sum'] == None:
+        #             my_list.append(0)
+        #         else:
+        #             my_list.append(best1cat['total_ball__sum'])
+        #             total_run_sum += best1cat['total_ball__sum']
+        #
+        #     my_list.append('total_ball_sum')
+        #     my_list.append(total_run_sum)
+        # #
+        # new_list = []
+        #
+        # for i in range(0, len(my_list), 9):
+        #     new_list.append(my_list[i:i + 9])
+        #
+        # list_of_lists = sorted(new_list, key=lambda x: x[8], reverse=True)
+        #
+        # for item in list_of_lists:
+        #     my_dict[item[0]] = {
+        #         'cat1': item[2],
+        #         'cat2': item[4],
+        #         'cat3': item[6],
+        #         'total_run_sum': item[8]
+        #     }
+        #
+        # context['qs'] = my_dict
+        #
+        # return context
 from django.utils import translation
 from django.utils.translation import gettext as _
-
 
 class StatisticView(DataMixin, ListView):
     model = User
@@ -720,7 +644,6 @@ class StatisticView(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Статистика")
         return dict(list(context.items()) + list(c_def.items()))
-
     def get_queryset(self):
         return RunnerDay.objects.all()
 
@@ -732,21 +655,19 @@ class StatisticView(DataMixin, ListView):
         context['runners_mens'] = get_user_model().objects.filter(runner_gender='м', not_running=False).count()
         context['runners_womens'] = get_user_model().objects.filter(runner_gender='ж', not_running=False).count()
 
-        # context['runner_age_1'] = get_user_model().objects.filter(runner_age__lte=17, not_running=False).count()
-        # context['runner_age_2'] = get_user_model().objects.filter(runner_age__gte=18, runner_age__lte=35, not_running=False).count()
-        # context['runner_age_3'] = get_user_model().objects.filter(runner_age__gte=36,  runner_age__lte=49, not_running=False).count()
-        # context['runner_age_4'] = get_user_model().objects.filter(runner_age__gte=50, not_running=False).count()
+        context['runner_age_1'] = get_user_model().objects.filter(runner_age__lte=17, not_running=False).count()
+        context['runner_age_2'] = get_user_model().objects.filter(runner_age__gte=18, runner_age__lte=35,
+                                                                  not_running=False).count()
+        context['runner_age_3'] = get_user_model().objects.filter(runner_age__gte=36, runner_age__lte=49,
+                                                                  not_running=False).count()
+        context['runner_age_4'] = get_user_model().objects.filter(runner_age__gte=50, not_running=False).count()
 
         context['run2022'] = get_user_model().objects.filter(zabeg22=True, not_running=False).count()
         context['run2023'] = get_user_model().objects.filter(zabeg23=True, not_running=False).count()
         context['total_distance'] = Statistic.objects.all().aggregate(Sum('total_distance'))['total_distance__sum']
         context['total_time'] = Statistic.objects.all().aggregate(Sum('total_time'))['total_time__sum']
         context['total_runs'] = Statistic.objects.all().aggregate(Sum('total_runs'))['total_runs__sum']
-        # context['age_before_18'] = get_user_model().objects.filter(runner_age__lte=17, not_running=False).count()
-        # context['age_21_30'] = get_user_model().objects.filter(runner_age__gte=18, runner_age__lte=35, not_running=False).count()
-        # context['age_31_40'] = get_user_model().objects.filter(runner_age__gte=18, runner_age__lte=35, not_running=False).count()
-        # context['age_41_50'] = get_user_model().objects.filter(runner_age__gte=36,  runner_age__lte=49, not_running=False).count()
-        # context['age_over_50'] = get_user_model().objects.filter(runner_age__gte=50, not_running=False).count(
+
         # context['run30'] = RunnerDay.objects.annotate(day_count=Count(
         #     (Q(day_average_temp__lte="00:08:00") & Q(
         #         day_distance__gt=0)) |
@@ -787,19 +708,19 @@ class StatisticView(DataMixin, ListView):
                     RunnerDay.objects.filter(day_select=x).aggregate(Sum('day_distance'))['day_distance__sum'])
         context['count_of_run_every_day'] = count_of_run_every_day
         context['distance_every_day'] = distance_every_day
-
-        # context['count_of_ages'] = Statistic.objects.aggregate(
-        #     under_20=Count('id', filter=Q(runner_stat__runner_age__lte=20)),
-        #     age_21_30=Count('id', filter=Q(runner_stat__runner_age__gt=21, runner_stat__runner_age__lte=30)),
-        #     age_31_40=Count('id', filter=Q(runner_stat__runner_age__gt=30, runner_stat__runner_age__lte=40)),
-        #     age_41_50=Count('id', filter=Q(runner_stat__runner_age__gt=40, runner_stat__runner_age__lte=50)),
-        #     age_over_50=Count('id', filter=Q(runner_stat__runner_age__gt=50)))
+        # under_20 = get_user_model().objects.filter(runner_age__lte=20, not_running=False).count()
+        # age21_30 = get_user_model().objects.filter(runner_age__gt=21, runner_age__lte=30, not_running=False).count()
+        # age_31_40 = get_user_model().objects.filter(runner_age__gt=30, runner_age__lte=40,not_running=False).count()
+        # age_41_50 = get_user_model().objects.filter(runner_age__gt=41, runner_age__lte=50, not_running=False).count()
+        # age_over_50 = get_user_model().objects.filter(runner_age__gt=50,  not_running=False).count()
+        # context['count_of_ages']=[under_20,age21_30,age_31_40,age_41_50,age_over_50]
 
         context['count_of_ages'] = get_user_model().objects.aggregate(
-            under_18=Count('id', filter=Q(runner_age__lte=17, not_running=False)),
-            age_18_35=Count('id', filter=Q(runner_age__gt=17, runner_age__lte=35, not_running=False)),
-            age_36_49=Count('id', filter=Q(runner_age__gt=35, runner_age__lte=49, not_running=False)),
-            age_over_50=Count('id', filter=Q(runner_age__gt=49, not_running=False)))
+            under_20=Count('id', filter=Q(runner_age__lte=20, not_running=False)),
+            age_21_30=Count('id', filter=Q(runner_age__gt=21, runner_age__lte=30, not_running=False)),
+            age_31_40=Count('id', filter=Q(runner_age__gt=30, runner_age__lte=40,not_running=False)),
+            age_41_50=Count('id', filter=Q(runner_age__gt=40, runner_age__lte=50, not_running=False)),
+            age_over_50=Count('id', filter=Q(runner_age__gt=50,  not_running=False)))
 
         # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
         #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
@@ -940,10 +861,5 @@ def exportcsv(request):
 
     return response
 
-
 def faq(request):
     return render(request, 'faq.html')
-
-
-def page_not_found_view(request, exception):
-    return render(request, '404.html', status=404)
