@@ -521,7 +521,48 @@
             "00:06:42": 1.12,
             "00:06:43": 1.12,
             "00:06:44": 1.10,
-            "00:06:45": 1.1091,
+            "00:06:45": 1.10,
+            "00:06:46": 1.10,
+            "00:06:47": 1.08,
+            "00:06:48": 1.08,
+            "00:06:49": 1.08,
+            "00:06:50": 1.06,
+            "00:06:51": 1.06,
+            "00:06:52": 1.06,
+            "00:06:53": 1.04,
+            "00:06:54": 1.04,
+            "00:06:55": 1.04,
+            "00:06:56": 1.02,
+            "00:06:57": 1.02,
+            "00:06:58": 1.02,
+            "00:06:59": 1.0,
+            "00:07:00": 0.99,
+            "00:07:01": 0.99,
+            "00:07:02": 0.99,
+            "00:07:03": 0.99,
+            "00:07:04": 0.99,
+            "00:07:05": 0.98,
+            "00:07:06": 0.98,
+            "00:07:07": 0.98,
+            "00:07:08": 0.97,
+            "00:07:09": 0.97,
+            "00:07:10": 0.97,
+            "00:07:11": 0.96,
+            "00:07:12": 0.96,
+            "00:07:13": 0.96,
+            "00:07:14": 0.95,
+            "00:07:15": 0.95,
+            "00:07:16": 0.95,
+            "00:07:17": 0.94,
+            "00:07:18": 0.94,
+            "00:07:19": 0.94,
+            "00:07:20": 0.93,
+            "00:07:21": 0.93,
+            "00:07:22": 0.93,
+            "00:07:23": 0.92,
+            "00:07:24": 0.92,
+            "00:07:25": 0.92,
+            "00:07:26": 0.91,
             "00:07:27": 0.91,
             "00:07:28": 0.91,
             "00:07:29": 0.90,
@@ -700,58 +741,109 @@
                             return;
                         }
 
-                            for (const key in temp_koef) {
-                                if (temp === key) {
-                                    avg_temp_koef = temp_koef[key];
-                                    break;
-
-                                } else {
-                                    avg_temp_koef = 1;
-                                }
-                            }
-
+                                let ost_dist;
+                                let ost_koef;
+                                let num;
                         for (let d of distance_koef) {
                             if (distance <= d[0]) {
                                 let need_list_index;
+
                                 if (distance < 5) {
-                                    need_list_index = 0;
-                                } else if (distance >= 5 && distance < 10) {
-                                    need_list_index = 1;
-                                } else {
-                                    need_list_index = distance_koef.indexOf(d) - 1;
+
+                                    ost_dist = distance
+                                    ost_koef = (distance_koef[0][1]) * ost_dist;
+                                    num=distance_koef[0][2]
                                 }
+                                else if (distance >= 5 && distance < 10) {
+                                      ost_dist = distance - (distance_koef[0][0] + 0.1);
+                                    ost_koef = (distance_koef[1][1]) * ost_dist;
+                                            num=distance_koef[0][2]
+                                }
+                                else if (distance >= 10 && distance < 15) {
 
-                                let ost_dist;
-                                let ost_koef;
 
-
-                                if (distance >= 5) {
-                                    ost_dist = distance - distance_koef[need_list_index][0];
-                                    ost_koef = (distance_koef[need_list_index][1] + 0.1) * ost_dist;
-                                    if (category === '1' || category === '2') {
-                                        tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef)) * 10;
-
-                                        ball_for_champ = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10;
-                                    } else {
-                                        tot_koef = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10;
-
-                                        ball_for_champ = ((5 * distance_koef[need_list_index][2] + ost_koef) * avg_temp_koef) * 10;
-                                    }
-
-                                } else {
-                                    if (category === '1' || category === '2') {
-                                        ost_koef = distance_koef[need_list_index][1] * distance;
-
-                                        tot_koef = ost_koef * 10;
-                                        ball_for_champ =ost_koef * 10;
-                                    } else {
-                                        ost_koef = distance_koef[need_list_index][1] * distance;
-
-                                        tot_koef = (ost_koef * avg_temp_koef) * 10;
-                                        ball_for_champ = ost_koef * avg_temp_koef * 10;
-                                    }
+                                    ost_dist = distance - (distance_koef[1][0] + 0.1);
+                                    ost_koef = (distance_koef[2][1]) * ost_dist;
+                                     num=distance_koef[1][2]
 
                                 }
+                                else if (distance >= 15 && distance < 20) {
+                                   ost_dist = distance - (distance_koef[2][0] + 0.1);
+                                    ost_koef = (distance_koef[3][1]) * ost_dist;
+                                    num=distance_koef[2][2]
+                                }
+                                else if (distance >= 20 && distance < 25) {
+                                     ost_dist = distance - (distance_koef[3][0] + 0.1);
+                                    ost_koef = (distance_koef[4][1]) * ost_dist;
+                                    num=distance_koef[3][2]
+                                }
+                                else if (distance >= 25 && distance < 30) {
+                                     ost_dist = distance - (distance_koef[4][0] + 0.1);
+                                    ost_koef = (distance_koef[5][1]) * ost_dist;
+                                    num=distance_koef[4][2]
+                                }
+                                else if (distance >= 30 && distance < 35) {
+                                    ost_dist = distance - (distance_koef[5][0] + 0.1);
+                                    ost_koef = (distance_koef[6][1]) * ost_dist;
+                                    num=distance_koef[5][2]
+                                }
+                                else if (distance >= 35 && distance < 40) {
+                                     ost_dist = distance - (distance_koef[6][0] + 0.1);
+                                    ost_koef = (distance_koef[7][1]) * ost_dist;
+                                    num=distance_koef[6][2]
+                                }
+                                else if (distance >= 40 && distance < 45) {
+                                      ost_dist = distance - (distance_koef[7][0] + 0.1);
+                                    ost_koef = (distance_koef[8][1]) * ost_dist;
+                                    num=distance_koef[7][2]
+                                }
+                                else if (distance >= 45 && distance < 50) {
+                                    ost_dist = distance - (distance_koef[8][0] + 0.1);
+                                    ost_koef = (distance_koef[9][1]) * ost_dist;
+                                    num=distance_koef[8][2]
+                                }
+                                else if (distance >= 50) {
+                                      ost_dist = distance - (distance_koef[9][0] + 0.1);
+                                    ost_koef = (distance_koef[10][1]) * ost_dist;
+                                    num=distance_koef[9][2]
+                                }
+
+
+
+
+
+                         if (distance>=5){
+                                    for (const key in temp_koef) {
+                                        if (temp === key) {
+                                            avg_temp_koef = temp_koef[key];
+                                            break;
+
+                                        } else {
+                                            avg_temp_koef = 1;
+                                        }
+                                    }
+                                tot_koef = ((5 * num + ost_koef)) * 10;
+                                    ball_for_champ = ((5 * num + ost_koef) * avg_temp_koef) * 10;
+
+
+                                } else {
+                                    for (const key in temp_koef) {
+                                        if (temp === key) {
+                                            avg_temp_koef = temp_koef[key];
+                                            break;
+
+                                        } else {
+                                            avg_temp_koef = 1;
+                                        }
+                                    }
+                                    {#ost_koef = distance_koef[need_list_index][1] * distance;#}
+
+                                    tot_koef = ost_koef * 10;
+
+                                    ball_for_champ = ost_koef * avg_temp_koef * 10;
+                                }
+
+
                                 break;
                             }
                         }
@@ -813,48 +905,7 @@
             }
         );
 
-,
-            "00:06:46": 1.10,
-            "00:06:47": 1.08,
-            "00:06:48": 1.08,
-            "00:06:49": 1.08,
-            "00:06:50": 1.06,
-            "00:06:51": 1.06,
-            "00:06:52": 1.06,
-            "00:06:53": 1.04,
-            "00:06:54": 1.04,
-            "00:06:55": 1.04,
-            "00:06:56": 1.02,
-            "00:06:57": 1.02,
-            "00:06:58": 1.02,
-            "00:06:59": 1.0,
-            "00:07:00": 0.99,
-            "00:07:01": 0.99,
-            "00:07:02": 0.99,
-            "00:07:03": 0.99,
-            "00:07:04": 0.99,
-            "00:07:05": 0.98,
-            "00:07:06": 0.98,
-            "00:07:07": 0.98,
-            "00:07:08": 0.97,
-            "00:07:09": 0.97,
-            "00:07:10": 0.97,
-            "00:07:11": 0.96,
-            "00:07:12": 0.96,
-            "00:07:13": 0.96,
-            "00:07:14": 0.95,
-            "00:07:15": 0.95,
-            "00:07:16": 0.95,
-            "00:07:17": 0.94,
-            "00:07:18": 0.94,
-            "00:07:19": 0.94,
-            "00:07:20": 0.93,
-            "00:07:21": 0.93,
-            "00:07:22": 0.93,
-            "00:07:23": 0.92,
-            "00:07:24": 0.92,
-            "00:07:25": 0.92,
-            "00:07:26": 0.
+
     </script>
 
 
@@ -868,7 +919,7 @@
             $.mask.definitions['2'] = "[0-5]";
 
             $("#day_time").mask("55:29:29");
-            {#$("#temp").mask("00:99:99");#}
+
         });
 
 

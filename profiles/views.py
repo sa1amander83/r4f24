@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db import IntegrityError
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render, get_object_or_404
 
 from django.urls import reverse_lazy
@@ -81,13 +82,13 @@ class ProfileUser(ListView, DataMixin):
 
         runners_list = list(
             Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username', flat=True))
-
+        #
         runners_list_category = list(
             Statistic.objects.filter(runner_stat__runner_category=get_category).order_by('-total_balls').values_list(
                 'runner_stat__username', flat=True))
 
         age_of_user = getuser.runner_age
-        user_category= getuser.runner_category or None
+
         # Create a list of runners based on age categories
         runners_list_age_category = []
 
@@ -99,7 +100,7 @@ class ProfileUser(ListView, DataMixin):
 
             # Count participants in this age group
             context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__lt=18
-                                                                       , runner_stat__runner_category=user_category).count()
+                                                                       , runner_stat__runner_category=get_category).count()
 
         elif 18 <= age_of_user <= 35:
             runners_list_age_category = list(
@@ -109,7 +110,7 @@ class ProfileUser(ListView, DataMixin):
             # Count participants in this age group
             context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=18,
                                                                         runner_stat__runner_age__lte=35,
-                                                                        runner_stat__runner_category=user_category).count()
+                                                                        runner_stat__runner_category=get_category).count()
 
         elif 36 <= age_of_user <= 49:
             runners_list_age_category = list(
@@ -119,7 +120,7 @@ class ProfileUser(ListView, DataMixin):
             # Count participants in this age group
             context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=36,
                                                                         runner_stat__runner_age__lte=49,
-                                                                        runner_stat__runner_category=user_category).count()
+                                                                        runner_stat__runner_category=get_category).count()
 
         else:  # age_of_user >= 50
             runners_list_age_category = list(
@@ -128,7 +129,7 @@ class ProfileUser(ListView, DataMixin):
 
             # Count participants in this age group
             context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=50,
-                                                                         runner_stat__runner_category=user_category).count()
+                                                                         runner_stat__runner_category=get_category).count()
 
         try:
             # Calculate places in different categories
@@ -192,6 +193,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
         context['runner_category'] = getuser.runner_category
+
         return context
 
     def form_valid(self, form):
@@ -209,6 +211,8 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         if first_run < 2:
             try:
                 userid = get_user_model().objects.get(username=self.kwargs['username'])
+                get_team_id = userid.runner_team_id
+
                 number_of_run = first_run + 1  # Соответствующий номер пробежки (1 или 2)
 
                 # Создание самой пробежки
@@ -253,8 +257,18 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
 
                 # Запуск задачи
                 calc_start.delay(self.request.user.pk, self.kwargs['username'])
+                get_best_five_summ.delay(get_team_id)
+                calc_comands.delay(self.kwargs['username'])
 
                 messages.success(self.request, 'Пробежка успешно добавлена!')
+                return redirect('profile:profile', username=self.kwargs['username'])
+
+
+            except IntegrityError as e:
+                messages.error(self.request, 'Ошибка базы данных: ' + str(e))
+                return redirect('profile:profile', username=self.kwargs['username'])
+            except HttpResponseBadRequest as e:  # For 413 errors (Payload Too Large)
+                messages.error(self.request, 'Ошибка: Вы пытаетесь загрузить слишком большие изображения.')
                 return redirect('profile:profile', username=self.kwargs['username'])
             except Exception as e:
                 messages.error(self.request, f'Произошла ошибка: {str(e)}')
@@ -290,7 +304,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
         self.obj = self.get_object()
         new_item = form.save(commit=False)
         userid = get_user_model().objects.get(id=self.request.user.id)
-
+        get_team_id = userid.runner_team_id
         new_item.runner_id = userid.id
         dayselected = self.obj.day_select
         runs = self.obj.number_of_run
@@ -324,8 +338,11 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
         new_item.save()
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-
+        get_best_five_summ.delay(get_team_id)
+        calc_comands.delay(self.kwargs['username'])
         messages.success(self.request, 'Запись успешно обновлена!')
+
+
         return redirect('profile:profile', username=self.request.user.username)
 
 
@@ -343,6 +360,8 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
         # Получаем day_select и number_of_run для удаления связанных фотографий
         get_runday = self.object.day_select
         get_number_run = self.object.number_of_run
+        userid = get_user_model().objects.get(id=self.request.user.id)
+        get_team_id = userid.runner_team_id
 
         # Находим и удаляем все фотографии, связанные с этой пробежкой
         old_images = Photo.objects.filter(runner_day=self.object)
@@ -359,8 +378,10 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
         self.object.delete()
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
-
+        get_best_five_summ.delay(get_team_id)
+        calc_comands.delay(self.kwargs['username'])
         messages.success(request, 'Запись успешно удалена!')
+
         return redirect(self.get_success_url())
 
 def zaglushka(request,username):

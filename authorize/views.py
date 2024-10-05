@@ -106,13 +106,14 @@ def show_reset(request):
     if request.method == "POST":
         try:
             username_form = request.POST.get("username")
+            team = request.POST.get("team")
             password = request.POST.get("password1")
             password2 = request.POST.get("password2")
             key = request.POST.get("keyword")
 
             getTeam = Teams.objects.get(team=username_form[:3])
 
-            keywordOfTeam = getTeam.keyword
+            keywordOfTeam = getTeam.keyword.lower()
 
             try:
                 username = get_user_model().objects.get(username=username_form)
@@ -121,7 +122,7 @@ def show_reset(request):
                                'Участник с таким номером не найден')
                 render(request, 'pass_reset.html', {'form': form})
 
-            if key != keywordOfTeam:
+            if key != keywordOfTeam.lower():
                 messages.error(request,
                                'Неверно указано кодовое слово')
                 render(request, 'pass_reset.html', {'form': form})

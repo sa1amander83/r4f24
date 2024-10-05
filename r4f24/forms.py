@@ -210,10 +210,15 @@ class FamilyForm(forms.ModelForm):
 #         widgets = {'choice': forms.CheckboxInput()}
 class ResetForm(Form):
     username = forms.CharField(label='Логин', widget=forms.TextInput(
-        attrs={'placeholder': "Введите имя",
+        attrs={'placeholder': "Введите номер участника",
                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                'autofocus': 'on'}))
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+
+    team = forms.CharField(label='Команда',
+                             widget=forms.TextInput(attrs={'placeholder': "Ваша команда",
+                                                               'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
+                                                               'autocomplete': 'current-password'}))
 
     keyword = forms.CharField(label='Кодовое слово',
                               widget=forms.PasswordInput(attrs={'placeholder': "Ведите кодовое слово",
@@ -231,4 +236,4 @@ class ResetForm(Form):
 
     class Meta:
         model = User
-        fields = ('username', 'keyword', 'password1', 'password2')
+        fields = ('username', 'team', 'keyword', 'password1', 'password2')

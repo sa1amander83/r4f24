@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 settings.py
+/r4f24/settings.py
 # C extensions
 *.so
 cache/

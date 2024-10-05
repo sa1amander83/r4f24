@@ -77,7 +77,7 @@ class RunnerDay(models.Model):
     ]
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
-    day_select = models.IntegerField(verbose_name='день пробега', choices=get_days(), default=date.today().day,
+    day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
                                      db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1), MaxValueValidator(300)], db_index=True)
