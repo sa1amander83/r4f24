@@ -169,14 +169,14 @@ class RunnerAdmin(admin.ModelAdmin):
 
 
 class RunnerDayAdmin(admin.ModelAdmin):
-    search_fields = ('runner__user__username', 'day_select', 'day_distance', 'day_time', 'day_average_temp',
+    search_fields = ('runner__username', 'day_select', 'day_distance', 'day_time', 'day_average_temp',
                      )
-    list_editable = ('day_select', 'day_distance', 'day_time', 'day_average_temp',
-                     )
-    list_display = ('runner', 'day_select', 'day_distance', 'day_time', 'day_average_temp',                    )
+    list_editable = ('day_select', 'day_distance', 'day_time', 'day_average_temp','ball', 'ball_for_champ', )
+
+    list_display = ('runner', 'day_select', 'day_distance', 'day_time', 'day_average_temp',  'ball', 'ball_for_champ', )
     list_display_links = ('runner',)
 
-    list_filter = ('day_select',)
+    list_filter = ('day_select', 'runner__runner_category')
     ordering = ('day_select',)
     list_per_page = 100
     list_max_show_all = 100

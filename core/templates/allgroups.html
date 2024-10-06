@@ -11,9 +11,25 @@
     <div class="flex flex-col bg-gray-200 mb-3  rounded-2xl w-full p-3 my-3 md:p-6 md:my-0">
     <div class="container-fluid">
         {% if flag %}
-            <h1 class="text-left text-lg font-semibold truncate">Статистика групп</h1>
+
+              <div class="flex justify-between items-center ">
+                    <div>
+
+                        <span class="text-center text-xl font-semibold truncate">Статистика групп</span>
+                    </div>
+                    <div>
+                        <span class=" text-end text-xl font-semibold left-0">  Считается без учета коэффициента за средний темп </span>
+                    </div>
+                </div>
+
         {% else %}
-            <h1 class="text-left text-lg font-semibold truncate">Статистика команд</h1>
+             <div class="flex justify-between items-center ">
+                    <div>
+
+                        <span class="text-center text-xl font-semibold truncate">Статистика команд</span>
+                    </div>
+
+                </div>
         {% endif %}
         <div class=" w-full mt-5 p-1.5 bg-white shadow  rounded-xl">
 
