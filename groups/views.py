@@ -68,11 +68,12 @@ class MyGroup(ListView, DataMixin):
                 group_data = {}
                 total_results = user_stats.aggregate(
                     total_balls=Sum('total_balls'),
+                    total_balls_for_champ=Sum('total_balls_for_champ'),
                     total_distance=Sum('total_distance'),
                     total_time=Sum('total_time'),
                     total_average_temp=Avg('total_average_temp'),
                     total_days=Sum('total_days'),
-                    total_runs=Sum('total_runs')
+                    total_runs=Sum('total_runs'),
                 )
 
                 group_data[group] = {
@@ -103,6 +104,7 @@ class MyGroup(ListView, DataMixin):
                             'total_days': stats_obj.total_days,
                             'total_runs': stats_obj.total_runs,
                             'total_balls': stats_obj.total_balls,
+                            'total_balls_for_champ': stats_obj.total_balls_for_champ,
                             'is_qualificated': stats_obj.is_qualificated
                         })
                     except:

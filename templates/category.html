@@ -194,7 +194,7 @@
         <div
           class="flex flex-col gap-2 items-start md:justify-between md:flex-row md:items-center"
         >
-      
+
           <div>
                 {% if cat_selected == 1 %}
                     <h2 class="text-left text-lg font-semibold truncate">
@@ -264,28 +264,28 @@
             >
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female' 1 %}{% else %}{% url 'runner_category_age' cat_selected 1 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female' 1 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 1 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >до 17 лет</a
                 >
               </li>
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female'  age=2 %}{% else %}{% url 'runner_category_age' cat_selected 2 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female'  age=2 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 2 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >18-35 лет</a
                 >
               </li>
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female'  age=3 %}{% else %}{% url 'runner_category_age' cat_selected 3 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female'  age=3 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 3 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >36-49 лет</a
                 >
               </li>
               <li>
                 <a
-                  href=" {% if f %}{% url 'runner_category_age_female'  age=4 %}{% else %}{% url 'runner_category_age' cat_selected 4 %}{% endif %}"
+                  href=" {% if f %}{% url 'runner_category_age_female'  age=4 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 4 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >50+</a
                 >
@@ -374,9 +374,9 @@
                 <a   href="/profile/{{ s.runner_stat__username }}">
                 <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
                     {{ s.runner_stat__username }}
-                
+
                 {% if s.runner_stat__runner_gender == 'м' %}
-                                            
+
                      <svg class="w-5 h-5 me-2 " fill="#0080ff" viewBox="-5.12 -5.12 266.24 266.24" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#0080ff" stroke-width="5.12">
                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -396,7 +396,7 @@
                     {% endif %}
                 </span>
                 <div class="flex  items-center">
-                    
+
 
 
                                             {% if s.runner_stat__runner_category == 1 %}
@@ -425,14 +425,14 @@
                 </div>
                 </a>
             </td>
-            <td>{{ s.total_balls }}</td>
+            <td>{{ s.total_balls }} | {{s.total_balls_for_champ}}</td>
             <td>{{ s.total_distance|floatformat:3 }}</td>
             <td>{{ s.total_time|time:"H:i:s" }}</td>
             <td>{{ s.total_average_temp|time:"i:s" }}</td>
             <td>{{ s.total_runs }}</td>
         </tr>
         {%endfor%}
-    
+
     </tbody>
 </table>
         </div>
@@ -442,7 +442,7 @@
     </div>
   </main>
 </div>
-{% endblock %} 
+{% endblock %}
 {% block extrascripts %}
 
 

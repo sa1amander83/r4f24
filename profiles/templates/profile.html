@@ -228,8 +228,8 @@
                                         <div class="mt-1 text-base text-slate-500"> Место в возрастной группе и
                                             категории
                                         </div>
-                                        <div class="mt-6 text-3xl font-semibold leading-8">{{ place_in_age_category }}<span
-                                                class=" text-gray-500"> / {{ category_age_count }}</span></div>
+                                        <div class="mt-6 text-3xl font-semibold leading-8">{{ place_in_age }}<span
+                                                class=" text-gray-500"> / {{ count_age }}</span></div>
                                         <div class="mt-1 text-base text-slate-500"> Место в возрастной группе</div>
                                     </div>
                                 </div>
@@ -414,27 +414,25 @@
                                 {% for p in runner_day %}
                                     <tr>
                                         <td>{{ p.day_select|convert_date }}</td>
-                                        <td>{{ p.ball }} {% if user.runner_category == 1 or user.runner_category == 2 %}
-                                            /{{ p.ball_for_champ }}{% endif %}</td>
+                                        <td>{{ p.ball }}
+                                            | {{ p.ball_for_champ }}</td>
                                         <td>{{ p.day_distance|floatformat:3 }}</td>
                                         <td>{{ p.day_time|time:'H:i:s' }}</td>
                                         <td>{{ p.day_average_temp|time:'i:s' }}</td>
                                         <td>{{ p.number_of_run }}</td>
                                         <td>
                                             <div class="flex  -space-x-5">
-                                                {% for image in images %}
-                                                       {% if  p.day_select == image.runner_day.day_select and p.number_of_run == image.runner_day.number_of_run %}
-                                                        <a href="{{ image.photo.url }}"
-                                                           data-lightbox="{{ image.runner_day.day_select }}"
-                                                           class="flex flex-shrink-0">
-                                                            <img class="w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                                                 alt="photo" src="{{ image.photo.url }}">
-                                                        </a>
-
-                                                    {% else %}
-
-                                                    {% endif %}
-
+                                                {% for run in runs %}
+                                                    <div class="flex  -space-x-5">
+                                                        {% for image in run.photo_set.all %}
+                                                            <a href="{{ image.photo.url }}"
+                                                               data-lightbox="{{ run.day_select }}"
+                                                               class="flex flex-shrink-0">
+                                                                <img class="w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)]"
+                                                                     alt="photo" src="{{ image.photo.url }}">
+                                                            </a>
+                                                        {% endfor %}
+                                                    </div>
                                                 {% endfor %}
                                             </div>
                                         </td>

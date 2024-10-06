@@ -10,7 +10,7 @@
       
       <div class="flex bg-gray-200  rounded-2xl flex-col w-full p-3 my-3 md:p-6 md:my-0">
         <h1 class="text-left text-lg font-semibold truncate">
-          Результаты {{ day }} сентября
+         Результаты   {{ day }} {% if day == 30 %} сентября {% else %}  октября {% endif %}
         </h1>
         <div class="mt-5 p-1.5  bg-white shadow flex-col items-center rounded-xl">
 

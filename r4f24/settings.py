@@ -240,15 +240,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 LOGGING = {
     'version': 1,
-    'handlers': {
-        'console': {'class': 'logging.StreamHandler'}
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
     },
-    # 'loggers': {
-    #     'django.db.backends': {
-    #         'handlers': ['console'],
-    #         'level': 'DEBUG'
-    #     }
-    # }
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, './r4f24/error.log'),  # Путь к файлу лога
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
 }
 #
 # CELERY_BROKER_URL = 'redis://redis:6379'

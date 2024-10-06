@@ -79,44 +79,26 @@
     </thead>
     <tbody>
 
-        <!--    {% for entry in best_runners %}
+          {% for team_data in qs %}
+              {% if team_data.total_balls_for_champ %}
              <tr>
                  <td >{{ forloop.counter }}</td>
-                 <td>{{ entry.team_number }}</td> Assuming you have a way to get the team's name
-                  <td>{{ entry.total_sum }}</td>
-                 <td>{{ entry.results.cat1|default:0 }}</td>
-                 <td>{{ entry.results.cat2|default:0 }}</td>
-                 <td>{{ entry.results.cat3|default:0 }}</td>
-                 <td>{{ entry.results.cat4|default:0 }}</td>
-                 Displaying the total balls
-             </tr>
-         {% endfor %}
-                 -->
+
+
+                       <td class="font-semibold text-gray-900 whitespace-nowrap"><a href="/comands/{{ team_data.team }}">{{ team_data.team }} </a></td>
+
+                        <td>{{ team_data.total_balls_for_champ|default:0 }}</td>
+                        <td>{{ team_data.age18|default:0 }}</td>
+                        <td>{{ team_data.age35|default:0 }}</td>
+                        <td>{{ team_data.age49|default:0 }}</td>
+                        <td>{{ team_data.ageover50|default:0 }}</td>
+                    </tr>
+
+              {% endif %}
+                {% endfor %}
 
 
 
-
-   {% for k in qs %}
-   <tr class="hover:bg-gray-50  cursor-pointer">
-       <td >{{ forloop.counter }}</td>
-       {% if k.1 != 0 %}
-       <td class="font-semibold text-gray-900 whitespace-nowrap"><a href="/comands/{{ k.0 }}">{{ k.0}} </a></td>
-       <td>{{ k.1 }}</td>
-       <td>{{ k.2 }}</td>
-       <td>{{ k.3 }}</td>
-       <td>{{ k.4 }}</td>
-       <td>{{ k.5 }}</td>
-       {% else %}
-       <td class="font-semibold text-gray-900 whitespace-nowrap"><a href="/comands/{{ k.1 }}">{{ k.1}} </a></td>
-       <td>нет пробега</td>
-       <td>- - - - - - -</td>
-       <td>- - - - - - -</td>
-       <td>- - - - - - -</td>
-       <td>- - - - - - -</td>
-       {% endif %}
-   </tr>
-   {%endfor%}
-    
     </tbody>
         </table>
       </div>

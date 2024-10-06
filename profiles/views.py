@@ -1,13 +1,13 @@
 import os
-
+from django.db import IntegrityError
+from django.http import HttpResponseBadRequest
 from asgiref.sync import sync_to_async
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import IntegrityError
-from django.http import HttpResponseBadRequest
+
 from django.shortcuts import redirect, render, get_object_or_404
 
 from django.urls import reverse_lazy
@@ -16,7 +16,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from core.models import User, Group, Teams
 from profiles.models import RunnerDay, Statistic, Photo
 from profiles.tasks import calc_start, get_best_five_summ, calc_comands
-
+from django.db.models import Q
 from profiles.utils import DataMixin
 from r4f24.forms import RunnerDayForm, AddFamilyForm, FamilyForm, ResetForm
 
@@ -29,6 +29,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView
 from django.contrib.auth import get_user_model
 from .models import RunnerDay, Statistic
+
+
 
 
 class ProfileUser(ListView, DataMixin):
@@ -69,7 +71,8 @@ class ProfileUser(ListView, DataMixin):
         context['images'] = photos
         context['data'] = Statistic.objects.filter(runner_stat__username=self.kwargs['username'])
         context['runner_stat'] = self.kwargs['username']
-
+        runs = RunnerDay.objects.filter(runner__username=self.kwargs['username'])
+        context['runs'] = runs
         if len(RunnerDay.objects.filter(runner__username=self.kwargs['username'])):
             context['haverun'] = 1
         else:
@@ -90,65 +93,69 @@ class ProfileUser(ListView, DataMixin):
         age_of_user = getuser.runner_age
 
         # Create a list of runners based on age categories
-        runners_list_age_category = []
+        try:
+            if age_of_user < 17:
+                runners_age_filter = Q(runner_stat__runner_age__lte=17)
+            elif 18 <= age_of_user <= 35:
+                runners_age_filter = Q(runner_stat__runner_age__gte=18, runner_stat__runner_age__lte=35)
+            elif 36 <= age_of_user <= 49:
+                runners_age_filter = Q(runner_stat__runner_age__gte=36, runner_stat__runner_age__lte=49)
+            else:
+                runners_age_filter = Q(runner_stat__runner_age__gte=50)
 
-        # Define age ranges and filter runners accordingly
-        if age_of_user < 17:
-            runners_list_age_category = list(
-                Statistic.objects.filter(runner_stat__runner_age__lt=17).order_by('-total_balls').values_list(
-                    'runner_stat__username', flat=True))
+            if get_category == 3:
+                runners_list_age_category = Statistic.objects.filter(runners_age_filter,
+                                                                     runner_stat__runner_category=get_category) \
+                    .order_by('-total_balls_for_champ') \
+                    .values_list('runner_stat__username', flat=True) \
+                    .distinct()
+                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category) \
+                    .order_by('-total_balls_for_champ') \
+                    .values_list('runner_stat__username', flat=True) \
+                    .distinct()
+            else:
+                runners_list_age_category = Statistic.objects.filter(runners_age_filter,
+                                                                     runner_stat__runner_category=get_category) \
+                    .order_by('-total_balls') \
+                    .values_list('runner_stat__username', flat=True) \
+                    .distinct()
+                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category) \
+                    .order_by('-total_balls') \
+                    .values_list('runner_stat__username', flat=True) \
+                    .distinct()
 
-            # Count participants in this age group
-            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__lt=18
-                                                                       , runner_stat__runner_category=get_category).count()
+            runners_list_age = Statistic.objects.filter(runners_age_filter) \
+                .order_by('-total_balls') \
+                .values_list('runner_stat__username', flat=True) \
+                .distinct()
 
-        elif 18 <= age_of_user <= 35:
-            runners_list_age_category = list(
-                Statistic.objects.filter(runner_stat__runner_age__gte=18, runner_stat__runner_age__lte=35).order_by(
-                    '-total_balls').values_list('runner_stat__username', flat=True))
+            runners_list = Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username',
+                                                                                        flat=True)
 
-            # Count participants in this age group
-            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=18,
-                                                                        runner_stat__runner_age__lte=35,
-                                                                        runner_stat__runner_category=get_category).count()
+            runners_list_age = list(runners_list_age)
+            runners_list_age_category = list(runners_list_age_category)
+            runners_list_category = list(runners_list_category)
+            runners_list = list(runners_list)
 
-        elif 36 <= age_of_user <= 49:
-            runners_list_age_category = list(
-                Statistic.objects.filter(runner_stat__runner_age__gte=36, runner_stat__runner_age__lte=49).order_by(
-                    '-total_balls').values_list('runner_stat__username', flat=True))
-
-            # Count participants in this age group
-            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=36,
-                                                                        runner_stat__runner_age__lte=49,
-                                                                        runner_stat__runner_category=get_category).count()
-
-        else:  # age_of_user >= 50
-            runners_list_age_category = list(
-                Statistic.objects.filter(runner_stat__runner_age__gte=50).order_by('-total_balls').values_list(
-                    'runner_stat__username', flat=True))
-
-            # Count participants in this age group
-            context['count_age_and_category'] = Statistic.objects.filter(runner_stat__runner_age__gte=50,
+            context['count_age'] = Statistic.objects.filter(runners_age_filter).count()
+            context['count_age_and_category'] = Statistic.objects.filter(runners_age_filter,
                                                                          runner_stat__runner_category=get_category).count()
 
-        try:
-            # Calculate places in different categories
+            context['total_runners'] = Statistic.objects.all().count()
+            context['total_runners_category'] = Statistic.objects.filter(
+                runner_stat__runner_category=get_category).count()
+
+            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1 if self.kwargs[
+                                                                                               'username'] in runners_list else None
+            context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1 if self.kwargs[
+                                                                                                           'username'] in runners_list_category else None
+            context['place_in_age'] = runners_list_age.index(self.kwargs['username']) + 1 if self.kwargs[
+                                                                                                 'username'] in runners_list_age else None
+            context['place_in_age_category'] = runners_list_age_category.index(self.kwargs['username']) + 1 if \
+            self.kwargs['username'] in runners_list_age_category else None
+
             context['category_age_count'] = len(runners_list_age_category)
-
-            # Place in total runners list
-            context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1
-
-            # Place in age category
-            if self.kwargs['username'] in runners_list_age_category:
-                context['place_in_age_category'] = runners_list_age_category.index(self.kwargs['username']) + 1
-            else:
-                context['place_in_age_category'] = None
-
-            # Place in category (general category)
-            if self.kwargs['username'] in runners_list_category:
-                context['place_in_category'] = runners_list_category.index(self.kwargs['username']) + 1
-            else:
-                context['place_in_category'] = None
+            #
 
         except ValueError:
             # Handle case where username not found in lists
@@ -258,12 +265,10 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                 # Запуск задачи
                 calc_start.delay(self.request.user.pk, self.kwargs['username'])
                 get_best_five_summ.delay(get_team_id)
-                calc_comands.delay(self.kwargs['username'])
+                calc_comands(self.kwargs['username'])
 
                 messages.success(self.request, 'Пробежка успешно добавлена!')
                 return redirect('profile:profile', username=self.kwargs['username'])
-
-
             except IntegrityError as e:
                 messages.error(self.request, 'Ошибка базы данных: ' + str(e))
                 return redirect('profile:profile', username=self.kwargs['username'])
@@ -283,11 +288,11 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         print(form.cleaned_data)
         return redirect('profile:profile', username=self.kwargs['username'])
 
+
 class EditRunnerDayData(LoginRequiredMixin, UpdateView):
     form_class = RunnerDayForm
     model = RunnerDay
     template_name = 'day.html'
-
     slug_url_kwarg = 'runner'
     login_url = reverse_lazy('index')
 
@@ -301,50 +306,52 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
         return reverse_lazy('profile:profile', kwargs={'runner': self.object})
 
     def form_valid(self, form):
-        self.obj = self.get_object()
-        new_item = form.save(commit=False)
-        userid = get_user_model().objects.get(id=self.request.user.id)
-        get_team_id = userid.runner_team_id
-        new_item.runner_id = userid.id
-        dayselected = self.obj.day_select
-        runs = self.obj.number_of_run
+        try:
+            self.obj = self.get_object()
+            new_item = form.save(commit=False)
+            userid = get_user_model().objects.get(id=self.request.user.id)
+            new_item.runner_id = userid.id
 
-        # Получаем существующие фотографии для этой пробежки
-        existing_photos = Photo.objects.filter(runner_day=self.obj)
+            # Получаем существующие фотографии для этой пробежки
+            existing_photos = Photo.objects.filter(runner_day=self.obj)
 
-        # Обновляем существующие фотографии и создаем новые при необходимости
-        for index, each in enumerate(form.cleaned_data.get('photo', [])):
-            if index < len(existing_photos):
-                # Обновляем существующую фотографию
-                existing_photos[index].photo = each
-                existing_photos[index].save()
-            else:
-                # Создаем новую фотографию
-                Photo.objects.create(
-                    runner_day=self.obj,
-                    photo=each
-                )
+            # Обновляем существующие фотографии и создаем новые при необходимости
+            uploaded_photos = form.cleaned_data.get('photo', [])
+            for index, each in enumerate(uploaded_photos):
+                if index < len(existing_photos):
+                    # Обновляем существующую фотографию
+                    existing_photos[index].photo = each
+                    existing_photos[index].save()
+                else:
+                    # Создаем новую фотографию и связываем с текущим объектом RunnerDay
+                    Photo.objects.create(
+                        runner_day=self.obj,  # Ensure we associate it with the correct RunnerDay instance
+                        photo=each
+                    )
 
-        # Удаляем лишние фотографии, если их больше чем загруженных
-        if len(existing_photos) > len(form.cleaned_data.get('photo', [])):
-            for excess_photo in existing_photos[len(form.cleaned_data.get('photo', [])):]:
-                if os.path.exists(excess_photo.photo.path):
-                    try:
-                        os.remove(excess_photo.photo.path)  # Удаляем файл из файловой системы
-                    except Exception as e:
-                        messages.error(self.request, f'Ошибка при удалении файла: {str(e)}')
-                excess_photo.delete()  # Удаляем запись из базы данных
+            # Удаляем лишние фотографии, если их больше чем загруженных
+            if len(existing_photos) > len(uploaded_photos):
+                for excess_photo in existing_photos[len(uploaded_photos):]:
+                    if os.path.exists(excess_photo.photo.path):
+                        try:
+                            os.remove(excess_photo.photo.path)  # Удаляем файл из файловой системы
+                        except Exception as e:
+                            messages.error(self.request, f'Ошибка при удалении файла: {str(e)}')
+                    excess_photo.delete()  # Удаляем запись из базы данных
 
-        new_item.save()
-
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
-        get_best_five_summ.delay(get_team_id)
-        calc_comands.delay(self.kwargs['username'])
-        messages.success(self.request, 'Запись успешно обновлена!')
+            new_item.save()
+            calc_comands(self.kwargs['username'])
+            # Запуск задач после успешного сохранения
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            get_best_five_summ.delay(userid.runner_team_id)
 
 
-        return redirect('profile:profile', username=self.request.user.username)
+            messages.success(self.request, 'Запись успешно обновлена!')
+            return redirect(self.get_success_url())
 
+        except Exception as e:
+            messages.error(self.request, f'Произошла ошибка: {str(e)}')
+            return redirect('profile:profile', username=self.request.user.username)
 
 class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
     model = RunnerDay
@@ -379,7 +386,7 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
 
         calc_start.delay(self.request.user.pk, self.kwargs['username'])
         get_best_five_summ.delay(get_team_id)
-        calc_comands.delay(self.kwargs['username'])
+        calc_comands(self.kwargs['username'])
         messages.success(request, 'Запись успешно удалена!')
 
         return redirect(self.get_success_url())

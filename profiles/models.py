@@ -10,13 +10,14 @@ from django.urls import reverse
 import core
 from core.models import User, Teams
 
-DAYS = ((30, '30 сентября'), (1, '1 октября'), (2, '2 октября'), (3, '3 октября'), (4, '04 октября'),
-        (5, '05 октября'), (6, '06 октября'), (7, '07 октября'), (8, '08 октября'), (9, '09 октября'),
-        (10, '10 октября'), (11, '11 октября'), (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),
-        (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
-        (20, '20 октября'), (21, '21 октября'), (22, '22 октября'), (23, '23 октября'), (24, '24 октября'),
-        (25, '25 октября'), (26, '26 октября'), (27, '27 октября'), (28, '28 октября'), (29, '29 октября'),
-        (30, '30 октября'), (31, '31 октября'))
+DAYS = ((30, '30 сентября'), (1, '01 октября'), (2, '02 октября'), (3, '03 октября'), (4, '04 октября'),
+         (5, '05 октября'), (6, '06 октября'), (7, '07 октября'),)
+        #(8, '08 октября'), (9, '09 октября'),)
+        # (10, '10 октября'), (11, '11 октября'), (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),
+        # (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
+        # (20, '20 октября'), (21, '21 октября'), (22, '22 октября'), (23, '23 октября'), (24, '24 октября'),
+        # (25, '25 октября'), (26, '26 октября'), (27, '27 октября'), (28, '28 октября'), (29, '29 октября'),
+        # (30, '30 октября'), (31, '31 октября'))
 
 
 class UserImport(models.Model):
@@ -33,7 +34,7 @@ def user_directory_path(instance, filename):
 
 
 class Photo(models.Model):
-    runner = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name="Участник", related_name='photos')
+    runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Участник", related_name='photos')
     photo = models.FileField(verbose_name="фото", upload_to=user_directory_path, null=True,
                              blank=True, max_length=300)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
@@ -77,6 +78,7 @@ class RunnerDay(models.Model):
     ]
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
+    # day_select = models.IntegerField(verbose_name='день пробега', choices=get_days(), default=date.today().day,
     day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
                                      db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
@@ -101,7 +103,7 @@ class RunnerDay(models.Model):
 
 
 class Statistic(models.Model):
-    runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False)
+    runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False, related_name='statistics')
     # runner_stat = models.CharField(verbose_name='участник')
     # team = models.IntegerField(verbose_name='команда')
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True, db_index=True)

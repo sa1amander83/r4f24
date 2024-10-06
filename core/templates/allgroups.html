@@ -78,30 +78,33 @@
             </th>
         </tr>
     </thead>
-    <tbody>
-        {% for team in group_data %}
-        <tr class="hover:bg-gray-50  cursor-pointer">
-            <td class="font-semibold text-gray-900 whitespace-nowrap">{% if flag %} 
-                <a href="{% url 'viewGroup' team.group.id %}"> {% else %}
-                <a href="{% url 'oneTeamView' team %}">{% endif %}{{ team }}</a></td>
+     <tbody>
+        {% for statistic in statistics %}
+        {% if statistic.total_balls %}
+        <tr>
+            <td class="font-semibold text-gray-900 whitespace-nowrap">
                 {% if flag %}
-            <td>{{ team.group_total_members }}</td>
-            <td>{{ team.group_total_balls }}</td>
-            <td>{{ team.group_total_distance }}</td>
-            <td>{{ team.group_total_time }}</td>
-            <td>{{ team.group_average_temp|time:"i:s" }}</td>
-            <td>{{ team.group_total_runs }}</td>
+                          <a href="{% url 'viewGroup' statistic.group_id %}">
+                {{ statistic.title }}
+                          </a>
             {% else %}
-            <td >{{ team.comands_total_members }}</td>
-            <td >{{ team.comand_total_balls }}</td>
-            <td>{{ team.comand_total_distance }}</td>
-            <td>{{ team.comand_total_time }}</td>
-            <td>{{ team.comand_average_temp|time:"i:s" }}</td>
-            <td>{{ team.comand_total_runs }}</td>
-            {% endif %}
+                     <a href="{% url 'oneTeamView' statistic.title  %}">
+              {{ statistic.title }}
+                     </a>
+                {% endif %}
+            </td>
+            <td>{{ statistic.participants|length }}</td>
+            <td>{{ statistic.total_balls}} | {{ statistic.total_balls_for_champ }}</td>
+            <td>{{ statistic.total_distance|floatformat:2 }}</td>
+            <td>{{ statistic.total_time}}</td>
+            <td>{{ statistic.total_average_temp|smooth_filter}}</td>
+            <td>{{ statistic.participants|length }}</td>
         </tr>
-        {%endfor%}
-    
+            {% endif %}
+        {% endfor %}
+
+
+
     </tbody>
 </table>
         </div>
