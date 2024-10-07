@@ -91,7 +91,7 @@ class ProfileUser(ListView, DataMixin):
                 'runner_stat__username', flat=True))
 
         age_of_user = getuser.runner_age
-
+        gender=getuser.runner_gender
         # Create a list of runners based on age categories
         try:
             if age_of_user < 17:
@@ -104,30 +104,30 @@ class ProfileUser(ListView, DataMixin):
                 runners_age_filter = Q(runner_stat__runner_age__gte=50)
 
             if get_category == 3:
-                runners_list_age_category = Statistic.objects.filter(runners_age_filter,
-                                                                     runner_stat__runner_category=get_category) \
+                runners_list_age_category = Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender='м',
+                                                                     runner_stat__runner_category=3) \
                     .order_by('-total_balls_for_champ') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
-                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category) \
+                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=3,
+                                                                 runner_stat__runner_gender='м',) \
                     .order_by('-total_balls_for_champ') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
             else:
-                runners_list_age_category = Statistic.objects.filter(runners_age_filter,
+                runners_list_age_category = Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender=gender,
                                                                      runner_stat__runner_category=get_category) \
                     .order_by('-total_balls') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
-                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category) \
+                runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category,
+                                                                 runner_stat__runner_gender=gender) \
                     .order_by('-total_balls') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
 
-            runners_list_age = Statistic.objects.filter(runners_age_filter) \
-                .order_by('-total_balls') \
-                .values_list('runner_stat__username', flat=True) \
-                .distinct()
+            runners_list_age = (Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender=gender).
+                                order_by('-total_balls').values_list('runner_stat__username', flat=True).distinct())
 
             runners_list = Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username',
                                                                                         flat=True)
@@ -137,13 +137,13 @@ class ProfileUser(ListView, DataMixin):
             runners_list_category = list(runners_list_category)
             runners_list = list(runners_list)
 
-            context['count_age'] = Statistic.objects.filter(runners_age_filter).count()
-            context['count_age_and_category'] = Statistic.objects.filter(runners_age_filter,
+
+            context['count_age_and_category'] = Statistic.objects.filter(runners_age_filter,runner_stat__runner_gender=gender,
                                                                          runner_stat__runner_category=get_category).count()
 
             context['total_runners'] = Statistic.objects.all().count()
             context['total_runners_category'] = Statistic.objects.filter(
-                runner_stat__runner_category=get_category).count()
+                runner_stat__runner_category=get_category, runner_stat__runner_gender=gender).count()
 
             context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1 if self.kwargs[
                                                                                                'username'] in runners_list else None
@@ -155,6 +155,9 @@ class ProfileUser(ListView, DataMixin):
             self.kwargs['username'] in runners_list_age_category else None
 
             context['category_age_count'] = len(runners_list_age_category)
+            context['count_age'] = len(runners_list_age)
+
+
             #
 
         except ValueError:
@@ -263,7 +266,8 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
                         excess_photo.delete()  # Удаляем запись из базы данных
 
                 # Запуск задачи
-                calc_start.delay(self.request.user.pk, self.kwargs['username'])
+                calc_start(self.request.user.pk, self.kwargs['username'])
+                # calc_start.delay(self.request.user.pk, self.kwargs['username'])
                 get_best_five_summ.delay(get_team_id)
                 calc_comands(self.kwargs['username'])
 
@@ -340,9 +344,11 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
                     excess_photo.delete()  # Удаляем запись из базы данных
 
             new_item.save()
+            # calc_comands.delay(self.kwargs['username'])
             calc_comands(self.kwargs['username'])
             # Запуск задач после успешного сохранения
-            calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            # calc_start.delay(self.request.user.pk, self.kwargs['username'])
+            calc_start(self.request.user.pk, self.kwargs['username'])
             get_best_five_summ.delay(userid.runner_team_id)
 
 
@@ -384,8 +390,10 @@ class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
         # Удаляем объект RunnerDay
         self.object.delete()
 
-        calc_start.delay(self.request.user.pk, self.kwargs['username'])
+        calc_start(self.request.user.pk, self.kwargs['username'])
+        # calc_start.delay(self.request.user.pk, self.kwargs['username'])
         get_best_five_summ.delay(get_team_id)
+        # calc_comands.delay(self.kwargs['username'])
         calc_comands(self.kwargs['username'])
         messages.success(request, 'Запись успешно удалена!')
 

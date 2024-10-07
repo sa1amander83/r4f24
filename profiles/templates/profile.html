@@ -101,7 +101,9 @@
                                               d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
                                     </svg>
 
-                                    <h4 class="mt-2 text-base font-semibold leading-8">№{{ d.runner_team }}</h4>
+                                    <h4 class="mt-2 text-base font-semibold leading-8">
+                                        <a href="{% url 'oneTeamView' d.runner_team %}">
+                                            №{{ d.runner_team }}</a> </h4>
                                     <h5 class="mt-1 text-sm text-slate-500">Команда</h5>
                                 </div>
 
@@ -419,89 +421,86 @@
                                         <td>{{ p.day_distance|floatformat:3 }}</td>
                                         <td>{{ p.day_time|time:'H:i:s' }}</td>
                                         <td>{{ p.day_average_temp|time:'i:s' }}</td>
-                                        <td>{{ p.number_of_run }}</td>
+                                        <td>{{ p.number_of_run }} {% if user.is_superuser %}
+                                            {{ p.id }} {% endif %}</td>
+            <td>
+                    <!-- Место для фотографий каждой пробежки -->
+                    <div class="flex -space-x-5">
+                        {% for image in p.photos.all %}
+                            <a href="{{ image.photo.url }}" data-lightbox="{{ p.id }}" class="flex flex-shrink-0">
+                                <img class="w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)]" alt="photo" src="{{ image.photo.url }}">
+                            </a>
+                        {% empty %}
+                            <p>Нет фотографий</p> <!-- Сообщение, если фотографий нет -->
+                        {% endfor %}
+                    </div>
+                </td>
+
+
+                                    <td> {% if p.run_url %}<a href="{{ p.run_url }}"
+                                                              target="_blank">ссылка</a>    {% else %} {% endif %}
+                                    </td>
+                                    {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
                                         <td>
-                                            <div class="flex  -space-x-5">
-                                                {% for run in runs %}
-                                                    <div class="flex  -space-x-5">
-                                                        {% for image in run.photo_set.all %}
-                                                            <a href="{{ image.photo.url }}"
-                                                               data-lightbox="{{ run.day_select }}"
-                                                               class="flex flex-shrink-0">
-                                                                <img class="w-10 h-10 rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                                                     alt="photo" src="{{ image.photo.url }}">
-                                                            </a>
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endfor %}
+                                            <div class="flex justify-center w-full items-center">
+                                                <a class="flex items-center mr-3 text-slate-600"
+                                                   href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="lucide stroke-1.5 w-4 h-4 mr-1">
+                                                        <path d="m9 11 3 3L22 4"></path>
+                                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                                    </svg>
+                                                    Изменить
+                                                </a>
+                                                <a class="flex items-center text-red-600"
+                                                   href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="lucide  stroke-1.5 w-4 h-4 mr-1">
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                        <line x1="10" x2="10" y1="11" y2="17"></line>
+                                                        <line x1="14" x2="14" y1="11" y2="17"></line>
+                                                    </svg>
+                                                    Удалить
+                                                </a>
                                             </div>
                                         </td>
-
-
-                                        <td> {% if p.run_url %}<a href="{{ p.run_url }}"
-                                                                  target="_blank">ссылка</a>    {% else %} {% endif %}
-                                        </td>
-                                        {% if request.user.is_authenticated and request.user == p.runner or request.user == 'admin' %}
-                                            <td>
-                                                <div class="flex justify-center w-full items-center">
-                                                    <a class="flex items-center mr-3 text-slate-600"
-                                                       href="{% url 'profile:editrunday' username=p.runner pk=p.pk %}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="2" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             class="lucide stroke-1.5 w-4 h-4 mr-1">
-                                                            <path d="m9 11 3 3L22 4"></path>
-                                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                                                        </svg>
-                                                        Изменить
-                                                    </a>
-                                                    <a class="flex items-center text-red-600"
-                                                       href="{% url 'profile:delete' username=p.runner pk=p.pk %}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="2" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             class="lucide  stroke-1.5 w-4 h-4 mr-1">
-                                                            <path d="M3 6h18"></path>
-                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                            <line x1="10" x2="10" y1="11" y2="17"></line>
-                                                            <line x1="14" x2="14" y1="11" y2="17"></line>
-                                                        </svg>
-                                                        Удалить
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        {% else %}
-                                            <td class="px-6 py-4"></td>
-                                        {% endif %}
+                                    {% else %}
+                                        <td class="px-6 py-4"></td>
+                                    {% endif %}
                                     </tr>
                                 {% endfor %}
-                                </tbody>
-                            </table>
+                        </tbody>
+                        </table>
 
-                            <!-- <div class="flex rounded-b-xl bg-white justify-end p-4"> -->
+                        <!-- <div class="flex rounded-b-xl bg-white justify-end p-4"> -->
 
-                            <!-- <div class="flex items-end gap-2"> -->
+                        <!-- <div class="flex items-end gap-2"> -->
 
-                            {#                        {% for u in tot_dist %}#}
-                            {#                        <span class="text-xl font-bold"> {{ u.avg_temp }}/км</span>#}
-                            {#                        {% endfor %}#}
-                            <!-- </div> -->
+                        {#                        {% for u in tot_dist %}#}
+                        {#                        <span class="text-xl font-bold"> {{ u.avg_temp }}/км</span>#}
+                        {#                        {% endfor %}#}
+                        <!-- </div> -->
 
-                            <!-- </div> -->
-                        </div>
-
-
+                        <!-- </div> -->
                     </div>
+
+
                 </div>
-
-
-            </main>
-
-
         </div>
+
+
+        </main>
+
+
+    </div>
     </div>
 
 

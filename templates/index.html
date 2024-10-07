@@ -53,15 +53,15 @@
     </div>
     <button type="submit" class="btn btn-primary">Импортировать команды</button>
 </form>
-
+            
              <form action="{% url 'recalc_func' %}" method="get">
                 <button type="submit" class="btn btn-primary">Пересчитать пробежки</button>
             </form>
 
-
-
-
-
+            
+            
+            
+            
         {% endif %}
 
 
@@ -178,12 +178,12 @@
             </div>
             <div class=" rounded-xl shadow bg-white my-5 p-5">
                 <div class="flex ">
-                    <div class="mx-auto text-base font-semibold truncate">Сентябрь</div>
+                    <div class="mx-auto text-base font-semibold truncate">Сентябрь - Октябрь</div>
                 </div>
                 <div
                         class="grid grid-cols-7 gap-4 mt-5 text-center"
                 >
-                    <div class="font-medium">Пн</div>
+                   <div class="font-medium">Пн</div>
                     <div class="font-medium">Вт</div>
                     <div class="font-medium">Ср</div>
                     <div class="font-medium">Чт</div>
@@ -208,8 +208,7 @@
                     <div class="py-0.5 rounded relative text-slate-500">2</div>
                     <div class="py-0.5 rounded relative text-slate-500">3</div>
                     <div class="py-0.5 rounded relative text-slate-500">4</div>
-                    <div class="py-0.5 rounded relative text-slate-500">5</div>
-                    <div class="py-0.5 rounded relative text-slate-500">6</div>
+                   
                 </div>
             </div>
         </div>
@@ -267,7 +266,7 @@
                         <a
                                 href="{% url 'runner_category_age' cat=cat_selected age=1 %}"
                                 class="block px-4 py-2 hover:bg-gray-100 "
-                        >до 17 лет</a
+                        >до 18 лет</a
                         >
                     </li>
                     <li>
@@ -310,18 +309,18 @@
                 </svg>
             </button>
 
-            <!-- Dropdown menu category -->
+<!-- Dropdown menu category -->
             <div id="dropdownDots"
                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ">
                 <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownMenuIconButton">
                     <li>
-                        <a href="{% url 'runner_category' 1 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
+                        <a href="{% url 'runner_category_age' 1 0 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
                     </li>
                     <li>
-                        <a href="{% url 'runner_category' 2 %}" class="block px-4 py-2 hover:bg-gray-100">Любитель</a>
+                        <a href="{% url 'runner_category_age' 2 0 %}" class="block px-4 py-2 hover:bg-gray-100">Любитель</a>
                     </li>
                     <li>
-                        <a href="{% url 'runner_category' 3 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
+                        <a href="{% url 'runner_category_age' 3 0 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
                     </li>
                     <li>
                         <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>
@@ -372,14 +371,14 @@
                     </svg>
                 </span>
             </th>
-            <th>
-                <span class="flex items-center">
-                    Общее время
-                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                    </svg>
-                </span>
-            </th>
+           <!--  <th>
+               <span class="flex items-center">
+                   Общее время
+                   <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                   </svg>
+               </span>
+           </th> -->
             <th>
                 <span class="flex items-center">
                     Темп мин/км
@@ -406,9 +405,9 @@
                 <a  class="flex flex-col justify-center items-center" href="/profile/{{ s.runner_stat__username }}">
                 <span class="flex flex-row  flex-nowrap  text-sm font-semibold text-black">
                     {{ s.runner_stat__username }}
-
+                
                 {% if s.runner_stat__runner_gender == 'м' %}
-
+                                            
                      <svg class="w-5 h-5 me-2 " fill="#0080ff" viewBox="-5.12 -5.12 266.24 266.24" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#0080ff" stroke-width="5.12">
                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -428,9 +427,9 @@
                     {% endif %}
                 </span>
                 <div class="flex  items-center">
-
-
-
+                    
+        
+        
                                             {% if s.runner_stat__runner_category == 1 %}
                                                 <span
                                                         class="bg-yellow-100 text-xs text-yellow-600 px-2 py-0.5 rounded text-center"
@@ -444,25 +443,25 @@
                                                         class="bg-sky-100 text-xs text-sky-600 px-2 py-0.5 rounded text-center"
                                                 >Профи</span>
                                             {% endif %}
-
+        
                                             {% if s.runner_stat__runner_group %}
                                                 <span><svg class="size-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                                                 </svg>
                                                 </span>
-
+        
                                             {% endif %}
                 </div>
                 </a>
             </td>
- <td>{{ s.total_balls }} | {{ s.total_balls_for_champ }} </td>
+           <td>{{ s.total_balls }} | {{ s.total_balls_for_champ }} </td>
             <td>{{ s.total_distance|floatformat:3 }}</td>
-            <td>{{ s.total_time|time:"H:i:s" }}</td>
+            <!--  <td>{{ s.total_time }}</td> -->
             <td>{{ s.total_average_temp|time:"i:s" }}</td>
             <td>{{ s.total_runs }}</td>
         </tr>
         {%endfor%}
-
+    
     </tbody>
 </table>
 

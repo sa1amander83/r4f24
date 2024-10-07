@@ -189,7 +189,7 @@ class RunnerDayAdmin(admin.ModelAdmin):
 
 
 class StatisticAdmin(admin.ModelAdmin):
-    search_fields = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
+    search_fields = ('runner_stat__username',)
 
     list_display = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
     # list_display_links = ('user',)

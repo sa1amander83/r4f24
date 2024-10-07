@@ -3,19 +3,40 @@ from celery.schedules import crontab
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.base import CreateError
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Sum, Q, Avg, Count, Window, F
+from django.db.models import Sum, Q, Avg, Count, Window, F, FloatField
 from django.db.models.functions import RowNumber
 from core.models import User, ComandsResult, GroupsResult, Teams, Group
 from profiles.models import Statistic, Championat, RunnerDay
 from r4f24.celery import app
 import logging
-
+from datetime import timedelta
 
 # Получаем логгер
 logger = logging.getLogger(__name__)
 
 
+def parse_time(time_str):
+    """Преобразует строку времени формата 'HH:MM:SS' в секунды."""
+    parts = list(map(int, time_str.split(':')))
 
+    # Добавляем секунды если их нет в строке.
+    if len(parts) == 1:  # Если только часы
+        h, m, s = parts[0], 0, 0
+    elif len(parts) == 2:  # Если часы и минуты
+        h, m, s = parts[0], parts[1], 0
+    else:
+        h, m, s = parts
+    return timedelta(hours=h, minutes=m, seconds=s).total_seconds()
+def parse_time_delta(time_delta):
+    """Преобразует timedelta в секунды."""
+    return time_delta.total_seconds()
+
+def format_time(seconds):
+    """Преобразует секунды в строку времени формата 'HH:MM:SS'."""
+    td = timedelta(seconds=seconds)
+    hours, remainder = divmod(td.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
 def get_best_five_summ(self,team_id):
@@ -77,117 +98,145 @@ def calc_comands(username):
             group_id = obj.runner_group.id
             users_group = get_user_model().objects.filter(runner_group_id=group_id)
             user_group_stats = Statistic.objects.filter(runner_stat__in=users_group)
+
+            # Агрегация общих результатов группы
             total_group_results = user_group_stats.aggregate(
                 total_balls=Sum('total_balls'),
                 total_distance=Sum('total_distance'),
-                total_time=Sum('total_time'),
+                total_time_seconds=Sum('total_time'),
                 total_average_temp=Avg('total_average_temp'),
-                total_days=Sum('total_days'),
                 total_runs=Sum('total_runs'),
                 tot_members=Count('runner_stat__username')
             )
+
+            # Извлечение общего времени и преобразование из timedelta
+            total_time_td = total_group_results['total_time_seconds'] or timedelta()
+            total_time_seconds = parse_time_delta(total_time_td)
+            formatted_group_time = format_time(total_time_seconds)
+
+            # Преобразование среднего темпа
+            avg_temp_td = total_group_results['total_average_temp'] or timedelta()
+            avg_temp_seconds = parse_time_delta(avg_temp_td)
+            formatted_group_avg_temp = format_time(avg_temp_seconds)
 
             GroupsResult.objects.update_or_create(
                 group_id=group_id,
                 defaults={
                     'group_total_balls': total_group_results.get('total_balls'),
                     'group_total_distance': total_group_results.get('total_distance'),
-                    'group_total_time': str(total_group_results.get('total_time')),
-                    'group_average_temp': str(total_group_results.get('total_average_temp')),
+                    'group_total_time': formatted_group_time,
+                    'group_average_temp': formatted_group_avg_temp,
                     'group_total_runs': total_group_results.get('total_runs'),
                     'group_total_members': total_group_results.get('tot_members')
                 }
             )
             print('groups done')
-        team_id = obj.runner_team.id
 
-        users = get_user_model().objects.filter(runner_team_id=team_id)
-        user_stats = Statistic.objects.filter(runner_stat__in=users)
-        total_comand_results = user_stats.aggregate(
-            total_balls=Sum('total_balls'),
-            total_distance=Sum('total_distance'),
-            total_time=Sum('total_time'),
-            total_average_temp=Avg('total_average_temp'),
-            total_days=Sum('total_days'),
-            total_runs=Sum('total_runs'),
-            tot_members=Count('runner_stat__username')
-        )
+        if obj.runner_team:
+            team_id = obj.runner_team.id
 
-        ComandsResult.objects.update_or_create(
-            comand_id=team_id,
-            defaults={
-                'comands_total_members': total_comand_results.get('tot_members'),
-                'comand_total_distance': total_comand_results.get('total_distance'),
-                'comand_total_balls': total_comand_results.get('total_balls'),
-                'comand_total_time': str(total_comand_results.get('total_time')),
-                'comand_average_temp': str(total_comand_results.get('total_average_temp')),
-                'comand_total_runs': total_comand_results.get('total_runs')
-            }
-        )
-        logger.info('Team results updated successfully.')
+            users = get_user_model().objects.filter(runner_team_id=team_id)
+            user_stats = Statistic.objects.filter(runner_stat__in=users)
 
+            # Агрегация общих результатов команды
+            total_comand_results = user_stats.aggregate(
+                total_balls=Sum('total_balls'),
+                total_distance=Sum('total_distance'),
+                total_time_seconds=Sum('total_time'),
+                total_average_temp=Avg('total_average_temp'),
+                total_runs=Sum('total_runs'),
+                tot_members=Count('runner_stat__username')
+            )
 
+            # Извлечение и преобразование общего времени команды
+            total_time_td = total_comand_results['total_time_seconds'] or timedelta()
+            total_time_seconds = parse_time_delta(total_time_td)
+            formatted_comand_time = format_time(total_time_seconds)
+
+            # Преобразование среднего темпа команды
+            avg_temp_td = total_comand_results['total_average_temp'] or timedelta()
+            avg_temp_seconds = parse_time_delta(avg_temp_td)
+            formatted_comand_avg_temp = format_time(avg_temp_seconds)
+
+            ComandsResult.objects.update_or_create(
+                comand_id=team_id,
+                defaults={
+                    'comands_total_members': total_comand_results.get('tot_members'),
+                    'comand_total_distance': total_comand_results.get('total_distance'),
+                    'comand_total_balls': total_comand_results.get('total_balls'),
+                    'comand_total_time': formatted_comand_time,
+                    'comand_average_temp': formatted_comand_avg_temp,
+                    'comand_total_runs': total_comand_results.get('total_runs')
+                }
+            )
+            logger.info('Team results updated successfully.')
+            print('commands done')
+        print('done')
+        logger.info('Command results updated successfully.')
     except Exception as e:
+        print(e)
         logger.error(f'An error occurred while calculating commands for user {username}: {e}', exc_info=True)
         raise
-    # except Exception:
-    #
-    #     print(Exception)
 
-@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
 # @shared_task()
-def calc_start(self, runner_id, username):
+
+
+
+
+# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+
+
+def calc_start(runner_id, username):
     try:
         runner_days = RunnerDay.objects.filter(runner__username=username)
-        total_distance = runner_days.aggregate(Sum('day_distance'))
-        dist = total_distance['day_distance__sum'] or 0
 
-        total_time = runner_days.aggregate(Sum('day_time'))
-        tot_time = total_time['day_time__sum'] or '00:00'
+        # Рассчитываем общую дистанцию
+        total_distance = runner_days.aggregate(Sum('day_distance'))['day_distance__sum'] or 0
 
-        avg_time = runner_days.aggregate(Avg('day_average_temp'))
-        avg_time = avg_time['day_average_temp__avg'] or '00:00'
+        # Агрегирование значений времени
+        total_time_list = runner_days.values_list('day_time', flat=True)
+        total_time_seconds = sum(t.hour * 3600 + t.minute * 60 + t.second for t in total_time_list if t)
+        formatted_total_time = format_time(total_time_seconds)
 
-        tot_runs = runner_days.filter(day_distance__gte=0).count()
-        tot_days = runner_days.filter(day_select__gte=0).distinct('day_select').count()
+        # Агрегирование средней температуры как времени
+        avg_time = runner_days.aggregate(Avg('day_average_temp'))['day_average_temp__avg']
+        if avg_time:
+            hours, remainder = divmod(avg_time.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            formatted_avg_time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        else:
+            formatted_avg_time = '00:00:00'
 
-        tot_balls = runner_days.aggregate(Sum('ball'))
-        tot_balls_champ = runner_days.aggregate(Sum('ball_for_champ'))
+        # Подсчитываем количество уникальных пробежек и дней
+        total_runs = runner_days.filter(day_distance__gte=0).count()
+        total_days = runner_days.filter(day_select__gte=0).distinct('day_select').count()
 
+        # Агрегирование баллов
+        tot_balls = runner_days.aggregate(Sum('ball'))['ball__sum'] or 0
+        tot_balls_champ = runner_days.aggregate(Sum('ball_for_champ'))['ball_for_champ__sum'] or 0
 
-        balls = tot_balls['ball__sum'] or 0
-        balls_champ = tot_balls_champ['ball_for_champ__sum'] or 0
+        # Проверка квалификации
+        is_qualified = total_distance >= 50
 
-        is_qual = dist >= 50
-
+        # Обновление или создание объекта Statistic
         Statistic.objects.update_or_create(
             runner_stat_id=runner_id,
             defaults={
-                'total_distance': dist,
-                'total_time': ':'.join(str(tot_time).split(':')),
-                'total_average_temp': ':'.join(str(avg_time).split(':')),
-                'total_days': tot_days,
-                'total_runs': tot_runs,
-                'total_balls': balls,
-                'total_balls_for_champ': balls_champ,
-                'is_qualificated': is_qual
+                'total_distance': total_distance,
+                'total_time': formatted_total_time,
+                'total_average_temp': formatted_avg_time,
+                'total_days': total_days,
+                'total_runs': total_runs,
+                'total_balls': tot_balls,
+                'total_balls_for_champ': tot_balls_champ,
+                'is_qualificated': is_qualified
             }
         )
         # calc_comands.delay(username)
     except Exception as e:
+        print(e)
         logger.error(f'An error occurred while calculating commands for user {username}: {e}', exc_info=True)
         raise
-
-
-
-
-
-
-
-
-
-
-
 
 
 

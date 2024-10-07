@@ -10,8 +10,6 @@ from multiupload.fields import MultiFileField, MultiMediaField, MultiImageField
 
 
 class RegisterUserForm(UserCreationForm):
-
-
     username = forms.CharField(label='Логин', widget=forms.TextInput(
         attrs={'placeholder': "Введите номер",
                'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
@@ -36,14 +34,6 @@ class RegisterUserForm(UserCreationForm):
                                 widget=forms.PasswordInput(attrs={'placeholder': "Введите пароль еще раз",
                                                                   'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500'}))
 
-
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if get_user_model().objects.filter(username=username).exists():
-            raise forms.ValidationError('Пользователь с таким номером уже зарегистрирован.')
-        return username
-
     class Meta:
         model = User
 
@@ -65,7 +55,7 @@ class RegisterUserForm(UserCreationForm):
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'placeholder': "Ведите имя",
+    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'placeholder': "Введите номер участника",
                                                                             'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-sky-500 focus:ring-sky-500'}))
     password = forms.CharField(label='Пароль',
                                widget=forms.PasswordInput(attrs={'placeholder': "Введите свой пароль",
@@ -140,6 +130,7 @@ class RunnerDayForm(ModelForm):
                     'id': 'day_distance', 'placeholder': 'например 12,1'}),
             'day_time': forms.TextInput(
                 attrs={'placeholder': "ЧЧ:ММ:СС",
+                        'type':'tel',
                        'class': 'w-full rounded-md border-gray-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500',
                        'id': 'day_time', 'step': '1'}),
             'day_average_temp': forms.TextInput(
@@ -165,7 +156,7 @@ class RunnerDayForm(ModelForm):
         }
         fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'ball_for_champ','run_url']
 
-    photo = MultiFileField(min_num=1, max_num=10, max_file_size=32048 * 32048 * 5)
+    photo = MultiFileField(min_num=1, max_num=10, max_file_size=32048 * 32048 * 10)
 
     # def save(self, commit=True):
     #     instance = super(RunnerDayForm, self).save(commit)

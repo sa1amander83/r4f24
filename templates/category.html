@@ -194,7 +194,7 @@
         <div
           class="flex flex-col gap-2 items-start md:justify-between md:flex-row md:items-center"
         >
-
+      
           <div>
                 {% if cat_selected == 1 %}
                     <h2 class="text-left text-lg font-semibold truncate">
@@ -230,8 +230,8 @@
                     </h3>
                 {% endif %}
             </div>
-
-          <button
+          <div class="flex w-full justify-between items-center md:block md:w-auto ">
+            <button
             id="dropdown-button"
             data-dropdown-toggle="dropdown"
             class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-gray-50"
@@ -264,28 +264,28 @@
             >
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female' 1 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 1 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female' 1 %}{% else %}{% url 'runner_category_age' cat_selected 1 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >до 17 лет</a
                 >
               </li>
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female'  age=2 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 2 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female'  age=2 %}{% else %}{% url 'runner_category_age' cat_selected 2 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >18-35 лет</a
                 >
               </li>
               <li>
                 <a
-                  href="{% if f %}{% url 'runner_category_age_female'  age=3 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 3 %}{% endif %}"
+                  href="{% if f %}{% url 'runner_category_age_female'  age=3 %}{% else %}{% url 'runner_category_age' cat_selected 3 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >36-49 лет</a
                 >
               </li>
               <li>
                 <a
-                  href=" {% if f %}{% url 'runner_category_age_female'  age=4 %}{% else %}{% url 'runner_category_age' request.resolver_match.kwargs.cat 4 %}{% endif %}"
+                  href=" {% if f %}{% url 'runner_category_age_female'  age=4 %}{% else %}{% url 'runner_category_age' cat_selected 4 %}{% endif %}"
                   class="block px-4 py-2 hover:bg-gray-100"
                   >50+</a
                 >
@@ -297,6 +297,39 @@
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
                 >Все</a
               >
+            </div>
+          </div>
+                      <!-- Dropdown category -->
+            <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
+                    class="inline-flex md:hidden items-center py-2.5 px-1 text-sm font-medium text-center rounded-lg text-gray-900  hover:bg-gray-50"
+                    type="button">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                     viewBox="0 0 4 15">
+                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                </svg>
+            </button>
+
+            <!-- Dropdown menu category -->
+            <div id="dropdownDots"
+                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ">
+                <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownMenuIconButton">
+                    <li>
+                        <a href="{% url 'runner_category_age' 1 0 %}" class="block px-4 py-2 hover:bg-gray-100">Новичок</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category_age' 2 0 %}" class="block px-4 py-2 hover:bg-gray-100">Любитель</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category_age' 3 0 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>
+                    </li>
+                </ul>
+                <div class="py-2">
+                    <a href="{% url 'index' %}"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">Общий</a>
+                </div>
             </div>
           </div>
         </div>
@@ -374,9 +407,9 @@
                 <a   href="/profile/{{ s.runner_stat__username }}">
                 <span class="flex flex-row  flex-nowrap text-sm font-semibold text-black">
                     {{ s.runner_stat__username }}
-
+                
                 {% if s.runner_stat__runner_gender == 'м' %}
-
+                                            
                      <svg class="w-5 h-5 me-2 " fill="#0080ff" viewBox="-5.12 -5.12 266.24 266.24" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#0080ff" stroke-width="5.12">
                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -396,7 +429,7 @@
                     {% endif %}
                 </span>
                 <div class="flex  items-center">
-
+                    
 
 
                                             {% if s.runner_stat__runner_category == 1 %}
@@ -432,7 +465,7 @@
             <td>{{ s.total_runs }}</td>
         </tr>
         {%endfor%}
-
+    
     </tbody>
 </table>
         </div>
@@ -442,7 +475,7 @@
     </div>
   </main>
 </div>
-{% endblock %}
+{% endblock %} 
 {% block extrascripts %}
 
 

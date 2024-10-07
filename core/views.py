@@ -35,9 +35,7 @@ class IndexView(DataMixin, ListView):
         context['count_of_runners'] = get_user_model().objects.exclude(not_running=True).count()
 
         context['tot_dist'] = Statistic.objects.filter(runner_stat__not_running=False). \
-            values('runner_stat__username', 'total_time', 'total_distance', 'runner_stat__runner_gender',
-                   'runner_stat__runner_category', 'total_balls_for_champ',
-                   'runner_stat__runner_group', 'total_runs', 'total_balls', 'total_average_temp').order_by(
+            values('runner_stat__username', 'total_time', 'total_distance', 'runner_stat__runner_gender', 'total_balls_for_champ',  'total_runs', 'total_balls', 'total_average_temp').order_by(
             '-total_balls', '-total_distance')
 
         return context

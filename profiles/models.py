@@ -53,7 +53,7 @@ class Photo(models.Model):
         return reverse('profile:profile', kwargs={'photo': self.photo})
 
     def __str__(self):
-        return str(self.photo)
+        return f"Photo for {self.runner_day}"
 
 
 from datetime import date, timedelta
