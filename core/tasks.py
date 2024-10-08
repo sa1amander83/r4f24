@@ -587,6 +587,9 @@ def recalc_runnerdays(rec_id, distance, temp, total_time, category):
     runnerday.ball_koef = ball_coef
     runnerday.save()
 
+
+
+
     return
 
 

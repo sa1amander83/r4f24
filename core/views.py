@@ -982,7 +982,7 @@ def group_statistics_view(request):
             total_balls = statistics_group.aggregate(total_balls=Sum('total_balls'))['total_balls']
             total_time = statistics_group.aggregate(total_time=Sum('total_time'))['total_time']
             total_average_temp = statistics_group.aggregate(total_average_temp=Avg('total_average_temp'))['total_average_temp']
-
+            total_runs = statistics_group.aggregate(total_runs=Sum('total_runs'))['total_runs']
             participants = []
             for statistic in statistics_group:
                 participants.append({
@@ -991,7 +991,8 @@ def group_statistics_view(request):
                     'total_balls': statistic.total_balls,
                     'total_balls_for_champ': statistic.total_balls_for_champ,
                     'total_time': statistic.total_time,
-                    'total_average_temp': statistic.total_average_temp
+                    'total_average_temp': statistic.total_average_temp,
+                    'total_runs': statistic.total_runs
                 })
 
             statistics.append({
@@ -1002,7 +1003,8 @@ def group_statistics_view(request):
                 'total_time': total_time,
                 'total_balls_for_champ': total_balls_for_champ,
                 'total_average_temp': total_average_temp,
-                'participants': participants
+                'participants': participants,
+                'total_runs':total_runs
             })
         statistics = sorted(statistics, key=lambda x: x['total_balls'] or 0, reverse=True)
         context = {
@@ -1020,7 +1022,7 @@ def group_statistics_view(request):
             total_balls_for_champ = statistics_team.aggregate(total_balls_for_champ=Sum('total_balls_for_champ'))['total_balls_for_champ']
             total_time = statistics_team.aggregate(total_time=Sum('total_time'))['total_time']
             total_average_temp = statistics_team.aggregate(total_average_temp=Avg('total_average_temp'))['total_average_temp']
-
+            total_runs = statistics_team.aggregate(total_runs=Sum('total_runs'))['total_runs']
             participants = []
             for statistic in statistics_team:
                 participants.append({
@@ -1029,7 +1031,9 @@ def group_statistics_view(request):
                     'total_balls_for_champ': statistic.total_balls_for_champ,
                     'total_balls': statistic.total_balls,
                     'total_time': statistic.total_time,
-                    'total_average_temp': statistic.total_average_temp
+                    'total_average_temp': statistic.total_average_temp,
+                    'total_runs': statistic.total_runs
+
                 })
 
             statistics.append({
@@ -1040,7 +1044,8 @@ def group_statistics_view(request):
                 'total_balls_for_champ': total_balls_for_champ,
                 'total_time': total_time,
                 'total_average_temp': total_average_temp,
-                'participants': participants
+                'participants': participants,
+                'total_runs':total_runs
             })
         statistics = sorted(statistics, key=lambda x: x['total_balls'] or 0, reverse=True)
         context = {

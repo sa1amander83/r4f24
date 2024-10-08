@@ -5,6 +5,8 @@ from django.contrib.sessions.backends.base import CreateError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Q, Avg, Count, Window, F, FloatField
 from django.db.models.functions import RowNumber
+from django.views.decorators.http import require_POST
+
 from core.models import User, ComandsResult, GroupsResult, Teams, Group
 from profiles.models import Statistic, Championat, RunnerDay
 from r4f24.celery import app
@@ -187,6 +189,8 @@ def calc_comands(username):
 
 
 def calc_start(runner_id, username):
+    total_balls = 0
+    total_balls_champ = 0
     try:
         runner_days = RunnerDay.objects.filter(runner__username=username)
 
@@ -232,6 +236,9 @@ def calc_start(runner_id, username):
                 'is_qualificated': is_qualified
             }
         )
+
+
+
         # calc_comands.delay(username)
     except Exception as e:
         print(e)
@@ -246,7 +253,7 @@ def calculate_coefficients(runner_day):
     distance_koef = [
         (4.9, 1, 1), (9.9, 1.1, 2.1),
         (14.9, 1.2, 3.3), (19.9, 1.3, 4.6),
-        (24.9, 1.4, 6), (29.9, 1.5, 75),
+        (24.9, 1.4, 6), (29.9, 1.5, 7.5),
         (34.9, 1.6, 9.1), (39.9, 1.7, 10.8),
         (44.9, 1.8, 12.6), (49.9, 1.9, 14.5),
         (50, 2, 16.5)
@@ -370,19 +377,17 @@ def calculate_coefficients(runner_day):
     }
 
 
-    distance=runner_day.distance
-    total_time=runner_day.total_time
-    temp=runner_day.temp
-    ball_for_champ=runner_day.ball_for_champ
-    distance_koef=runner_day.distance_koef
-    temp_koef=runner_day.temp_koef
+    distance=runner_day.day_distance
+    # total_time=runner_day.day_time
+    temp=runner_day.day_average_temp
 
-    if distance is None or total_time is None:
-        return tot_koef, ball_for_champ, "Ошибка: Проверьте входные данные"
+    # hours, minutes, seconds = temp
+    formatted_temp =  temp.strftime("%H:%M:%S")
 
-    ost_dist = 0
-    ost_koef = 0
-    num = 0
+    #
+    # if distance is None or total_time is None:
+    #     return tot_koef, ball_for_champ, "Ошибка: Проверьте входные данные"
+
 
     for d in distance_koef:
         if distance <= d[0]:
@@ -396,58 +401,46 @@ def calculate_coefficients(runner_day):
                 ost_koef = distance_koef[index][1] * ost_dist
                 num = distance_koef[index-1][2]
 
-            if temp in temp_koef:
-                avg_temp_koef = temp_koef[temp]
+            if formatted_temp in temp_koef:
+                avg_temp_koef = temp_koef[formatted_temp]
 
             if distance >= 5:
-                tot_koef = ((5 * num + ost_koef)) * 10
-                ball_for_champ = ((5 * num + ost_koef) * avg_temp_koef) * 10
+                tot_koef = round((5 * num + ost_koef) * 10)
+                ball_for_champ = round(((5 * num + ost_koef) * avg_temp_koef) * 10)
             else:
                 tot_koef = ost_koef * 10
                 ball_for_champ = ost_koef * avg_temp_koef * 10
 
             break
 
-    pieces = total_time.split(':')
-    if len(pieces) != 3:
-        return tot_koef, ball_for_champ, "Ошибка: Некорректный формат времени"
 
-    hrs, mins, secs = int(pieces[0]), int(pieces[1]), int(pieces[2])
-    totalSecs = hrs * 3600 + mins * 60 + secs
-
-    if distance == 0:
-        return tot_koef, ball_for_champ, "Ошибка: Дистанция не может быть равна 0"
-
-    avg = totalSecs / distance
-    avgHrs, remaining_secs = divmod(avg, 3600)
-    avgMins, avgSecs = divmod(remaining_secs, 60)
-
-    avgTime = f"{int(avgHrs):02}:{int(avgMins):02}:{int(avgSecs):02}"
-
-    total_avg_secs = int(avgHrs) * 3600 + int(avgMins) * 60 + int(avgSecs)
-
-    if total_avg_secs <= 164:
-        return tot_koef, ball_for_champ, "⚠️ Проверьте корректность ввода среднего темпа!"
-    elif abs(avg - total_avg_secs) > 60:
-        return tot_koef, ball_for_champ, "⚠️ Средний темп не соответствует расчетным показателям"
 
     return tot_koef, ball_for_champ
 
+@require_POST
+def recalculate_balls(request):
+    runner_days = RunnerDay.objects.all()
 
-def recalculate_balls():
-    runner_days = RunnerDay.objects.filter(runner__runner_category=3)
 
     for runner_day in runner_days:
+        user_id = runner_day.runner.id
+        username = runner_day.runner.username
         new_balls, new_balls_for_champ = calculate_coefficients(runner_day)
         runner_day.ball = new_balls
         runner_day.ball_for_champ = new_balls_for_champ
         runner_day.save()
 
 
-# # Пример (замените значениями, которые нужно проверить):
-# temp = "00:03:00"
-# distance = 15
-# total_time = "00:45:00"
-#
-# total_koef, champ_ball, message = calculate_coefficients(temp, distance, total_time)
-# print(f"Коэффициент: {total_koef}, Баллы для чемпионата: {champ_ball}, Сообщение: {message}")
+
+    stats=Statistic.objects.all()
+    for stat in stats:
+        user_id = stat.runner_stat.id
+        username = stat.runner_stat.username
+
+        calc_start(user_id, username)
+
+    from django.shortcuts import redirect
+    return redirect('index')
+
+
+

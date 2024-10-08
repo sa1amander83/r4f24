@@ -114,7 +114,7 @@
             <td>{{ statistic.total_distance|floatformat:2 }}</td>
             <td>{{ statistic.total_time}}</td>
             <td>{{ statistic.total_average_temp|smooth_filter}}</td>
-            <td>{{ statistic.participants|length }}</td>
+            <td>{{ statistic.total_runs }}</td>
         </tr>
             {% endif %}
         {% endfor %}

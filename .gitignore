@@ -132,8 +132,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
-
-# Rope project settings
+r4f24/settings.py
+r4f24.settings.py
+# Rope psroject settings
 .ropeproject
 
 # mkdocs documentation
