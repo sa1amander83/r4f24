@@ -54,10 +54,15 @@
     <button type="submit" class="btn btn-primary">Импортировать команды</button>
 </form>
 
-             <form action="{% url 'recalc_func' %}" method="get">
+{#             <form action="{% url 'recalc_func' %}" method="get">#}
+{#                <button type="submit" class="btn btn-primary">Пересчитать пробежки</button>#}
+{#            </form>#}
+
+
+             <form action="{% url 'recalculate_balls' %}" method="post">
+             {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Пересчитать пробежки</button>
             </form>
-
 
 
 

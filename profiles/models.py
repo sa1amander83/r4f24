@@ -10,14 +10,6 @@ from django.urls import reverse
 import core
 from core.models import User, Teams
 
-DAYS = ((30, '30 сентября'), (1, '01 октября'), (2, '02 октября'), (3, '03 октября'), (4, '04 октября'),
-         (5, '05 октября'), (6, '06 октября'), (7, '07 октября'),)
-        #(8, '08 октября'), (9, '09 октября'),)
-        # (10, '10 октября'), (11, '11 октября'), (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),
-        # (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
-        # (20, '20 октября'), (21, '21 октября'), (22, '22 октября'), (23, '23 октября'), (24, '24 октября'),
-        # (25, '25 октября'), (26, '26 октября'), (27, '27 октября'), (28, '28 октября'), (29, '29 октября'),
-        # (30, '30 октября'), (31, '31 октября'))
 
 
 class UserImport(models.Model):
@@ -68,6 +60,13 @@ def get_days():
         # (day_before_yesterday.day, day_before_yesterday.day)
     ]
 class RunnerDay(models.Model):
+    # DAYS = ((30, '30 сентября'), (1, '01 октября'), (2, '02 октября'), (3, '03 октября'), (4, '04 октября'),
+    #         (5, '05 октября'), (6, '06 октября'),
+    DAYS = ((7, '07 октября'),(8, '08 октября'), (9, '09 октября'),(10, '10 октября'),)
+            #(11, '11 октября'),)
+          #    (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),)
+          #   (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
+          #   (20, '20 октября'), (21, '21 октября'), )
     class Meta:
         verbose_name = 'ежедневный забег'
         verbose_name_plural = "пробеги по дням"
@@ -78,8 +77,8 @@ class RunnerDay(models.Model):
     ]
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
-    # day_select = models.IntegerField(verbose_name='день пробега', choices=get_days(), default=date.today().day,
     day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
+    # day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
                                      db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1), MaxValueValidator(300)], db_index=True)
@@ -101,6 +100,23 @@ class RunnerDay(models.Model):
     def get_absolute_url(self):
         return reverse('profile', kwargs={'username': self.runner})
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     instance = kwargs.get('instance')
+    #     if instance:
+    #         runner = instance.runner
+    #     else:
+    #         runner = None
+    #
+    #     today = datetime.now().day
+    #     if runner and runner.category in [1, 2]:
+    #         choices = [day for day in RunnerDay.DAYS if day[0] in [today, today - 1]]
+    #     elif runner and runner.category == 3:
+    #         choices = [day for day in RunnerDay.DAYS if day[0] == today]
+    #     else:
+    #         choices = RunnerDay.DAYS
+    #
+    #     self.fields['day_select'].choices = choices
 
 class Statistic(models.Model):
     runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False, related_name='statistics')

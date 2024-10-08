@@ -103,7 +103,7 @@ class MultipleFileField(forms.FileField):
 
 from datetime import date
 
-
+from datetime import datetime
 class RunnerDayForm(ModelForm):
     class Meta:
         # day_time = forms.TimeField(help_text='00:00:00')
@@ -157,6 +157,7 @@ class RunnerDayForm(ModelForm):
         fields = ['day_select', 'day_distance', 'day_time', 'day_average_temp', 'ball', 'ball_for_champ','run_url']
 
     photo = MultiFileField(min_num=1, max_num=10, max_file_size=32048 * 32048 * 10)
+
 
     # def save(self, commit=True):
     #     instance = super(RunnerDayForm, self).save(commit)

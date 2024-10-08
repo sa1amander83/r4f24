@@ -186,18 +186,22 @@ class RunnerDayAdmin(admin.ModelAdmin):
     #         return mark_safe(f"<img src='{object.photo.url}' width=50>")
     #
     # get_photo_url.short_description = 'Миниатюра'
-
+from django.contrib.admin import ChoicesFieldListFilter
 
 class StatisticAdmin(admin.ModelAdmin):
-    search_fields = ('runner_stat__username',)
+    search_fields =('runner_stat__username', 'total_runs', 'total_time', 'total_balls', 'runner_stat__runner_category' )
 
-    list_display = ('runner_stat', 'total_run', 'total_time', 'avg_temp',)
+    list_display = ('runner_stat', 'total_balls', 'runner_stat', 'total_balls_for_champ', 'total_time', 'avg_temp', 'total_runs')
+    list_filter = ('runner_stat__runner_team',('runner_stat__runner_age', ChoicesFieldListFilter))
+
+
+
     # list_display_links = ('user',)
     list_per_page = 100
     list_max_show_all = 100
 
     # ordering = ('общий_пробег', )
-    #
+
     def total_run(self, username):
         from django.db.models import Sum
         total_distance = RunnerDay.objects.filter(runner__username=username).aggregate(Sum('day_distance'))
@@ -216,7 +220,7 @@ class StatisticAdmin(admin.ModelAdmin):
 
     total_run.admin_order_field = 'total_distance'
 
-    ordering = ('total_distance',)
+    ordering = ('-total_balls',)
     # всего_времени.admin_order_field = '-total_time'
 
 

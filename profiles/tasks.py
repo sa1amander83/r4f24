@@ -92,8 +92,8 @@ def get_best_five_summ(self,team_id):
         logger.error(f'ошибка пересчета чемпионата: {e}', exc_info=True)
         raise
 
-# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
-def calc_comands(username):
+@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+def calc_comands(self, username):
     obj = get_user_model().objects.get(username=username)
     try:
         if obj.runner_group is not None:
@@ -172,11 +172,8 @@ def calc_comands(username):
                 }
             )
             logger.info('Team results updated successfully.')
-            print('commands done')
-        print('done')
-        logger.info('Command results updated successfully.')
+
     except Exception as e:
-        print(e)
         logger.error(f'An error occurred while calculating commands for user {username}: {e}', exc_info=True)
         raise
 
@@ -185,12 +182,8 @@ def calc_comands(username):
 
 
 
-# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
-
-
-def calc_start(runner_id, username):
-    total_balls = 0
-    total_balls_champ = 0
+@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 7, 'countdown': 5})
+def calc_start(self,runner_id, username):
     try:
         runner_days = RunnerDay.objects.filter(runner__username=username)
 
@@ -236,15 +229,10 @@ def calc_start(runner_id, username):
                 'is_qualificated': is_qualified
             }
         )
-
-
-
         # calc_comands.delay(username)
     except Exception as e:
-        print(e)
         logger.error(f'An error occurred while calculating commands for user {username}: {e}', exc_info=True)
         raise
-
 
 
 
@@ -437,10 +425,7 @@ def recalculate_balls(request):
         user_id = stat.runner_stat.id
         username = stat.runner_stat.username
 
-        calc_start(user_id, username)
+        calc_start.delay(user_id, username)
 
     from django.shortcuts import redirect
     return redirect('index')
-
-
-

@@ -741,9 +741,9 @@
                             return;
                         }
 
-                                let ost_dist;
-                                let ost_koef;
-                                let num;
+                        let ost_dist;
+                        let ost_koef;
+                        let num;
                         for (let d of distance_koef) {
                             if (distance <= d[0]) {
                                 let need_list_index;
@@ -752,67 +752,54 @@
 
                                     ost_dist = distance
                                     ost_koef = (distance_koef[0][1]) * ost_dist;
-                                    num=distance_koef[0][2]
-                                }
-                                else if (distance >= 5 && distance < 10) {
-                                      ost_dist = distance - (distance_koef[0][0] + 0.1);
+                                    num = distance_koef[0][2]
+                                } else if (distance >= 5 && distance < 10) {
+                                    ost_dist = distance - (distance_koef[0][0] + 0.1);
                                     ost_koef = (distance_koef[1][1]) * ost_dist;
-                                            num=distance_koef[0][2]
-                                }
-                                else if (distance >= 10 && distance < 15) {
+                                    num = distance_koef[0][2]
+                                } else if (distance >= 10 && distance < 15) {
 
 
                                     ost_dist = distance - (distance_koef[1][0] + 0.1);
                                     ost_koef = (distance_koef[2][1]) * ost_dist;
-                                     num=distance_koef[1][2]
+                                    num = distance_koef[1][2]
 
-                                }
-                                else if (distance >= 15 && distance < 20) {
-                                   ost_dist = distance - (distance_koef[2][0] + 0.1);
+                                } else if (distance >= 15 && distance < 20) {
+                                    ost_dist = distance - (distance_koef[2][0] + 0.1);
                                     ost_koef = (distance_koef[3][1]) * ost_dist;
-                                    num=distance_koef[2][2]
-                                }
-                                else if (distance >= 20 && distance < 25) {
-                                     ost_dist = distance - (distance_koef[3][0] + 0.1);
+                                    num = distance_koef[2][2]
+                                } else if (distance >= 20 && distance < 25) {
+                                    ost_dist = distance - (distance_koef[3][0] + 0.1);
                                     ost_koef = (distance_koef[4][1]) * ost_dist;
-                                    num=distance_koef[3][2]
-                                }
-                                else if (distance >= 25 && distance < 30) {
-                                     ost_dist = distance - (distance_koef[4][0] + 0.1);
+                                    num = distance_koef[3][2]
+                                } else if (distance >= 25 && distance < 30) {
+                                    ost_dist = distance - (distance_koef[4][0] + 0.1);
                                     ost_koef = (distance_koef[5][1]) * ost_dist;
-                                    num=distance_koef[4][2]
-                                }
-                                else if (distance >= 30 && distance < 35) {
+                                    num = distance_koef[4][2]
+                                } else if (distance >= 30 && distance < 35) {
                                     ost_dist = distance - (distance_koef[5][0] + 0.1);
                                     ost_koef = (distance_koef[6][1]) * ost_dist;
-                                    num=distance_koef[5][2]
-                                }
-                                else if (distance >= 35 && distance < 40) {
-                                     ost_dist = distance - (distance_koef[6][0] + 0.1);
+                                    num = distance_koef[5][2]
+                                } else if (distance >= 35 && distance < 40) {
+                                    ost_dist = distance - (distance_koef[6][0] + 0.1);
                                     ost_koef = (distance_koef[7][1]) * ost_dist;
-                                    num=distance_koef[6][2]
-                                }
-                                else if (distance >= 40 && distance < 45) {
-                                      ost_dist = distance - (distance_koef[7][0] + 0.1);
+                                    num = distance_koef[6][2]
+                                } else if (distance >= 40 && distance < 45) {
+                                    ost_dist = distance - (distance_koef[7][0] + 0.1);
                                     ost_koef = (distance_koef[8][1]) * ost_dist;
-                                    num=distance_koef[7][2]
-                                }
-                                else if (distance >= 45 && distance < 50) {
+                                    num = distance_koef[7][2]
+                                } else if (distance >= 45 && distance < 50) {
                                     ost_dist = distance - (distance_koef[8][0] + 0.1);
                                     ost_koef = (distance_koef[9][1]) * ost_dist;
-                                    num=distance_koef[8][2]
-                                }
-                                else if (distance >= 50) {
-                                      ost_dist = distance - (distance_koef[9][0] + 0.1);
+                                    num = distance_koef[8][2]
+                                } else if (distance >= 50) {
+                                    ost_dist = distance - (distance_koef[9][0] + 0.1);
                                     ost_koef = (distance_koef[10][1]) * ost_dist;
-                                    num=distance_koef[9][2]
+                                    num = distance_koef[9][2]
                                 }
 
 
-
-
-
-                         if (distance>=5){
+                                if (distance >= 5) {
                                     for (const key in temp_koef) {
                                         if (temp === key) {
                                             avg_temp_koef = temp_koef[key];
@@ -822,7 +809,7 @@
                                             avg_temp_koef = 1;
                                         }
                                     }
-                                tot_koef = ((5 * num + ost_koef)) * 10;
+                                    tot_koef = ((5 * num + ost_koef)) * 10;
                                     ball_for_champ = ((5 * num + ost_koef) * avg_temp_koef) * 10;
 
 
@@ -922,6 +909,77 @@
 
         });
 
+    </script>
+
+
+    <script>
+        const DAYS = [
+            [30, '30 сентября'],
+            [1, '01 октября'],
+            [2, '02 октября'],
+            [3, '03 октября'],
+            [4, '04 октября'],
+            [5, '05 октября'],
+            [6, '06 октября'],
+            [7, '07 октября'],
+            [8, '08 октября'],
+            [9, '09 октября'],
+            [10, '10 октября'],
+            [11, '11 октября'],
+            [12, '12 октября'],
+            [13, '13 октября'],
+            [14, '14 октября'],
+            [15, '15 октября'],
+            [16, '16 октября'],
+            [17, '17 октября'],
+            [18, '18 октября'],
+            [19, '19 октября'],
+            [20, '20 октября'],
+            [21, '21 октября']
+        ];
+
+
+        const category = parseInt(document.getElementById('category').innerText)
+        const daySelect = document.getElementById('day_id');
+
+        if (category === 3) {
+            const today = new Date();
+            const todayDay = today.getDate();
+            daySelect.innerHTML = '';
+            daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay][1]}</option>`;
+        } else if (category === 1 || category === 2) {
+            const today = new Date();
+            const todayDay = today.getDate();
+            const yesterdayDay = todayDay - 1;
+            daySelect.innerHTML = '';
+            daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay][1]}</option>`;
+            daySelect.innerHTML += `<option value="${yesterdayDay}">${DAYS[yesterdayDay][1]}</option>`;
+
+        }
+
+        function updateDaySelect() {
+            const category = document.getElementById('category').value;
+            if (category === 3) {
+                const today = new Date();
+                const todayDay = today.getDate();
+                daySelect.innerHTML = '';
+                daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay - 1][1]}</option>`;
+            } else if (category === 1 || category === 2) {
+                const today = new Date();
+                const todayDay = today.getDate();
+                const yesterdayDay = todayDay - 1;
+                daySelect.innerHTML = '';
+                daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay][1]}</option>`;
+                daySelect.innerHTML += `<option value="${yesterdayDay}">${DAYS[yesterdayDay][1]}</option>`;
+
+                {#daySelect.innerHTML += `<option value="${yesterdayDay}">${DAYS[yesterdayDay - 1][1]}</option>`;#}
+                {#daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay - 1][1]}</option>`;#}
+            }
+        }
+
+        document.getElementById('category').addEventListener('change', updateDaySelect);
 
     </script>
+
+
 {% endblock %}
