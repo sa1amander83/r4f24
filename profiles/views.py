@@ -203,6 +203,7 @@ class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
         context['runner_category'] = getuser.runner_category
+        context['username'] = getuser.username
 
         return context
 

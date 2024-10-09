@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
     <div class="h-full rounded-2xl p-6 pb-12">
         <span id="category" hidden="hidden">{{ runner_category }}</span>
+        <span id="username" hidden="hidden">{{ username }}</span>
         <div class="mx-auto">
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -912,36 +913,44 @@
     </script>
 
 
-    <script>
-        const DAYS = [
-            [30, '30 сентября'],
-            [1, '01 октября'],
-            [2, '02 октября'],
-            [3, '03 октября'],
-            [4, '04 октября'],
-            [5, '05 октября'],
-            [6, '06 октября'],
-            [7, '07 октября'],
-            [8, '08 октября'],
-            [9, '09 октября'],
-            [10, '10 октября'],
-            [11, '11 октября'],
-            [12, '12 октября'],
-            [13, '13 октября'],
-            [14, '14 октября'],
-            [15, '15 октября'],
-            [16, '16 октября'],
-            [17, '17 октября'],
-            [18, '18 октября'],
-            [19, '19 октября'],
-            [20, '20 октября'],
-            [21, '21 октября']
-        ];
+ <script>
+    const DAYS = [
+        [30, '30 сентября'],
+        [1, '01 октября'],
+        [2, '02 октября'],
+        [3, '03 октября'],
+        [4, '04 октября'],
+        [5, '05 октября'],
+        [6, '06 октября'],
+        [7, '07 октября'],
+        [8, '08 октября'],
+        [9, '09 октября'],
+        [10, '10 октября'],
+        [11, '11 октября'],
+        [12, '12 октября'],
+        [13, '13 октября'],
+        [14, '14 октября'],
+        [15, '15 октября'],
+        [16, '16 октября'],
+        [17, '17 октября'],
+        [18, '18 октября'],
+        [19, '19 октября'],
+        [20, '20 октября'],
+        [21, '21 октября']
+    ];
 
 
-        const category = parseInt(document.getElementById('category').innerText)
-        const daySelect = document.getElementById('day_id');
+    const category = parseInt(document.getElementById('category').innerText)
+    const daySelect = document.getElementById('day_id');
+    const username = document.getElementById('username').innerText;
 
+    if (username === '111011' || username === 'admin') {
+        // Allow selection of any day
+        daySelect.innerHTML = '';
+        for (let i = 0; i < DAYS.length; i++) {
+            daySelect.innerHTML += `<option value="${DAYS[i][0]}">${DAYS[i][1]}</option>`;
+        }
+    } else {
         if (category === 3) {
             const today = new Date();
             const todayDay = today.getDate();
@@ -956,9 +965,19 @@
             daySelect.innerHTML += `<option value="${yesterdayDay}">${DAYS[yesterdayDay][1]}</option>`;
 
         }
+    }
 
-        function updateDaySelect() {
-            const category = document.getElementById('category').value;
+    function updateDaySelect() {
+        const category = document.getElementById('category').value;
+        const username = document.getElementById('username').innerText;
+
+        if (username === '111011' || username === 'admin') {
+            // Allow selection of any day
+            daySelect.innerHTML = '';
+            for (let i = 0; i < DAYS.length; i++) {
+                daySelect.innerHTML += `<option value="${DAYS[i][0]}">${DAYS[i][1]}</option>`;
+            }
+        } else {
             if (category === 3) {
                 const today = new Date();
                 const todayDay = today.getDate();
@@ -976,10 +995,10 @@
                 {#daySelect.innerHTML += `<option value="${todayDay}">${DAYS[todayDay - 1][1]}</option>`;#}
             }
         }
+    }
 
-        document.getElementById('category').addEventListener('change', updateDaySelect);
+    document.getElementById('category').addEventListener('change', updateDaySelect);
 
-    </script>
-
+</script>
 
 {% endblock %}

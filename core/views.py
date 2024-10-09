@@ -630,19 +630,7 @@ class StatisticView(DataMixin, ListView):
         #         runner__runner_age__gte=60)))).count()
         count_cat_list = {}
         i = 1
-        # num_of_runners = 0
-        # for j in [400, 200, 100, 50, 20]:
-        #     count_cat = RunnerDay.objects.filter(runner__runner_category=i). \
-        #         filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |
-        #                (Q(day_average_temp__gte='00:08:00') & Q(runner_age__gte=60))).values(
-        #         'username').annotate(total_dist=Sum('day_distance'), total_time=Sum('day_time'),
-        #                              total_average_temp=Sum('day_average_temp')).filter(
-        #         total_dist__gte=j).count()
-        #     count_cat_list[i] = count_cat
-        #     num_of_runners += count_cat
-        #     i += 1
-        #     if i > 5:
-        #         break
+
 
         context['get_finished'] = count_cat_list
 
@@ -676,6 +664,46 @@ class StatisticView(DataMixin, ListView):
             age_18_35=Count('id', filter=Q(runner_age__gt=17, runner_age__lte=35, not_running=False)),
             age_36_49=Count('id', filter=Q(runner_age__gt=35, runner_age__lte=49, not_running=False)),
             age_over_50=Count('id', filter=Q(runner_age__gt=49, not_running=False)))
+
+
+        context['mens_lte_17'] = get_user_model().objects.filter(runner_gender='м', runner_age__lte=17,
+                                                                 not_running=False).count()
+        context['mens_18_35'] = get_user_model().objects.filter(runner_gender='м', runner_age__gt=17,
+                                                                 runner_age__lte=35, not_running=False).count()
+        context['mens_36_49'] = get_user_model().objects.filter(runner_gender='м', runner_age__gt=35,
+                                                                 runner_age__lte=49, not_running=False).count()
+        context['mens_over_50'] = get_user_model().objects.filter(runner_gender='м', runner_age__gt=49,
+                                                                 not_running=False).count()
+
+
+        context['womens_lte_17'] = get_user_model().objects.filter(runner_gender='ж', runner_age__lte=17,
+                                                                 not_running=False).count()
+        context['womens_18_35'] = get_user_model().objects.filter(runner_gender='ж', runner_age__gt=17,
+                                                                 runner_age__lte=35, not_running=False).count()
+        context['womens_36_49'] = get_user_model().objects.filter(runner_gender='ж', runner_age__gt=35,
+                                                                 runner_age__lte=49, not_running=False).count()
+        context['womens_over_50'] = get_user_model().objects.filter(runner_gender='ж', runner_age__gt=49,
+                                                                 not_running=False).count()
+
+
+        context['mens_cat_1'] = get_user_model().objects.filter(runner_category=1, runner_gender='м',
+                                                                not_running=False).count()
+        context['womens_cat_1'] = get_user_model().objects.filter(runner_category=1, runner_gender='ж',
+                                                                not_running=False).count()
+        context['mens_cat_2'] = get_user_model().objects.filter(runner_category=2, runner_gender='м',
+                                                                not_running=False).count()
+        context['womens_cat_2'] = get_user_model().objects.filter(runner_category=2, runner_gender='ж',
+                                                                not_running=False).count()
+
+        context['mens_cat_3'] = get_user_model().objects.filter(runner_category=3, runner_gender='м',
+                                                                not_running=False).count()
+        context['womens_cat_3'] = get_user_model().objects.filter(runner_category=3, runner_gender='ж',
+                                                                not_running=False).count()
+
+        # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
+
+
+
 
         # context['get_finished_1'] = RunnerDay.objects.filter(runner__runner_category=1). \
         #     filter((Q(day_average_temp__lte="00:08:00") & Q(day_distance__gt=0)) |

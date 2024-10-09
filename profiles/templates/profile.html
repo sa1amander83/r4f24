@@ -4,6 +4,7 @@
 {% load divide_tag %}
 {% load time_tag %}
 {% load cat_tag %}
+{% load age_okon4 %}
 {% block content %}
     {% load date_tag %}
     {% csrf_token %}
@@ -71,7 +72,7 @@
                                                     </svg>
 
                                                 {% endif %}
-                                                <span class="text-lg font-semibold text-slate-500 truncate">{{ d.runner_age }} лет</span>
+                                                <span class="text-lg font-semibold text-slate-500 truncate">{{ d.runner_age|years_or_years }} </span>
                                             </div>
                                         {% endfor %}
                                     </div>

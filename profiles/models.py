@@ -11,7 +11,6 @@ import core
 from core.models import User, Teams
 
 
-
 class UserImport(models.Model):
     csv_file = models.FileField(upload_to='uploads/')
 
@@ -31,7 +30,8 @@ class Photo(models.Model):
                              blank=True, max_length=300)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
-    runner_day = models.ForeignKey('RunnerDay', on_delete=models.CASCADE, related_name='photos', verbose_name='день пробежки', null=True)
+    runner_day = models.ForeignKey('RunnerDay', on_delete=models.CASCADE, related_name='photos',
+                                   verbose_name='день пробежки', null=True)
 
     def delete(self, *args, **kwargs):
         # До удаления записи получаем необходимую информацию
@@ -50,6 +50,7 @@ class Photo(models.Model):
 
 from datetime import date, timedelta
 
+
 def get_days():
     today = date.today()
     yesterday = today - timedelta(days=1)
@@ -59,14 +60,15 @@ def get_days():
         (yesterday.day, yesterday.day),
         # (day_before_yesterday.day, day_before_yesterday.day)
     ]
+
+
 class RunnerDay(models.Model):
-    # DAYS = ((30, '30 сентября'), (1, '01 октября'), (2, '02 октября'), (3, '03 октября'), (4, '04 октября'),
-    #         (5, '05 октября'), (6, '06 октября'),
-    DAYS = ((7, '07 октября'),(8, '08 октября'), (9, '09 октября'),(10, '10 октября'),)
-            #(11, '11 октября'),)
-          #    (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),)
-          #   (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
-          #   (20, '20 октября'), (21, '21 октября'), )
+    DAYS = ((30, '30 сентября'), (1, '01 октября'), (2, '02 октября'), (3, '03 октября'), (4, '04 октября'),
+            (5, '05 октября'), (6, '06 октября'),  (7, '07 октября'), (8, '08 октября'), (9, '09 октября'),
+            (10, '10 октября'), (11, '11 октября'), (12, '12 октября'), (13, '13 октября'), (14, '14 октября'),
+            (15, '15 октября'), (16, '16 октября'), (17, '17 октября'), (18, '18 октября'), (19, '19 октября'),
+            (20, '20 октября'), (21, '21 октября'),)
+
     class Meta:
         verbose_name = 'ежедневный забег'
         verbose_name_plural = "пробеги по дням"
@@ -78,7 +80,7 @@ class RunnerDay(models.Model):
     runner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', related_name='runner',
                                db_index=True)
     day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
-    # day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
+                                     # day_select = models.IntegerField(verbose_name='день пробега', choices=DAYS, default=date.today().day,
                                      db_index=True)
     day_distance = models.FloatField(verbose_name='дистанция за день', help_text='введите в формате 10,23', null=False,
                                      validators=[MinValueValidator(1), MaxValueValidator(300)], db_index=True)
@@ -118,8 +120,10 @@ class RunnerDay(models.Model):
     #
     #     self.fields['day_select'].choices = choices
 
+
 class Statistic(models.Model):
-    runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False, related_name='statistics')
+    runner_stat = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='участник', null=False,
+                                    related_name='statistics')
     # runner_stat = models.CharField(verbose_name='участник')
     # team = models.IntegerField(verbose_name='команда')
     total_distance = models.FloatField(verbose_name='итоговый пробег', blank=True, db_index=True)
@@ -128,7 +132,8 @@ class Statistic(models.Model):
     total_days = models.IntegerField(verbose_name='дни пробега', null=True, db_index=True)
     total_runs = models.IntegerField(verbose_name='количество пробежек', null=True, db_index=True)
     total_balls = models.IntegerField(verbose_name='общая сумма баллов', null=True, db_index=True)
-    total_balls_for_champ = models.IntegerField(verbose_name='общая сумма баллов для чемпионата', null=True, db_index=True)
+    total_balls_for_champ = models.IntegerField(verbose_name='общая сумма баллов для чемпионата', null=True,
+                                                db_index=True)
     is_qualificated = models.BooleanField(verbose_name='прошел квалификацию', default=False)
 
     def __str__(self):
