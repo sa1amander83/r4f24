@@ -320,6 +320,10 @@
                                     </div>
                                     <div class="mt-6 text-3xl font-semibold leading-8">{{ total_runners }}</div>
                                     <div class="mt-1 text-base text-slate-500">Участники</div>
+                                    <div class="mt-6 text-3xl font-semibold leading-8">{{ have_run }}</div>
+                                    <div class="mt-1 text-base text-slate-500"> Бегают</div>
+
+
                                 </div>
                             </div>
 
@@ -329,6 +333,92 @@
                     <!--      <h1 class=" text-left text-lg mt-5 font-semibold truncate"> Статистика по пробежкам</h1> -->
 
                     <div class=" w-full mt-5 bg-white shadow  rounded-xl">
+
+                <div class="flex items-center">
+                            <h2 class="mr-5 text-lg font-semibold truncate ">Диаграмма
+                                по категориям среди мужчин</h2></div>
+                        <div class="p-5 shadow mt-5 rounded-xl bg-white">
+
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+                            <div class="font-sans leading-normal tracking-normal">
+                                <div class="h-[213px]">
+                                    <canvas style=" display: block; box-sizing: border-box; height: 213px; width: 275px;"
+                                            class="text-white " id="age-mens"></canvas>
+                                </div>
+                                <script>
+                                    Chart.defaults.color = '#000000';
+                                    new Chart(document.getElementById("age-mens"), {
+
+                                        type: "doughnut",
+                                        data: {
+                                            labels: ["до 18", "18-35", "36-49", 'старше 50'],
+                                            datasets: [{
+                                                label: "Кол-во участников",
+                                                backgroundColor: ["#22c55e", "#0ea5e9", '#f43f5e', "#7899a9", "#1e5571"],
+                                                data: [{{ mens_lte_17 }},{{ mens_18_35 }},{{mens_36_49  }},{{mens_over50  }}],
+                                            }]
+                                        },
+                                        options: {
+
+                                            legend: {
+                                                display: false
+                                            },
+                                        }
+
+                                    });
+                                </script>
+
+                                <div class="mx-auto mt-8 w-52 sm:w-auto">
+                                    <div class="flex items-center justify-content-center">
+
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-green-500 "></div>
+                                        <span class="truncate">до 18 лет</span>
+                                        <span class="ml-auto font-medium">{{ mens_lte_17}} чел.</span>
+                                    </div>
+                                    <div class="flex items-center mt-4">
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-sky-500"></div>
+
+                                        <span class="truncate">18-35 лет</span>
+                                        <span class="ml-auto font-medium">{{ mens_18_35 }} чел.</span>
+                                    </div>
+                                    <div class="flex items-center mt-4">
+                                        {#                                        <div class="w-2 h-2 mr-3 rounded-full bg-yellow-400"></div>#}
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-rose-500"></div>
+                                        <span class="truncate">36-49 лет</span>
+                                        <span class="ml-auto font-medium">{{ mens_36_49 }} чел.</span>
+                                    </div>
+
+                                    <div class="flex items-center mt-4">
+                                        <div class="w-2 h-2 mr-3 rounded-full bg-gray-700"></div>
+                                        <span class="truncate">старше 50</span>
+                                        <span class="ml-auto font-medium">{{ mens_over_50 }} чел.</span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <!-- Chart general -->
                         <!-- <div class="flex items-center">
 

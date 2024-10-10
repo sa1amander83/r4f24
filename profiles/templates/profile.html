@@ -417,8 +417,7 @@
                                 {% for p in runner_day %}
                                     <tr>
                                         <td>{{ p.day_select|convert_date }}</td>
-                                        <td>{{ p.ball }}
-                                            | {{ p.ball_for_champ }}</td>
+                                        <td>{{ p.ball }} <span mb>|</span> {{ p.ball_for_champ }}</td>
                                         <td>{{ p.day_distance|floatformat:3 }}</td>
                                         <td>{{ p.day_time|time:'H:i:s' }}</td>
                                         <td>{{ p.day_average_temp|time:'i:s' }}</td>

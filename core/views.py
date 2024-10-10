@@ -636,9 +636,9 @@ class StatisticView(DataMixin, ListView):
 
         context['disqauled'] = Statistic.objects.filter(total_distance__lt=30).count()
 
-        have_run = Statistic.objects.filter(total_distance__gt=0).count()
+        context['have_run'] = Statistic.objects.filter(total_distance__gt=0).count()
 
-        context['not_run'] = context['total_runners'] - have_run
+        # context['not_run'] = context['total_runners'] - have_run
         count_of_run_every_day = []
         distance_every_day = []
         for x in range(1, 31):

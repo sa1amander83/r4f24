@@ -68,10 +68,10 @@ INSTALLED_APPS = [
     'profiles',
     'authorize',
     'groups',
-    'django_cleanup',
-    'django_celery_beat',
-    'django_celery_results',
-    "debug_toolbar",
+    # 'django_cleanup',
+    # 'django_celery_beat',
+    # 'django_celery_results',
+    # "debug_toolbar",
 
 ]
 CELERY_IMPORTS = [
@@ -106,7 +106,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     "debug_toolbar.middleware.DebugToolbarMiddleware",
+     # "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 STATIC_URL = '/static/'

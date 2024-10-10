@@ -305,6 +305,7 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         getuser = get_user_model().objects.get(username=self.kwargs['username'])
         context['runner_category'] = getuser.runner_category
+        context['editrundata']=True
         return context
 
     def get_success_url(self):
@@ -346,10 +347,10 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
 
             new_item.save()
             # calc_comands.delay(self.kwargs['username'])
-            calc_comands(self.kwargs['username'])
+            calc_comands.delay(self.kwargs['username'])
             # Запуск задач после успешного сохранения
             # calc_start.delay(self.request.user.pk, self.kwargs['username'])
-            calc_start(self.request.user.pk, self.kwargs['username'])
+            calc_start.delay(self.request.user.pk, self.kwargs['username'])
             get_best_five_summ.delay(userid.runner_team_id)
 
 
@@ -359,6 +360,12 @@ class EditRunnerDayData(LoginRequiredMixin, UpdateView):
         except Exception as e:
             messages.error(self.request, f'Произошла ошибка: {str(e)}')
             return redirect('profile:profile', username=self.request.user.username)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Ошибка при обработке формы.')
+        print(form.cleaned_data)
+        return redirect('profile:profile', username=self.kwargs['username'])
+
 
 class DeleteRunnerDayData(LoginRequiredMixin, DeleteView):
     model = RunnerDay
