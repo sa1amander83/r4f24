@@ -171,7 +171,7 @@ def calc_comands(self, username):
                     'comand_total_runs': total_comand_results.get('total_runs')
                 }
             )
-            logger.info('Team results updated successfully.')
+            print('comands done')
 
     except Exception as e:
         logger.error(f'An error occurred while calculating commands for user {username}: {e}', exc_info=True)

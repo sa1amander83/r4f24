@@ -81,52 +81,47 @@ class ProfileUser(ListView, DataMixin):
 
         #Всего бегунов
         context['total_runners'] = Statistic.objects.all().count()
-        context['total_runners_category'] = Statistic.objects.filter(runner_stat__runner_category=get_category).count()
+        context['total_runners_category'] = Statistic.objects.filter(runner_stat__runner_category=get_category, total_distance__gt=0).count()
 
-        runners_list = list(
-            Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username', flat=True))
-        #
-        runners_list_category = list(
-            Statistic.objects.filter(runner_stat__runner_category=get_category).order_by('-total_balls').values_list(
-                'runner_stat__username', flat=True))
+
 
         age_of_user = getuser.runner_age
         gender=getuser.runner_gender
         # Create a list of runners based on age categories
         try:
             if age_of_user < 17:
-                runners_age_filter = Q(runner_stat__runner_age__lte=17)
+                runners_age_filter = Q(runner_stat__runner_age__lte=17, total_distance__gt=0)
             elif 18 <= age_of_user <= 35:
-                runners_age_filter = Q(runner_stat__runner_age__gte=18, runner_stat__runner_age__lte=35)
+                runners_age_filter = Q(runner_stat__runner_age__gte=18, runner_stat__runner_age__lte=35, total_distance__gt=0)
             elif 36 <= age_of_user <= 49:
-                runners_age_filter = Q(runner_stat__runner_age__gte=36, runner_stat__runner_age__lte=49)
+                runners_age_filter = Q(runner_stat__runner_age__gte=36, runner_stat__runner_age__lte=49, total_distance__gt=0)
             else:
-                runners_age_filter = Q(runner_stat__runner_age__gte=50)
+                runners_age_filter = Q(runner_stat__runner_age__gte=50, total_distance__gt=0)
 
             if get_category == 3:
                 runners_list_age_category = Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender='м',
-                                                                     runner_stat__runner_category=3) \
+                                                                     runner_stat__runner_category=3, total_distance__gt=0) \
                     .order_by('-total_balls_for_champ') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
                 runners_list_category = Statistic.objects.filter(runner_stat__runner_category=3,
-                                                                 runner_stat__runner_gender='м',) \
+                                                                 runner_stat__runner_gender='м', total_distance__gt=0) \
                     .order_by('-total_balls_for_champ') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
             else:
                 runners_list_age_category = Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender=gender,
-                                                                     runner_stat__runner_category=get_category) \
+                                                                     runner_stat__runner_category=get_category, total_distance__gt=0) \
                     .order_by('-total_balls') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
                 runners_list_category = Statistic.objects.filter(runner_stat__runner_category=get_category,
-                                                                 runner_stat__runner_gender=gender) \
+                                                                 runner_stat__runner_gender=gender, total_distance__gt=0) \
                     .order_by('-total_balls') \
                     .values_list('runner_stat__username', flat=True) \
                     .distinct()
 
-            runners_list_age = (Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender=gender).
+            runners_list_age = (Statistic.objects.filter(runners_age_filter, runner_stat__runner_gender=gender, total_distance__gt=0).
                                 order_by('-total_balls').values_list('runner_stat__username', flat=True).distinct())
 
             runners_list = Statistic.objects.all().order_by('-total_balls').values_list('runner_stat__username',
@@ -139,11 +134,11 @@ class ProfileUser(ListView, DataMixin):
 
 
             context['count_age_and_category'] = Statistic.objects.filter(runners_age_filter,runner_stat__runner_gender=gender,
-                                                                         runner_stat__runner_category=get_category).count()
+                                                                         runner_stat__runner_category=get_category, total_distance__gt=0).count()
 
             context['total_runners'] = Statistic.objects.all().count()
             context['total_runners_category'] = Statistic.objects.filter(
-                runner_stat__runner_category=get_category, runner_stat__runner_gender=gender).count()
+                runner_stat__runner_category=get_category, runner_stat__runner_gender=gender, total_distance__gt=0).count()
 
             context['place_in_total'] = runners_list.index(self.kwargs['username']) + 1 if self.kwargs[
                                                                                                'username'] in runners_list else None
@@ -191,7 +186,7 @@ class EditProfile(LoginRequiredMixin, UpdateView, DataMixin):
         return self.request.user
 
     fields = ['runner_age', 'runner_gender', 'zabeg22', 'zabeg23']
-
+from datetime import date, timedelta
 
 class InputRunnerDayData(DataMixin, LoginRequiredMixin, CreateView):
     form_class = RunnerDayForm

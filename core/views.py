@@ -232,7 +232,7 @@ class RunnersCatGenderView(DataMixin, ListView):
                 runner_stat__runner_gender='ж').values('runner_stat__username', 'runner_stat__runner_team',
                                                        'total_runs', 'total_time', 'runner_stat__runner_gender',
                                                        'runner_stat__runner_gender', 'runner_stat__runner_group',
-                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_balls','total_balls_for_champ', 'total_days', 'total_distance',
                                                        'total_average_temp').order_by('-total_balls')
             return context
 
@@ -244,7 +244,7 @@ class RunnersCatGenderView(DataMixin, ListView):
                 runner_stat__not_running=False).values('runner_stat__username', 'runner_stat__runner_team',
                                                        'runner_stat__runner_gender', 'runner_stat__runner_group',
                                                        'total_runs', 'total_time', 'runner_stat__runner_gender',
-                                                       'total_balls', 'total_days', 'total_distance',
+                                                       'total_balls', 'total_days', 'total_distance','total_balls_for_champ',
                                                        'total_average_temp').order_by('-total_balls')
             return context
 

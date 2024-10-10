@@ -371,7 +371,7 @@
                                     </th>
                                     <th>
                 <span class="flex items-center">
-                    пробежка
+                    добавлена
                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                          height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -417,11 +417,11 @@
                                 {% for p in runner_day %}
                                     <tr>
                                         <td>{{ p.day_select|convert_date }}</td>
-                                        <td>{{ p.ball }} <span mb>|</span> {{ p.ball_for_champ }}</td>
+                                        <td>{{ p.ball }} <span class="border-d bg-gray-200  mb-2"></span> {{ p.ball_for_champ }}</td>
                                         <td>{{ p.day_distance|floatformat:3 }}</td>
                                         <td>{{ p.day_time|time:'H:i:s' }}</td>
                                         <td>{{ p.day_average_temp|time:'i:s' }}</td>
-                                        <td>{{ p.number_of_run }} {% if user.is_superuser %}
+                                        <td>{{ p.time_create }} {% if user.is_superuser %}
                                             {{ p.id }} {% endif %}</td>
             <td>
                     <!-- Место для фотографий каждой пробежки -->
