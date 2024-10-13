@@ -116,23 +116,23 @@
           </svg>
           Профи
         </a>
-        <a
-          href="{% url 'runner_category_age_female' 0 %}"
-          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
-        >
-          <svg
-            class="w-5 h-5 me-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"
-            />
-          </svg>
-          Женщины
-        </a>
+{#        <a#}
+{#          href="{% url 'runner_category_age_female' 0 %}"#}
+{#          class="inline-flex items-center px-6 py-2 mr-2 text-base font-semibold text-white bg-transparent rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"#}
+{#        >#}
+{#          <svg#}
+{#            class="w-5 h-5 me-2"#}
+{#            aria-hidden="true"#}
+{#            xmlns="http://www.w3.org/2000/svg"#}
+{#            fill="currentColor"#}
+{#            viewBox="0 0 20 20"#}
+{#          >#}
+{#            <path#}
+{#              d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"#}
+{#            />#}
+{#          </svg>#}
+{#          Женщины#}
+{#        </a>#}
       </div>
       {% endcache %}
     </header>
@@ -152,43 +152,42 @@
             </h2>
           </div>
           <div class="rounded-xl shadow bg-white my-5 p-5">
-            <div class="flex">
-              <div class="mx-auto text-base font-semibold truncate">
-                Сентябрь
-              </div>
-            </div>
-            <div class="grid grid-cols-7 gap-4 mt-5 text-center">
-              <div class="font-medium">Пн</div>
-              <div class="font-medium">Вт</div>
-              <div class="font-medium">Ср</div>
-              <div class="font-medium">Чт</div>
-              <div class="font-medium">Пт</div>
-              <div class="font-medium">Сб</div>
-              <div class="font-medium">Вс</div>
-              <div class="py-0.5 rounded relative text-slate-500">26</div>
-              <div class="py-0.5 rounded relative text-slate-500">27</div>
-              <div class="py-0.5 rounded relative text-slate-500">28</div>
-              <div class="py-0.5 rounded relative text-slate-500">29</div>
-              <div class="py-0.5 rounded relative text-slate-500">30</div>
-              <div class="py-0.5 rounded relative text-slate-500">31</div>
-              {% now 'j' as today %} {% for day in 1|range:31 %}
-              <a
-                class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
-                href="{% url 'runner_day_results' day %}"
-                >{{ day }}</a
-              >
-              {% endfor %}
-              <div class="py-0.5 rounded relative text-slate-500">1</div>
-              <div class="py-0.5 rounded relative text-slate-500">2</div>
-              <div class="py-0.5 rounded relative text-slate-500">3</div>
-              <div class="py-0.5 rounded relative text-slate-500">4</div>
-              <div class="py-0.5 rounded relative text-slate-500">5</div>
-              <div class="py-0.5 rounded relative text-slate-500">6</div>
-            </div>
-          </div>
-        </div>
+           <div class="flex ">
+                    <div class="mx-auto text-base font-semibold truncate">Сентябрь - Октябрь</div>
+                </div>
+                <div
+                        class="grid grid-cols-7 gap-4 mt-5 text-center"
+                >
+                   <div class="font-medium">Пн</div>
+                    <div class="font-medium">Вт</div>
+                    <div class="font-medium">Ср</div>
+                    <div class="font-medium">Чт</div>
+                    <div class="font-medium">Пт</div>
+                    <div class="font-medium">Сб</div>
+                    <div class="font-medium">Вс</div>
+                    <div class="py-0.5 rounded relative text-slate-500">23</div>
+                    <div class="py-0.5 rounded relative text-slate-500">24</div>
+                    <div class="py-0.5 rounded relative text-slate-500">25</div>
+                    <div class="py-0.5 rounded relative text-slate-500">26</div>
+                    <div class="py-0.5 rounded relative text-slate-500">27</div>
+                    <div class="py-0.5 rounded relative text-slate-500">28</div>
+                    <div class="py-0.5 rounded relative text-slate-500">29</div>
+                    <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
+                       href="{% url 'runner_day_results' 30  %}">30</a>
 
-      </div>
+                    {% now 'j' as today %} {% for day in 1|range:31 %}
+                    <a class="py-0.5 hover:bg-sky-700 hover:text-white rounded relative"
+                       href="{% url 'runner_day_results' day %}">{{ day }}</a>
+                {% endfor %}
+                    <div class="py-0.5 rounded relative text-slate-500">1</div>
+                    <div class="py-0.5 rounded relative text-slate-500">2</div>
+                    <div class="py-0.5 rounded relative text-slate-500">3</div>
+                    <div class="py-0.5 rounded relative text-slate-500">4</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
       <!-- главный блок -->
       <div class="flex flex-col w-full p-3 my-3 md:p-6 md:my-0">
         <div
@@ -217,19 +216,52 @@
                         >Профи</span
                         >
                     </h2>
-                {% elif cat_selected == woman %}
-                    <h2 class="text-left text-lg font-semibold truncate">
-                        Результаты в категории
-                        <span class="bg-pink-100 text-pink-800 px-2 py-0.5 rounded"
-                        >Женщины</span
-                        >
-                    </h2>
+{#                {% elif cat_selected == woman %}#}
+{#                    <h2 class="text-left text-lg font-semibold truncate">#}
+{#                        Результаты в категории#}
+{#                        <span class="bg-pink-100 text-pink-800 px-2 py-0.5 rounded"#}
+{#                        >Женщины</span#}
+{#                        >#}
+{#                    </h2>#}
                 {% else %}
                     <h3 class="text-left text-lg font-semibold truncate">
                         Общие результаты участников
                     </h3>
                 {% endif %}
             </div>
+
+           <a href="{% url 'runner_category_age_gender'   request.resolver_match.kwargs.cat  request.resolver_match.kwargs.age  'm' %}"
+                    class="inline-flex items-center px-6 py-2 mr-2  bg-sky-900 text-base font-semibold text-white  rounded-lg hover:bg-sky-800 hover:text-white focus:z-10 focus:ring-2 focus:ring-sky-500 focus:bg-sky-900 focus:text-white"
+            >
+
+                Мужчины
+            </a>
+
+            {% if request.resolver_match.kwargs.age == 1 %}
+                        <h1 class="bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold"> до 18 лет</h1>
+                {% elif request.resolver_match.kwargs.age == 2%}
+                        <h1 class="bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">18-35 лет</h1>
+                {% elif request.resolver_match.kwargs.age == 3 %}
+                        <h1 class="bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">36-45 лет</h1>
+                {% elif request.resolver_match.kwargs.age == 4 %}
+                        <h1 class="bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">50+ лет</h1>
+               {% endif %}
+
+        {% if request.resolver_match.kwargs.cat != 3%}
+         <a href="{% url 'runner_category_age_gender'   request.resolver_match.kwargs.cat  request.resolver_match.kwargs.age 'f' %}"
+                    class="inline-flex items-center px-6 py-2  bg-pink-900 mr-2 text-base font-semibold text-white  rounded-lg hover:ring-fuchsia-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-pink-300 focus:bg-pink-900  focus:text-white"
+            >
+
+                Женщины
+            </a>
+
+        {% endif %}
+
+
+
+
+
+
           <div class="flex w-full justify-between items-center md:block md:w-auto ">
             <button
             id="dropdown-button"
@@ -291,13 +323,13 @@
                 >
               </li>
             </ul>
-            <div class="py-1">
-              <a
-                href="{% url 'runner_category' 0 %}"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                >Все</a
-              >
-            </div>
+{#            <div class="py-1">#}
+{#              <a#}
+{#                href="{% url 'runner_category' 0 %}"#}
+{#                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "#}
+{#                >Все</a#}
+{#              >#}
+{#            </div>#}
           </div>
                       <!-- Dropdown category -->
             <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
@@ -322,9 +354,9 @@
                     <li>
                         <a href="{% url 'runner_category_age' 3 0 %}" class="block px-4 py-2 hover:bg-gray-100">Профи</a>
                     </li>
-                    <li>
-                        <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>
-                    </li>
+{#                    <li>#}
+{#                        <a href="{% url 'runner_category_age_female' 0 %}" class="block px-4 py-2 hover:bg-gray-100">Женщины</a>#}
+{#                    </li>#}
                 </ul>
                 <div class="py-2">
                     <a href="{% url 'index' %}"
